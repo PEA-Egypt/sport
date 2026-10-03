@@ -5767,14 +5767,69 @@
             }
         }
         @media (max-width: 768px) {
+            .table-responsive {
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+            .admin-table {
+                min-width: unset !important;
+                width: 100% !important;
+                table-layout: auto !important;
+            }
             .admin-table th,
             .admin-table td {
-                padding: 2px 2px !important;
+                padding: 4px 4px !important;
                 font-size: 0.72rem !important;
+                white-space: nowrap !important;
             }
             .col-student-gov,
             .col-student-game-stage {
                 display: none !important;
+            }
+            /* تصغير عرض أعمدة جدول استمارات الطلاب لتناسب حجم الأسماء والأزرار فقط */
+            #reviewerStudentsTable th:first-child,
+            #reviewerStudentsTableBody td:first-child {
+                width: 1% !important;
+                padding: 4px 2px !important;
+                text-align: center !important;
+            }
+            #reviewerStudentsTable th:nth-child(2),
+            #reviewerStudentsTableBody td:nth-child(2) {
+                width: 1% !important;
+                white-space: nowrap !important;
+                padding: 4px 6px !important;
+            }
+            #reviewerStudentsTableBody td:nth-child(2) > div {
+                gap: 4px !important;
+                font-size: 0.74rem !important;
+            }
+            /* تصغير أزرار ملف الطالب وضبط عرضها */
+            .st-file-btn-stack {
+                max-width: fit-content !important;
+                width: auto !important;
+                gap: 2px !important;
+                margin: 0 auto !important;
+            }
+            .st-file-btn {
+                padding: 2px 6px !important;
+                font-size: 0.68rem !important;
+                gap: 3px !important;
+                width: auto !important;
+                white-space: nowrap !important;
+                border-radius: 5px !important;
+                line-height: 1.2 !important;
+            }
+            /* تصغير بادج الحالة وزر القرار */
+            #reviewerStudentsTableBody .status-badge,
+            #reviewerStudentsTableBody .file-tag {
+                font-size: 0.66rem !important;
+                padding: 2px 5px !important;
+                white-space: nowrap !important;
+            }
+            #reviewerStudentsTableBody button.admin-action-btn {
+                padding: 3px 6px !important;
+                font-size: 0.7rem !important;
+                white-space: nowrap !important;
             }
             /* تقليل المسافة في شريط رأس المحافظة على الموبيل */
             #reviewerTablesWrapper > div:first-child {
@@ -7472,7 +7527,7 @@
                         </div>
 
                         <div class="table-responsive">
-                            <table class="admin-table">
+                            <table class="admin-table" id="reviewerStudentsTable">
                                 <thead>
                                     <tr>
                                         <th style="width:36px; text-align:center;">#</th>
@@ -8774,6 +8829,18 @@
 
                         <span class="golden-bar-divider"></span>
 
+                        <!-- زر تبديل محرك العرض في حال لم يفتح الملف في محرك معين -->
+                        <button type="button" id="btnToggleStudentEngine" onclick="toggleGoldenPaneEngine('student')" class="golden-ctrl-btn" style="background:#1e293b; color:#38bdf8; border-color:#0284c7; font-weight:700;" title="تبديل محرك العرض (Google Drive Preview / Docs Viewer)">
+                            <i class="fas fa-arrows-rotate"></i> <span id="lblStudentEngine">Drive</span>
+                        </button>
+
+                        <!-- زر فتح مباشر في تبويب خارجي أو تطبيق Drive -->
+                        <a id="btnGoldenStudentFloatingTab" href="#" target="_blank" rel="noopener noreferrer" class="golden-ctrl-btn" style="color:#f8fafc; text-decoration:none;" title="فتح الملف في نافذة خارجية أو تطبيق Drive">
+                            <i class="fas fa-arrow-up-right-from-square"></i>
+                        </a>
+
+                        <span class="golden-bar-divider"></span>
+
                         <!-- زر الكشف المجمع ويسمى كشف فقط -->
                         <button type="button" onclick="openGoldenCollectiveSheetModal()" class="golden-ctrl-btn" style="background:linear-gradient(135deg, #0284c7, #0369a1); color:#ffffff; border-color:#38bdf8; font-weight:800;" title="عرض الكشف المجمع للمحافظة">
                             <i class="fas fa-table-list"></i> كشف
@@ -8783,7 +8850,7 @@
                     <!-- عرض استمارة الطالب PDF بشكل طبيعي ملء الشاشة 100% -->
                     <div id="goldenStudentPdfContainer" style="width:100%; height:100%; position:relative; overflow:hidden; background:#0f172a;">
                         <div id="goldenStudentViewerContainer" style="width:100%; height:100%; position:relative; overflow:hidden; background:#0f172a;">
-                            <iframe id="goldenStudentIframe" src="about:blank" style="position:absolute; top:50%; left:50%; width:100%; height:100%; border:none; display:block; transform-origin:center center; transition:transform 0.15s ease-out; background:#ffffff; box-shadow:0 0 25px rgba(0,0,0,0.5); transform:translate(-50%, -50%);" scrolling="auto"></iframe>
+                            <iframe id="goldenStudentIframe" src="about:blank" referrerpolicy="no-referrer" style="position:absolute; top:50%; left:50%; width:100%; height:100%; border:none; display:block; transform-origin:center center; transition:transform 0.15s ease-out; background:#ffffff; box-shadow:0 0 25px rgba(0,0,0,0.5); transform:translate(-50%, -50%);" scrolling="auto"></iframe>
                         </div>
 
                         <!-- منظومة التحميل المسبق الذكية التوربينية متعددة المحركات (Offscreen Multi-Engine Preloader Pool) -->
@@ -8804,17 +8871,6 @@
                             <button type="button" onclick="setGoldenViewMode('excel')" class="golden-btn" style="background:#059669; color:#fff; font-size:0.78rem; padding:4px 12px; margin-top:6px; border-radius:6px;">
                                 <i class="fas fa-table"></i> مطابقة بيانات الإكسيل
                             </button>
-                        </div>
-
-                        <!-- overlay خاص بالموبايل: زر مباشر لفتح الاستمارة بدلاً من iframe -->
-                        <div id="goldenMobilePdfOverlay" style="position:absolute; inset:0; background:#0f172a; display:none; flex-direction:column; align-items:center; justify-content:center; gap:14px; z-index:36; padding:20px;">
-                            <i class="fas fa-file-pdf" style="font-size:3rem; color:#ef4444;"></i>
-                            <div id="goldenMobilePdfStudentName" style="color:#f8fafc; font-weight:800; font-size:0.95rem; text-align:center; max-width:90%;"></div>
-                            <a id="goldenMobilePdfLink" href="#" target="_blank" rel="noopener noreferrer"
-                               style="background:linear-gradient(135deg,#2563eb,#1d4ed8); color:#fff; padding:14px 32px; border-radius:14px; font-size:1rem; font-weight:800; text-decoration:none; display:flex; align-items:center; gap:10px; box-shadow:0 4px 18px rgba(37,99,235,0.5);">
-                                <i class="fas fa-external-link-alt"></i> افتح الاستمارة
-                            </a>
-                            <div style="color:#94a3b8; font-size:0.73rem; text-align:center; line-height:1.5;">سيتم فتح ملف PDF في المتصفح<br>أو تطبيق Google Drive</div>
                         </div>
                     </div>
 
@@ -8911,7 +8967,7 @@
 
                     <!-- حاوية عرض الـ PDF مع سحب بالأصابع والماوس وتكبير حر وسكرول مستقل -->
                     <div id="goldenCollectiveViewerContainer" class="golden-iframe-wrap" style="width:100%; height:calc(100% - 36px); overflow:auto; -webkit-overflow-scrolling:touch;">
-                        <iframe id="goldenCollectiveIframe" src="about:blank" style="width:100%; height:100%; border:none; display:block;" scrolling="auto"></iframe>
+                        <iframe id="goldenCollectiveIframe" src="about:blank" referrerpolicy="no-referrer" style="width:100%; height:100%; border:none; display:block;" scrolling="auto"></iframe>
                         <div id="goldenCollectiveLoadingOverlay" style="position:absolute; inset:0; background:rgba(15,23,42,0.85); display:none; align-items:center; justify-content:center; color:#38bdf8; font-size:0.82rem; font-weight:700; gap:8px;">
                             <i class="fas fa-circle-notch fa-spin"></i> جاري استدعاء الكشف المجمع...
                         </div>
@@ -8940,7 +8996,7 @@
                 <div id="goldenStudentPagesButtons"></div>
                 <button type="button" id="btnGoldenToggleStudentFileVersion"></button>
                 <span id="lblGoldenToggleVersion"></span>
-                <span id="lblStudentEngine"></span>
+                <span id="lblStudentEngineHidden"></span>
                 <a id="btnGoldenStudentFloatingFullTab" href="#"></a>
                 <button type="button" id="btnTogglePipSheet"></button>
                 <span id="lblPipVis"></span>
@@ -9161,7 +9217,7 @@
 
                 <!-- جسم الحاوية والإطار -->
                 <div id="goldenCollectiveModalViewerContainer" style="flex:1; width:100%; height:100%; position:relative; overflow:hidden; background:#020617;">
-                    <iframe id="goldenCollectiveModalIframe" src="about:blank" style="width:100%; height:100%; border:none; display:block; transform-origin:center center; transition:transform 0.15s ease-out;"></iframe>
+                    <iframe id="goldenCollectiveModalIframe" src="about:blank" referrerpolicy="no-referrer" style="width:100%; height:100%; border:none; display:block; transform-origin:center center; transition:transform 0.15s ease-out;"></iframe>
                     <div id="goldenCollectiveModalLoadingOverlay" style="position:absolute; inset:0; background:rgba(15,23,42,0.85); display:none; align-items:center; justify-content:center; color:#38bdf8; font-size:0.9rem; font-weight:700; gap:8px; z-index:30;">
                         <i class="fas fa-circle-notch fa-spin"></i> جاري استدعاء الكشف المجمع للمحافظة...
                     </div>
@@ -22284,10 +22340,10 @@
                     const updateReasonText = s.updateReasons || s.reasons || s.notes || '';
                     fileCellHtml = `
                         <div class="st-file-btn-stack">
-                            <a href="${s.previousFileUrl}" target="_blank" onclick="event.preventDefault(); openGoldenReviewStudio('${escapeHtml(s.studentId)}', '${escapeHtml(s.previousFileUrl)}');" class="st-file-btn btn-old" title="فتح الملف السابق في استوديو المراجعة الذهبي">
+                            <a href="${s.previousFileUrl}" target="_blank" onmouseenter="if(typeof preloadPdfOnHover==='function')preloadPdfOnHover('${escapeHtml(s.previousFileUrl)}');" ontouchstart="if(typeof preloadPdfOnHover==='function')preloadPdfOnHover('${escapeHtml(s.previousFileUrl)}');" onclick="event.preventDefault(); openGoldenReviewStudio('${escapeHtml(s.studentId)}', '${escapeHtml(s.previousFileUrl)}');" class="st-file-btn btn-old" title="فتح الملف السابق في استوديو المراجعة الذهبي">
                                 <i class="fas fa-file-pdf"></i> السابق (تم تحديثه)
                             </a>
-                            <a href="${s.fileUrl || '#'}" target="_blank" onclick="event.preventDefault(); openGoldenReviewStudio('${escapeHtml(s.studentId)}', '${escapeHtml(s.fileUrl || '')}');" class="st-file-btn btn-new" title="فتح الملف المحدث في استوديو المراجعة الذهبي">
+                            <a href="${s.fileUrl || '#'}" target="_blank" onmouseenter="if(typeof preloadPdfOnHover==='function')preloadPdfOnHover('${escapeHtml(s.fileUrl || '')}');" ontouchstart="if(typeof preloadPdfOnHover==='function')preloadPdfOnHover('${escapeHtml(s.fileUrl || '')}');" onclick="event.preventDefault(); openGoldenReviewStudio('${escapeHtml(s.studentId)}', '${escapeHtml(s.fileUrl || '')}');" class="st-file-btn btn-new" title="فتح الملف المحدث في استوديو المراجعة الذهبي">
                                 <i class="fas fa-file-circle-check"></i> الملف المحدث
                             </a>
                             ${updateReasonText ? `
@@ -22303,7 +22359,7 @@
                     const reasonTxt = s.updateReasons || s.reasons || s.notes || '';
                     fileCellHtml = `
                         <div class="st-file-btn-stack">
-                            <a href="${s.fileUrl || '#'}" target="_blank" onclick="event.preventDefault(); openGoldenReviewStudio('${escapeHtml(s.studentId)}', '${escapeHtml(s.fileUrl || '')}');" class="st-file-btn btn-open" title="فتح استمارة الطالب في استوديو المراجعة الذهبي المزدوج">
+                            <a href="${s.fileUrl || '#'}" target="_blank" onmouseenter="if(typeof preloadPdfOnHover==='function')preloadPdfOnHover('${escapeHtml(s.fileUrl || '')}');" ontouchstart="if(typeof preloadPdfOnHover==='function')preloadPdfOnHover('${escapeHtml(s.fileUrl || '')}');" onclick="event.preventDefault(); openGoldenReviewStudio('${escapeHtml(s.studentId)}', '${escapeHtml(s.fileUrl || '')}');" class="st-file-btn btn-open" title="فتح استمارة الطالب في استوديو المراجعة الذهبي المزدوج">
                                 <i class="fas fa-file-pdf"></i> فتح الاستمارة
                             </a>
                             ${isNeedsUp && reasonTxt ? `
@@ -22398,6 +22454,16 @@
                     </tr>
                 `;
             }).join('');
+
+            // تسريع فوري واستباقي: حقن قنوات الاتصال السريع وتجهيز أول ملفات بالذاكرة RAM
+            if (typeof injectPdfCdnPreconnect === 'function') injectPdfCdnPreconnect();
+            const isMobRev = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            if (!isMobRev && Array.isArray(filtered) && filtered.length > 0 && typeof fetchPdfBlobInBackground === 'function') {
+                const firstFid = filtered[0].fileId || (typeof getFileIdFromUrl === 'function' ? getFileIdFromUrl(filtered[0].fileUrl || '') : '');
+                if (firstFid && (!window._pdfBlobCache || !window._pdfBlobCache[firstFid])) {
+                    setTimeout(() => { fetchPdfBlobInBackground(firstFid); }, 80);
+                }
+            }
         }
 
         function getStatusBadgeHtml(status) {
@@ -22808,8 +22874,8 @@
             currentGov: '',
             currentStudent: null,
             collectiveSheet: null,
-            studentEngine: 'drive', // 'drive' (Google Drive Preview الافتراضي) | 'docs_viewer' (Google Docs Viewer البديل)
-            collectiveEngine: 'drive', // 'drive' | 'docs_viewer'
+            studentEngine: 'drive', // الافتراضي المعتمد عالي السرعة والموثوقية Google Drive لكافة الأجهزة
+            collectiveEngine: 'drive',
             stagedDecisions: new Map(), // studentId -> { decision, reasons, notes, studentName, governorate }
             viewMode: 'landscape', // 'landscape' (فوق وتحت) | 'split' (جنباً إلى جنب) | 'excel' | 'student' | 'collective'
             activePane: 'collective', // 'student' | 'collective'
@@ -22875,6 +22941,7 @@
 
         window._pdfBlobCache = window._pdfBlobCache || {};
         window._pdfFetchingInProgress = window._pdfFetchingInProgress || new Set();
+        window._pdfBlobCallbacks = window._pdfBlobCallbacks || {};
         window._pdfPreloadTimers = window._pdfPreloadTimers || [];
 
         // استخراج معرّف ملف جوجل درايف من أي صيغة رابط
@@ -22891,10 +22958,22 @@
 
         // جلب ملف الـ PDF كـ Blob في ذاكرة RAM بالخلفية لفتحه بسرعة فائقة وعرض كل الصفحات دفعة واحدة
         async function fetchPdfBlobInBackground(fid, onReadyCallback) {
-            if (!fid || window._pdfBlobCache[fid] || window._pdfFetchingInProgress.has(fid)) {
-                if (window._pdfBlobCache[fid] && typeof onReadyCallback === 'function') {
+            if (!fid) return;
+            if (window._pdfBlobCache && window._pdfBlobCache[fid]) {
+                if (typeof onReadyCallback === 'function') {
                     onReadyCallback(window._pdfBlobCache[fid]);
                 }
+                return;
+            }
+
+            if (!window._pdfBlobCallbacks[fid]) {
+                window._pdfBlobCallbacks[fid] = [];
+            }
+            if (typeof onReadyCallback === 'function') {
+                window._pdfBlobCallbacks[fid].push(onReadyCallback);
+            }
+
+            if (window._pdfFetchingInProgress.has(fid)) {
                 return;
             }
             window._pdfFetchingInProgress.add(fid);
@@ -22919,14 +22998,18 @@
                     const blob = new Blob([bytes], { type: res.mimeType || 'application/pdf' });
                     const blobUrl = URL.createObjectURL(blob);
                     window._pdfBlobCache[fid] = blobUrl;
-                    if (typeof onReadyCallback === 'function') {
-                        onReadyCallback(blobUrl);
-                    }
+                    
+                    const cbs = window._pdfBlobCallbacks[fid] || [];
+                    delete window._pdfBlobCallbacks[fid];
+                    cbs.forEach(cb => {
+                        try { cb(blobUrl); } catch (eCb) {}
+                    });
                 }
             } catch (err) {
                 // هادئ
             } finally {
                 window._pdfFetchingInProgress.delete(fid);
+                delete window._pdfBlobCallbacks[fid];
             }
         }
 
@@ -22952,28 +23035,9 @@
                 ? document.getElementById('goldenStudentEmptyOverlay')
                 : (isModal ? document.getElementById('goldenCollectiveModalEmptyOverlay') : document.getElementById('goldenCollectiveEmptyOverlay'));
 
-            // === معالجة الموبايل (Android/iOS): تحميل Drive preview مباشرةً في iframe ===
-            const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-            if (isMobileDevice && isStudent) {
-                // إخفاء الـ overlay الخارجي إن وُجد
-                const mobileOverlay = document.getElementById('goldenMobilePdfOverlay');
-                if (mobileOverlay) mobileOverlay.style.display = 'none';
-
-                if (!fileUrlOrId || fileUrlOrId === '#' || fileUrlOrId === '-') {
-                    iframeEl.src = 'about:blank';
-                    if (loadingOverlayEl) loadingOverlayEl.style.display = 'none';
-                    if (emptyEl) emptyEl.style.display = 'flex';
-                    return;
-                }
-                if (emptyEl) emptyEl.style.display = 'none';
-                if (loadingOverlayEl) loadingOverlayEl.style.display = 'flex';
-                // استخدم Drive Preview مباشرةً في الـ iframe (يعمل على الموبايل)
-                const previewUrl = formatPdfEmbedUrl(fileUrlOrId);
-                iframeEl.onload = () => { if (loadingOverlayEl) loadingOverlayEl.style.display = 'none'; };
-                iframeEl.src = previewUrl;
-                return;
-            }
-            // ================================================================
+            // إخفاء الـ overlay الخارجي القديم إن وُجد
+            const mobileOverlay = document.getElementById('goldenMobilePdfOverlay');
+            if (mobileOverlay) mobileOverlay.style.display = 'none';
 
             if (!fileUrlOrId || fileUrlOrId === '#' || fileUrlOrId === '-') {
                 iframeEl.src = 'about:blank';
@@ -22985,8 +23049,9 @@
 
             const strVal = String(fileUrlOrId).trim();
             const fid = getFileIdFromUrl(strVal);
+            const isMobileDevice = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-            // فحص هل يتوفر الملف كاملاً في كاش الذاكرة كـ Blob محلي فوري لعرض كافة صفحات المستند دفعة واحدة
+            // فحص هل يتوفر الملف كاملاً في كاش الذاكرة كـ Blob محلي فوري (ديسكتوب فقط لتجنب التنزيل التلقائي في متصفحات أندرويد)
             const cachedBlobUrl = (!isMobileDevice && (strVal.startsWith('blob:') 
                 ? strVal 
                 : ((fid && window._pdfBlobCache && window._pdfBlobCache[fid]) ? window._pdfBlobCache[fid] : null))) || null;
@@ -22996,56 +23061,63 @@
                 // استخدام الـ Blob الفوري الذي يعرض كافة صفحات الملف فوراً في انتظار زر التالي (ديسكتوب فقط)
                 embedUrl = cachedBlobUrl.includes('#') ? cachedBlobUrl : (cachedBlobUrl + '#view=FitH&pagemode=none&scrollbar=1&toolbar=0');
             } else {
-                const engine = engineOverride || (isStudent ? goldenStudioState.studentEngine : (isModal ? (window._goldenCollectiveModalTransform?.engine || 'drive') : goldenStudioState.collectiveEngine)) || 'drive';
+                const defaultEngine = 'drive';
+                const engine = engineOverride || (isStudent ? goldenStudioState.studentEngine : (isModal ? (window._goldenCollectiveModalTransform?.engine || defaultEngine) : goldenStudioState.collectiveEngine)) || defaultEngine;
                 embedUrl = (engine === 'docs_viewer')
                     ? formatPdfEmbedUrlDocsViewer(strVal)
                     : formatPdfEmbedUrl(strVal);
 
-                // إطلاق التحميل المسبق لهذا الملف كـ Blob في الخلفية (ديسكتوب فقط)
+                // إطلاق جلب الملف بالخلفية لفتح مشاركة الملف على السيرفر وتخزينه كـ Blob للطلاب القادمين (ديسكتوب فقط لمنع استهلاك باقة الموبايل)
                 if (!isMobileDevice && fid && typeof fetchPdfBlobInBackground === 'function') {
                     fetchPdfBlobInBackground(fid, (readyBlob) => {
-                        if (isStudent && iframeEl && iframeEl.src && !iframeEl.src.startsWith('blob:') && (iframeEl.src.includes(fid) || (goldenStudioState.currentStudent && goldenStudioState.currentStudent.fileId === fid))) {
+                        const isCurSt = (goldenStudioState.currentStudent && (goldenStudioState.currentStudent.fileId === fid || getFileIdFromUrl(goldenStudioState.currentStudent.fileUrl || '') === fid));
+                        if (isCurSt && isStudent && iframeEl && !isMobileDevice) {
                             const fastBlobUrl = readyBlob.includes('#') ? readyBlob : (readyBlob + '#view=FitH&pagemode=none&scrollbar=1&toolbar=0');
+                            iframeEl._lastLoadedSrc = fastBlobUrl;
                             iframeEl.src = fastBlobUrl;
+                            if (loadingOverlayEl) loadingOverlayEl.style.display = 'none';
                         }
                     });
                 }
             }
 
-            // التحقق مما إذا كان الرابط الحالي مختلفاً — دائماً أعد التحميل عند تغيير الطالب لضمان عمل الموبيل
+            // التحقق مما إذا كان الرابط الحالي مختلفاً أو كان الإطار فارغاً لضمان الفتح المباشر من المرة الأولى دائماً
             const lastLoadedSrc = iframeEl._lastLoadedSrc || '';
-            const isDifferent = !lastLoadedSrc || (lastLoadedSrc !== embedUrl);
+            const isBlank = !iframeEl.src || iframeEl.src === 'about:blank' || iframeEl.src.endsWith('about:blank');
+            const isDifferent = isBlank || !lastLoadedSrc || (lastLoadedSrc !== embedUrl);
 
             if (isDifferent) {
                 if (loadingOverlayEl) {
                     loadingOverlayEl.style.display = 'flex';
                     loadingOverlayEl.style.opacity = '1';
                 }
-                // على الموبايل، إعادة ضبط الإطار قبل تحميل الرابط الجديد لتفادي تجمد الإطار
                 iframeEl._lastLoadedSrc = embedUrl;
-                if (iframeEl.src && iframeEl.src !== 'about:blank' && iframeEl.src !== embedUrl) {
-                    iframeEl.src = 'about:blank';
-                }
-                // تأخير طفيف لضمان إعادة تعيين الإطار قبل تحميل الملف الجديد
+
                 const applyNewSrc = () => {
-                    iframeEl.src = embedUrl;
-                    let loadDone = false;
-                    const hideLoading = () => {
-                        if (loadDone) return;
-                        loadDone = true;
-                        if (loadingOverlayEl) {
-                            loadingOverlayEl.style.opacity = '0';
-                            setTimeout(() => { if (loadingOverlayEl) loadingOverlayEl.style.display = 'none'; }, 100);
-                        }
-                    };
-                    iframeEl.onload = hideLoading;
-                    setTimeout(hideLoading, cachedBlobUrl ? 150 : 1800);
+                    try {
+                        iframeEl.src = embedUrl;
+                    } catch (e) {
+                        iframeEl.src = embedUrl;
+                    }
                 };
-                if (iframeEl.src === 'about:blank' || !iframeEl.src) {
-                    applyNewSrc();
-                } else {
-                    setTimeout(applyNewSrc, 60);
-                }
+
+                // إعادة تعيين خفيفة تسمح للمتصفح ببدء الاتصال النظيف دون تداخل مع الجلسة السابقة
+                try {
+                    iframeEl.src = 'about:blank';
+                } catch (e) {}
+                setTimeout(applyNewSrc, 60);
+
+                let loadDone = false;
+                const hideLoading = () => {
+                    if (loadDone) return;
+                    loadDone = true;
+                    if (loadingOverlayEl) {
+                        loadingOverlayEl.style.opacity = '0';
+                        setTimeout(() => { if (loadingOverlayEl) loadingOverlayEl.style.display = 'none'; }, 100);
+                    }
+                };
+                iframeEl.onload = hideLoading;
+                setTimeout(hideLoading, cachedBlobUrl ? 150 : 2200);
             } else {
                 if (loadingOverlayEl) loadingOverlayEl.style.display = 'none';
             }
@@ -23161,6 +23233,12 @@
             goldenStudioState.activePane = 'student';
             goldenStudioState.student = { rotation: 0, zoom: 1.0, panX: 0, panY: 0 };
             goldenStudioState.collective = { rotation: 0, zoom: 1.0, panX: 0, panY: 0 };
+            goldenStudioState.studentEngine = 'drive';
+            goldenStudioState.collectiveEngine = 'drive';
+            const lblStudentEngineEl = document.getElementById('lblStudentEngine');
+            if (lblStudentEngineEl) {
+                lblStudentEngineEl.textContent = 'Drive';
+            }
 
             const modal = document.getElementById('goldenReviewStudioModal');
             if (modal) {
@@ -23232,19 +23310,22 @@
                 });
             }
 
-            renderGoldenStudioStudent(overrideFileUrl);
-            setGoldenViewMode('landscape');
-            setActiveGoldenPane('student');
-            initGoldenPanListeners();
-            initGoldenPaneFocusListeners();
-            initGoldenPipDrag();
-            initGoldenPipAllResizers();
-            initGoldenStudentDragOverlayListener();
-            updateGoldenLiveProgress();
-            if (typeof initGoldenCollectivePinchAndWheel === 'function') initGoldenCollectivePinchAndWheel();
-            if (typeof initGoldenStudentWheelScroll === 'function') initGoldenStudentWheelScroll();
-            if (typeof initGoldenStudentScrollListener === 'function') initGoldenStudentScrollListener();
-            if (typeof initGoldenCollectiveScrollListener === 'function') initGoldenCollectiveScrollListener();
+            // تأخير 70ms لضمان اكتمال ظهور ورسم النافذة وحساب أبعاد الـ viewport قبل تحميل إطار Google Drive لأول مرة
+            setTimeout(() => {
+                setGoldenViewMode('landscape');
+                renderGoldenStudioStudent(overrideFileUrl);
+                setActiveGoldenPane('student');
+                initGoldenPanListeners();
+                initGoldenPaneFocusListeners();
+                initGoldenPipDrag();
+                initGoldenPipAllResizers();
+                initGoldenStudentDragOverlayListener();
+                updateGoldenLiveProgress();
+                if (typeof initGoldenCollectivePinchAndWheel === 'function') initGoldenCollectivePinchAndWheel();
+                if (typeof initGoldenStudentWheelScroll === 'function') initGoldenStudentWheelScroll();
+                if (typeof initGoldenStudentScrollListener === 'function') initGoldenStudentScrollListener();
+                if (typeof initGoldenCollectiveScrollListener === 'function') initGoldenCollectiveScrollListener();
+            }, 70);
         };
 
         // معالجة مفاتيح لوحة المفاتيح داخل الاستوديو
@@ -23507,18 +23588,19 @@
             const pCount = Math.max(1, goldenStudioState.student.pageCount || 3);
 
             if (deg === 0) {
-                // في الوضع الرأسي الطبيعي، نوجه عارض الـ Drive / Docs مباشرة للصفحة عبر هاش الرابط
-                if (iframe && iframe.src && !iframe.src.startsWith('about:blank')) {
+                // في الوضع الرأسي الطبيعي
+                // إذا كان الرابط Blob محلي (ديسكتوب)، نوجهه للصفحة عبر الهاش
+                if (iframe && iframe.src && iframe.src.startsWith('blob:')) {
                     try {
                         const urlObj = new URL(iframe.src);
-                        urlObj.hash = `page=${pageNum}`;
+                        urlObj.hash = `page=${pageNum}&view=FitH`;
                         if (iframe.src !== urlObj.href) {
                             iframe.src = urlObj.href;
                         }
-                    } catch (e) {
-                        // في حال تعذر التفكيك كرابط، نلجأ إلى الإزاحة
-                    }
+                    } catch (e) {}
                 }
+                // في عارض Google Drive و Docs: كافة الصفحات مدمجة داخل المستند بالتمرير الرأسي المستمر
+                // لا نغير iframe.src حتى لا يتم تدمير الإطار وإعادة تحميله من الصفر مسبباً تأخيراً كبيراً
             } else if (deg === 90 || deg === 270) {
                 // عند تدوير الاستمارة، نتحكم بالإزاحة الأفقية للوصول لصفحة الطالب المختارة
                 const cW = container ? (container.clientWidth || 800) : 800;
@@ -23537,7 +23619,7 @@
             }
 
             const pageNames = { 1: 'البيانات الشخصية', 2: 'الكشف الطبي', 3: 'اعتماد المدرسة والإدارة' };
-            showToast(`الانتقال إلى صفحة ${pageNum} (${pageNames[pageNum] || 'الاستمارة'})`, "info", 800);
+            showToast(`صفحة ${pageNum} (${pageNames[pageNum] || 'الاستمارة'}): مرر لأسفل بالاستمارة للمعاينة`, "info", 1100);
         };
 
         // تمييز زر الصفحة النشط في الكشف المجمع
@@ -23702,6 +23784,21 @@
             });
         }
 
+        // تحميل مسبق فوري عند توجيه المؤشر أو اللمس على زر فتح الاستمارة
+        function preloadPdfOnHover(urlOrId) {
+            if (!urlOrId || urlOrId === '#' || urlOrId === '-') return;
+            if (typeof injectPdfCdnPreconnect === 'function') injectPdfCdnPreconnect();
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            if (isMobile) return;
+            const fid = (typeof getFileIdFromUrl === 'function') ? getFileIdFromUrl(urlOrId) : null;
+            if (fid && typeof fetchPdfBlobInBackground === 'function') {
+                if (!window._pdfBlobCache || !window._pdfBlobCache[fid]) {
+                    fetchPdfBlobInBackground(fid);
+                }
+            }
+        }
+        window.preloadPdfOnHover = preloadPdfOnHover;
+
         // منظومة التحميل المسبق التتابعي الذكية بالخلفية (ملف ملف) لعرض كافة الصفحات فوراً بدون انتظار
         window._pdfSequentialPreloadQueue = [];
         window._isPdfSequentialQueueRunning = false;
@@ -23712,34 +23809,28 @@
 
             injectPdfCdnPreconnect();
 
-            // 1. ترتيب قائمة الملفات المستهدفة بالخلفية حسب أولوية التنقل لتأمين الظهور الفوري لكافة الصفحات:
-            // - التالي المباشر (N+1) بأولوية مطلقة
-            // - التالي الثاني (N+2)
-            // - السابق (N-1) للرجوع الفوري
-            // - التالي الثالث (N+3)
-            // - باقي طلاب القائمة بالتسلسل حتى نهاية القائمة
-            const prioritizedStudents = [];
-            if (currentIndex + 1 < list.length) prioritizedStudents.push(list[currentIndex + 1]);
-            if (currentIndex + 2 < list.length) prioritizedStudents.push(list[currentIndex + 2]);
-            if (currentIndex - 1 >= 0) prioritizedStudents.push(list[currentIndex - 1]);
-            if (currentIndex + 3 < list.length) prioritizedStudents.push(list[currentIndex + 3]);
-            for (let i = currentIndex + 4; i < Math.min(list.length, currentIndex + 15); i++) {
-                prioritizedStudents.push(list[i]);
-            }
+            // على الموبايل نكتفي بالـ DNS Preconnect فقط دون استهلاك البيانات لمنح 100% من السرعة لمعاينة الطالب
+            const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+            if (isMobile) return;
 
+            // على الديسكتوب نحمل ملفات الطلاب التاليين (N+1, N+2) والسابق (N-1) بهدوء وتتابع
             const pendingFids = [];
-            prioritizedStudents.forEach(st => {
-                if (!st) return;
-                const fid = st.fileId || getFileIdFromUrl(st.fileUrl || st.url || st.file_url || '');
-                if (fid && !window._pdfBlobCache[fid] && !pendingFids.includes(fid)) {
-                    pendingFids.push(fid);
+            [currentIndex + 1, currentIndex + 2, currentIndex - 1].forEach(targetIdx => {
+                if (targetIdx >= 0 && targetIdx < list.length) {
+                    const st = list[targetIdx];
+                    const fid = st.fileId || getFileIdFromUrl(st.fileUrl || st.url || st.file_url || '');
+                    if (fid && (!window._pdfBlobCache || !window._pdfBlobCache[fid]) && !pendingFids.includes(fid)) {
+                        pendingFids.push(fid);
+                    }
                 }
             });
+
+            if (pendingFids.length === 0) return;
 
             // تحديث طابور التحميل التتابعي
             window._pdfSequentialPreloadQueue = pendingFids;
 
-            // تشغيل محرك التحميل التتابعي بالخلفية ملفاً تلو الآخر (ملف ملف)
+            // تشغيل محرك التحميل التتابعي بالخلفية
             processPdfSequentialPreloadQueue();
         };
 
@@ -23983,11 +24074,17 @@
             document.body.style.overflow = '';
             window.removeEventListener('keydown', handleGoldenStudioKeydown);
 
-            // تفريغ إطارات الـ iframe لتوفير ذاكرة المتصفح
+            // تفريغ إطارات الـ iframe لتوفير ذاكرة المتصفح وضمان تحميل فوري عند إعادة الفتح
             const stIframe = document.getElementById('goldenStudentIframe');
-            if (stIframe) stIframe.src = 'about:blank';
+            if (stIframe) {
+                stIframe.src = 'about:blank';
+                stIframe._lastLoadedSrc = '';
+            }
             const colIframe = document.getElementById('goldenCollectiveIframe');
-            if (colIframe) colIframe.src = 'about:blank';
+            if (colIframe) {
+                colIframe.src = 'about:blank';
+                colIframe._lastLoadedSrc = '';
+            }
         };
 
         // عرض وتحديث بيانات الطالب الحالي في شاشات الاستوديو
@@ -24111,6 +24208,8 @@
             const directOpenUrl = getPdfDirectUrl(stFileUrl);
             if (stExtLink) stExtLink.href = directOpenUrl || '#';
             if (floatingFullTab) floatingFullTab.href = directOpenUrl || '#';
+            const floatingTab = document.getElementById('btnGoldenStudentFloatingTab');
+            if (floatingTab) floatingTab.href = directOpenUrl || '#';
 
             const stFid = student.fileId || getFileIdFromUrl(stFileUrl);
             const targetViewerUrl = (stFid && window._pdfBlobCache && window._pdfBlobCache[stFid])
@@ -24135,9 +24234,13 @@
             applyGoldenTransform('student');
             if (typeof initGoldenStudentScrollListener === 'function') initGoldenStudentScrollListener();
             if (typeof initGoldenCollectiveScrollListener === 'function') initGoldenCollectiveScrollListener();
-            preloadNextGoldenStudentsPdfs(idx);
+            // تأخير التحميل المسبق 300ms فقط على الديسكتوب لبدء تجهيز الطلاب التاليين في الكاش فوراً
+            if (window._goldenPreloadTimer) clearTimeout(window._goldenPreloadTimer);
+            window._goldenPreloadTimer = setTimeout(() => {
+                preloadNextGoldenStudentsPdfs(idx);
+            }, 300);
 
-            // 6. تحميل الكشف المجمع للمحافظة تلقائياً في الإطار الأيسر
+            // 6. تجهيز بيانات الكشف المجمع للمحافظة
             loadGoldenCollectiveSheetForStudent(student);
         }
 
@@ -24285,7 +24388,15 @@
                 goldenStudioState.collectiveSheet = matchedSheet;
                 const finalColUrl = matchedSheet.fileUrl || matchedSheet.fileId;
                 if (colExtLink) colExtLink.href = finalColUrl;
-                loadPdfSmartViewer(colIframe, colLoading, finalColUrl);
+
+                // لا نقوم بتحميل الـ iframe إذا كانت نافذة الكشف غير مرئية للحفاظ على سرعة تحميل الاستمارة
+                const pCol = document.getElementById('goldenPaneCollective');
+                const isColPaneVisible = pCol && pCol.style.display !== 'none' && !pCol.classList.contains('pip-hidden');
+                if (isColPaneVisible) {
+                    loadPdfSmartViewer(colIframe, colLoading, finalColUrl);
+                } else {
+                    if (colLoading) colLoading.style.display = 'none';
+                }
                 goldenStudioState.collective = { rotation: 0, zoom: 1.0, panX: 0, panY: 0 };
                 const colContainer1 = document.getElementById('goldenCollectiveViewerContainer');
                 if (colContainer1) colContainer1.scrollTop = 0;
@@ -24309,7 +24420,13 @@
                     goldenStudioState.collectiveSheet = res.sheet;
                     const sUrl = res.sheet.fileUrl || res.sheet.fileId;
                     if (colExtLink) colExtLink.href = sUrl;
-                    loadPdfSmartViewer(colIframe, colLoading, sUrl);
+                    const pCol = document.getElementById('goldenPaneCollective');
+                    const isColPaneVisible = pCol && pCol.style.display !== 'none' && !pCol.classList.contains('pip-hidden');
+                    if (isColPaneVisible) {
+                        loadPdfSmartViewer(colIframe, colLoading, sUrl);
+                    } else {
+                        if (colLoading) colLoading.style.display = 'none';
+                    }
                     goldenStudioState.collective = { rotation: 0, zoom: 1.0, panX: 0, panY: 0 };
                     const colContainer2 = document.getElementById('goldenCollectiveViewerContainer');
                     if (colContainer2) colContainer2.scrollTop = 0;
@@ -24654,8 +24771,13 @@
             iframe.style.position = 'absolute';
             iframe.style.top = '50%';
             iframe.style.left = '50%';
-            iframe.style.width = baseW + 'px';
-            iframe.style.height = baseH + 'px';
+            if (isRotated90or270) {
+                iframe.style.width = baseW + 'px';
+                iframe.style.height = baseH + 'px';
+            } else {
+                iframe.style.width = '100%';
+                iframe.style.height = '100%';
+            }
             iframe.style.minWidth = '0px';
             iframe.style.minHeight = '0px';
             iframe.style.maxWidth = 'none';
@@ -24757,6 +24879,12 @@
                     pCollective.style.display = 'flex';
                     pCollective.classList.remove('pip-hidden');
                     pCollective.classList.add('pip-visible');
+                    const colIframe = document.getElementById('goldenCollectiveIframe');
+                    const colLoading = document.getElementById('goldenCollectiveLoadingOverlay');
+                    const curSheet = goldenStudioState.collectiveSheet;
+                    if (curSheet && (curSheet.fileUrl || curSheet.fileId) && colIframe && (!colIframe.src || colIframe.src === 'about:blank' || colIframe.src.endsWith('about:blank'))) {
+                        loadPdfSmartViewer(colIframe, colLoading, curSheet.fileUrl || curSheet.fileId);
+                    }
                 }
                 if (stPdfWrap) stPdfWrap.style.display = 'flex';
                 if (stExcelWrap) stExcelWrap.style.display = 'none';
@@ -25297,6 +25425,10 @@
             if (isNaN(savedRot)) savedRot = window._savedCollectiveSheetRotation || 0;
 
             window._goldenCollectiveModalTransform = { rotation: savedRot, zoom: 1.0, panX: 0, panY: 0, engine: 'drive' };
+            const lblColModal = document.getElementById('lblCollectiveModalEngine');
+            if (lblColModal) {
+                lblColModal.textContent = 'Drive';
+            }
             applyGoldenCollectiveModalTransform();
 
             // 7. استدعاء فوري من السيرفر إذا لم يكن متوفراً محلياً
@@ -35709,4 +35841,3 @@
 
 </body>
 </html>
-
