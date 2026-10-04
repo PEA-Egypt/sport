@@ -7574,6 +7574,89 @@
                 margin: auto !important;
             }
         }
+
+        /* تنسيقات بطاقة الاطلاع المباشر وتوجيه اللجان والشريط العائم */
+        .direct-inspection-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 16px;
+        }
+        .inspection-filter-pills {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 3px 0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+        }
+        .inspection-filter-pill {
+            background: #f1f5f9;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            padding: 4px 11px;
+            border-radius: 20px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.18s ease;
+            font-family: inherit;
+        }
+        .inspection-filter-pill:hover,
+        .inspection-filter-pill.active {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #1d4ed8;
+            box-shadow: 0 2px 6px rgba(37,99,235,0.25);
+        }
+        .reviewer-directive-box {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 6px;
+            padding: 5px 8px;
+            font-size: 0.72rem;
+            color: #0369a1;
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .direct-inspection-grid {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+            #adminDirectInspectionCard {
+                padding: 12px 10px !important;
+                gap: 12px !important;
+            }
+            #adminDirectPreviewStickyBanner {
+                padding: 6px 10px !important;
+            }
+            .sticky-banner-controls {
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 6px !important;
+            }
+            .sticky-banner-controls > div {
+                width: 100% !important;
+                box-sizing: border-box !important;
+            }
+            .sticky-banner-exit-btn {
+                width: 100% !important;
+            }
+            .sticky-banner-exit-btn button {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -7650,6 +7733,47 @@
     <button type="button" id="floatingScrollTopBtn" class="floating-scroll-top-btn" onclick="scrollToPageTop()" title="الرجوع لأعلى الصفحة">
         <i class="fas fa-arrow-up"></i>
     </button>
+
+    <!-- شريط وضع الاطلاع المباشر للمشرف العام العائم في أعلى الصفحة -->
+    <div id="adminDirectPreviewStickyBanner" class="hidden" style="position:fixed; top:0; left:0; right:0; z-index:999999; background:linear-gradient(90deg, #0f172a, #1e293b, #0f172a); color:#f8fafc; border-bottom:3.5px solid #f59e0b; box-shadow:0 6px 24px rgba(0,0,0,0.45); padding:8px 16px; font-family:inherit; direction:rtl;">
+        <div style="max-width:1440px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:8px; background:rgba(245,158,11,0.22); border:1.5px solid #f59e0b; color:#fbbf24; display:flex; align-items:center; justify-content:center; font-size:1.15rem; flex-shrink:0;">
+                    <i class="fas fa-binoculars fa-fade"></i>
+                </div>
+                <div>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <span style="background:#f59e0b; color:#0f172a; font-size:0.72rem; font-weight:900; padding:2px 7px; border-radius:4px; letter-spacing:0.5px;">وضع الاطلاع المباشر</span>
+                        <span style="font-size:0.88rem; font-weight:800; color:#ffffff;" id="stickyPreviewBannerTitle">المشاهدة الحالية</span>
+                    </div>
+                    <div style="font-size:0.72rem; color:#94a3b8;" id="stickyPreviewBannerSubtitle">أنت تتصفح البوابة بصلاحية المشرف العام للاطلاع والتحقق الفوري</div>
+                </div>
+            </div>
+
+            <div class="sticky-banner-controls" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <div style="display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);">
+                    <label style="font-size:0.72rem; color:#cbd5e1; font-weight:700; white-space:nowrap;"><i class="fas fa-location-dot" style="color:#38bdf8;"></i> المحافظة:</label>
+                    <select id="stickyGovPreviewSelect" onchange="if(this.value) adminDirectPreviewGovernorate(this.value)" style="background:#1e293b; color:#ffffff; border:1px solid #475569; border-radius:4px; padding:3px 6px; font-size:0.76rem; font-weight:700; cursor:pointer; width:100%; max-width:140px;">
+                        <option value="">-- تبديل المحافظة --</option>
+                    </select>
+                </div>
+
+                <div style="display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);">
+                    <label style="font-size:0.72rem; color:#cbd5e1; font-weight:700; white-space:nowrap;"><i class="fas fa-user-check" style="color:#a7f3d0;"></i> المراجع:</label>
+                    <select id="stickyReviewerPreviewSelect" onchange="if(this.value) adminDirectPreviewReviewer(this.value)" style="background:#1e293b; color:#ffffff; border:1px solid #475569; border-radius:4px; padding:3px 6px; font-size:0.76rem; font-weight:700; cursor:pointer; width:100%; max-width:150px;">
+                        <option value="">-- تبديل المراجع --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sticky-banner-exit-btn" style="display:flex; align-items:center; gap:8px;">
+                <button type="button" onclick="exitAdminDirectPreview()" style="background:linear-gradient(135deg, #dc2626, #b91c1c); color:#ffffff; border:1px solid #ef4444; border-radius:7px; padding:6px 14px; font-size:0.8rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 6px rgba(220,38,38,0.4); transition:all 0.2s;" title="إنهاء المعاينة والرجوع المباشر للوحة المشرف">
+                    <i class="fas fa-arrow-right-from-bracket"></i>
+                    <span>إنهاء الاطلاع والعودة للوحة المشرف</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <!-- Header -->
@@ -9779,14 +9903,18 @@
                     <span id="decisionReplacementAlertText">تنبيه: هذا الطالب تم تسجيله كطالب بديل - يرجى التأكد التام من مطابقة الكشف المجمع الرسمي المعتمد وملف الإكسيل المحدث قبل الاعتماد.</span>
                 </div>
 
-                <div style="display:flex; gap:10px; margin-bottom:14px;">
-                    <button type="button" id="btnChoiceApprove" class="nav-card active" onclick="setDecisionChoice('APPROVED')" style="flex:1; justify-content:center; padding:10px;">
+                <div style="display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+                    <button type="button" id="btnChoiceApprove" class="nav-card active" onclick="setDecisionChoice('APPROVED')" style="flex:1; min-width:110px; justify-content:center; padding:10px;">
                         <i class="fas fa-circle-check" style="color:#10b981; font-size:1.2rem;"></i>
                         <span style="font-weight:700;">سماح بالاشتراك</span>
                     </button>
-                    <button type="button" id="btnChoiceUpdate" class="nav-card" onclick="setDecisionChoice('NEEDS_UPDATE')" style="flex:1; justify-content:center; padding:10px;">
+                    <button type="button" id="btnChoiceUpdate" class="nav-card" onclick="setDecisionChoice('NEEDS_UPDATE')" style="flex:1; min-width:110px; justify-content:center; padding:10px;">
                         <i class="fas fa-triangle-exclamation" style="color:#ef4444; font-size:1.2rem;"></i>
                         <span style="font-weight:700;">ضرورة التحديث</span>
+                    </button>
+                    <button type="button" id="btnChoiceRevert" class="nav-card" onclick="setDecisionChoice('REVERT')" style="flex:1; min-width:110px; justify-content:center; padding:10px; background:#fff7ed; border-color:#fed7aa;" title="الرجوع في القرار وإلغاء طلب التحديث وإعادة الاستمارة لحالة قيد المراجعة">
+                        <i class="fas fa-undo" style="color:#ea580c; font-size:1.2rem;"></i>
+                        <span style="font-weight:700; color:#c2410c;">الرجوع في القرار</span>
                     </button>
                 </div>
 
@@ -9848,6 +9976,11 @@
                     
                     <!-- أزرار التحكم الطافية الخفيفة بالأعلى للملف (تدوير + زوم + تنقل صفحات) دون أي حجب للرؤية -->
                     <div class="golden-pdf-floating-tools">
+                        <!-- شارة تقييم المشرف العام عند الدخول بالاطلاع المباشر -->
+                        <span id="goldenAdminEvaluationBadge" style="display:none; background:linear-gradient(135deg, #7c3aed, #4f46e5); color:#fff; font-size:0.72rem; font-weight:800; padding:4px 9px; border-radius:6px; box-shadow:0 2px 5px rgba(0,0,0,0.3); align-items:center; gap:5px; border:1px solid rgba(255,255,255,0.25);" title="تقييم معتمد بصلاحية المشرف العام بدلاً من المراجع">
+                            <i class="fas fa-crown"></i> تقييم المشرف العام
+                        </span>
+
                         <!-- تدوير يمين ويسار -->
                         <button type="button" onclick="rotateGoldenPdf('student', 90)" class="golden-ctrl-btn student-rotate-btn" title="تدوير الاستمارة 90° لليمين (R)">
                             <i class="fas fa-rotate-right"></i> ⟳ 90°
@@ -11080,6 +11213,10 @@
                                 <i class="fas fa-network-wired"></i>
                                 <span>توزيع المهام</span>
                             </button>
+                            <button type="button" class="admin-tab" id="subtabDirectInspection" onclick="switchAdminSubtab('direct_inspection')">
+                                <i class="fas fa-binoculars" style="color:#0284c7;"></i>
+                                <span>الاطلاع المباشر</span>
+                            </button>
                             <button type="button" class="admin-tab" id="subtabAccountsManage" onclick="switchAdminSubtab('accounts_manage')" style="display:none;">
                                 <i class="fas fa-user-gear"></i>
                                 <span>الحسابات</span>
@@ -11153,6 +11290,9 @@
                                     <i class="fas fa-mars"></i>
                                     <span>إحصائيات البنين</span>
                                 </div>
+                                <button type="button" class="admin-action-btn" onclick="switchAdminSubtab('direct_inspection')" style="background:#f0f9ff; color:#0284c7; border-color:#bae6fd; font-weight:700; font-size:0.75rem; padding:4px 9px;" title="الاطلاع المباشر على بوابات المحافظات والمراجعين">
+                                    <i class="fas fa-binoculars"></i> <span>الاطلاع المباشر</span>
+                                </button>
                                 <!-- كروت مؤشرات توزيع المهام السريعة (المدمجة بجوار العنوان مباشرة) -->
                                 <div class="dist-stat-cards-wrapper hidden" id="headerDistStatCards" style="margin:0 4px;">
                                     <!-- 1. إجمالي المهام المضافة -->
@@ -12094,6 +12234,124 @@
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+
+                <!-- بطاقة الاطلاع المباشر على بوابات المحافظات والمراجعين (Admin Direct Inspection) -->
+                <div class="card hidden" id="adminDirectInspectionCard" style="display:flex; flex-direction:column; padding:16px 20px; gap:16px;">
+                    <!-- رأس البطاقة الرسمي -->
+                    <div style="background:linear-gradient(135deg, #0f172a, #1e293b); color:#ffffff; border-radius:12px; padding:16px 20px; box-shadow:0 4px 14px rgba(15,23,42,0.12); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div style="width:42px; height:42px; border-radius:10px; background:rgba(2,132,199,0.25); border:1.5px solid #38bdf8; color:#38bdf8; display:flex; align-items:center; justify-content:center; font-size:1.3rem;">
+                                <i class="fas fa-binoculars"></i>
+                            </div>
+                            <div>
+                                <h3 id="directInspectionHeaderTitle" style="margin:0; font-size:1.05rem; font-weight:900; color:#ffffff;">منظومة الاطلاع والمعاينة المباشرة للبوابات واللجان</h3>
+                                <p id="directInspectionHeaderDesc" style="margin:2px 0 0; font-size:0.75rem; color:#94a3b8;">توجيه لجان المراجعة والمعاينة الفورية مع إمكانية فحص واعتماد الاستمارات مباشرة من الاستوديو الذهبي</p>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <span id="directInspectionAdminRoleBadge" style="background:rgba(245,158,11,0.2); border:1px solid #f59e0b; color:#fbbf24; font-size:0.72rem; font-weight:800; padding:4px 10px; border-radius:6px; display:inline-flex; align-items:center; gap:5px;">
+                                <i class="fas fa-crown"></i> تقييم بصلاحية المشرف العام
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- تخطيط عمودين متوازيين: قسم المحافظات وقسم المراجعين وتوجيه اللجان -->
+                    <div class="direct-inspection-grid">
+                        
+                        <!-- 1. بطاقة الاطلاع المباشر على بوابات المحافظات -->
+                        <div style="background:#ffffff; border:1.5px solid #e2e8f0; border-radius:12px; padding:16px; box-shadow:0 2px 8px rgba(15,23,42,0.03); display:flex; flex-direction:column; gap:12px;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1.5px solid #f1f5f9; padding-bottom:10px;">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <div style="width:32px; height:32px; border-radius:8px; background:#ecfdf5; color:#059669; display:flex; align-items:center; justify-content:center; font-size:0.95rem;">
+                                        <i class="fas fa-location-dot"></i>
+                                    </div>
+                                    <div>
+                                        <h4 id="directInspectionGovTitle" style="margin:0; font-size:0.92rem; font-weight:800; color:#0f172a;">بوابات مسؤولي المحافظات (27 محافظة)</h4>
+                                        <span id="directInspectionGovSubtitle" style="font-size:0.7rem; color:#64748b;">معاينة كشوف واستمارات المحافظة وتقييم الطلاب بدلاً من المراجع</span>
+                                    </div>
+                                </div>
+                                <span class="badge" style="background:#e0f2fe; color:#0369a1; font-size:0.72rem; font-weight:800;">27 محافظة</span>
+                            </div>
+
+                            <!-- قائمة الاختيار المباشر وزر الدخول -->
+                            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                                <select id="selDirectInspectGov" style="flex:1; min-width:180px; height:38px; padding:6px 10px; border-radius:8px; border:1.5px solid #cbd5e1; font-size:0.82rem; font-weight:700; background:#fff;">
+                                    <option value="">-- اختر المحافظة للمعاينة المباشرة --</option>
+                                </select>
+                                <button type="button" class="admin-action-btn" onclick="executeAdminDirectGovPreview()" style="background:#059669; color:#fff; border-color:#059669; height:38px; padding:0 14px; font-weight:800; font-size:0.8rem; white-space:nowrap; flex-shrink:0;">
+                                    <i class="fas fa-eye"></i> دخول المعاينة
+                                </button>
+                            </div>
+
+                            <!-- بطاقة إرشادية احترافية بالصلاحيات والمزايا -->
+                            <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:12px; display:flex; flex-direction:column; gap:8px;">
+                                <div style="display:flex; align-items:center; gap:6px; color:#0f172a; font-weight:800; font-size:0.78rem;">
+                                    <i class="fas fa-circle-info" style="color:#0284c7;"></i>
+                                    <span>مميزات الاطلاع المباشر على بوابات المحافظات:</span>
+                                </div>
+                                <ul style="margin:0; padding-right:18px; font-size:0.74rem; color:#475569; line-height:1.65;">
+                                    <li>الاطلاع على جميع استمارات الطلاب المسجلة لكل الألعاب والمراحل في المحافظة.</li>
+                                    <li>عند النقر على أي استمارة أو اسم طالب تفتح فوراً في <strong>الاستوديو الذهبي</strong> كما يراها المراجع.</li>
+                                    <li>إمكانية <strong>التقييم والاعتماد المباشر</strong> أو طلب التحديث بصلاحية المشرف العام بدلاً من المراجع.</li>
+                                    <li>معاينة الكشوف المجمعة وملفات الإكسيل المرفوعة من المحافظة بدون الحاجة لتسجيل الخروج.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- 2. بطاقة الاطلاع المباشر على بوابات المراجعين وتوجيه اللجان -->
+                        <div style="background:#ffffff; border:1.5px solid #e2e8f0; border-radius:12px; padding:16px; box-shadow:0 2px 8px rgba(15,23,42,0.03); display:flex; flex-direction:column; gap:12px;">
+                            <div style="display:flex; align-items:center; justify-content:space-between; border-bottom:1.5px solid #f1f5f9; padding-bottom:10px; flex-wrap:wrap; gap:8px;">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <div style="width:32px; height:32px; border-radius:8px; background:#eff6ff; color:#2563eb; display:flex; align-items:center; justify-content:center; font-size:0.95rem;">
+                                        <i class="fas fa-clipboard-check"></i>
+                                    </div>
+                                    <div>
+                                        <h4 id="directInspectionRevPanelTitle" style="margin:0; font-size:0.92rem; font-weight:800; color:#0f172a;">لجان المراجعة وتوجيه اللجان (بنين وبنات)</h4>
+                                        <span id="directInspectionRevPanelSubtitle" style="font-size:0.7rem; color:#64748b;">توجيهات المشرف والمهام المسندة ومعاينة بوابات اللجان ومديري البطولات</span>
+                                    </div>
+                                </div>
+                                <button type="button" class="admin-action-btn" onclick="loadAllAccountsFromBackend().then(() => initAdminDirectInspectionCard())" style="font-size:0.7rem; padding:3px 8px; height:26px;" title="تحديث قائمة المراجعين الحية">
+                                    <i class="fas fa-arrows-rotate"></i> تحديث
+                                </button>
+                            </div>
+
+                            <!-- فلتر التبويبات للجان (بنين / بنات / مديرو البطولات) وشريط البحث -->
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                <div class="inspection-filter-pills" id="inspectionCategoryPills">
+                                    <button type="button" class="inspection-filter-pill active" id="pillDirectInspectAll" onclick="setInspectionCategoryFilter('all', this)"><i class="fas fa-users"></i> الكل</button>
+                                    <button type="button" class="inspection-filter-pill" id="pillDirectInspectBoys" onclick="setInspectionCategoryFilter('بنين', this)"><i class="fas fa-mars"></i> لجان البنين</button>
+                                    <button type="button" class="inspection-filter-pill" id="pillDirectInspectGirls" onclick="setInspectionCategoryFilter('بنات', this)"><i class="fas fa-venus"></i> لجان البنات</button>
+                                    <button type="button" class="inspection-filter-pill" id="pillDirectInspectTd" onclick="setInspectionCategoryFilter('td', this)"><i class="fas fa-crown"></i> مديرو البطولات</button>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:6px;">
+                                    <input type="text" id="inputFilterDirectReviewers" oninput="filterDirectInspectionReviewers(this.value)" placeholder="🔍 بحث باسم المراجع، اللعبة، المحافظة أو التوجيه..." style="width:100%; height:34px; padding:4px 10px; border-radius:7px; border:1px solid #cbd5e1; font-size:0.76rem; font-family:inherit; background:#f8fafc;">
+                                </div>
+                            </div>
+
+                            <!-- قائمة اختيار المراجع وزر الدخول -->
+                            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                                <select id="selDirectInspectReviewer" style="flex:1; min-width:180px; height:38px; padding:6px 10px; border-radius:8px; border:1.5px solid #cbd5e1; font-size:0.82rem; font-weight:700; background:#fff;">
+                                    <option value="">-- اختر المراجع أو اللجنة للمعاينة --</option>
+                                </select>
+                                <button type="button" class="admin-action-btn" onclick="executeAdminDirectReviewerPreview()" style="background:#2563eb; color:#fff; border-color:#2563eb; height:38px; padding:0 14px; font-weight:800; font-size:0.8rem; white-space:nowrap; flex-shrink:0;">
+                                    <i class="fas fa-eye"></i> دخول المعاينة
+                                </button>
+                            </div>
+
+                            <!-- قائمة تفصيلية ببطاقات اللجان وتوجيهات المشرف العام -->
+                            <div style="display:flex; flex-direction:column; gap:6px; margin-top:2px;">
+                                <div style="display:flex; align-items:center; justify-content:space-between;">
+                                    <span style="font-size:0.74rem; font-weight:700; color:#475569;">لجان المراجعة وتوجيه المهام المسندة:</span>
+                                    <span id="directInspectionRevCountBadge" style="font-size:0.7rem; font-weight:800; color:#2563eb; background:#eff6ff; padding:2px 6px; border-radius:10px;">-</span>
+                                </div>
+                                <div id="directInspectionReviewersListContainer" style="display:flex; flex-direction:column; gap:8px; max-height:260px; overflow-y:auto; padding:6px; background:#f8fafc; border-radius:8px; border:1px solid #e2e8f0; -webkit-overflow-scrolling:touch;">
+                                    <!-- يتم ملء قائمة المراجعين واللجان وتوجيهاتها هنا برمجياً -->
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -14862,6 +15120,8 @@
             const stageSelect = document.getElementById('stageSelect');
             const gameSelect = document.getElementById('gameSelect');
             const deadlineDisplay = document.getElementById('gameDeadlineDateDisplay');
+            const chkOverwrite = document.getElementById('overwritePrevious');
+            if (chkOverwrite) chkOverwrite.checked = false;
             if (stageSelect && stageSelect.value) {
                 stageSelect.classList.add('input-valid');
                 if (gameSelect && gameSelect.selectedIndex >= 0) {
@@ -15228,9 +15488,11 @@
                 // إظهار نافذة التأكيد مع دعم إشعار الواتساب الفوري للأدمن
                 showConfirmationModal(historyRecord, serverResult);
 
-                // تصفير حقل الملف
+                // تصفير حقل الملف وإلغاء خيار الاستبدال تلقائياً
                 const fileInput = document.getElementById('fileInput');
                 if (fileInput) fileInput.value = '';
+                const chkOverwrite = document.getElementById('overwritePrevious');
+                if (chkOverwrite) chkOverwrite.checked = false;
                 selectedFileObject = null;
                 document.getElementById('fileDisplayTitle').textContent = 'اضغط لاختيار ملف Excel (.xlsx أو .xls)';
                 document.getElementById('fileDisplayMeta').textContent = 'الحد الأقصى للملف 10 ميجابايت';
@@ -16525,6 +16787,7 @@
             const subtabAccountsManage = document.getElementById('subtabAccountsManage');
             const subtabWinnersPermission = document.getElementById('subtabWinnersPermission');
             const subtabTaskDistribution = document.getElementById('subtabTaskDistribution');
+            const subtabDirectInspection = document.getElementById('subtabDirectInspection');
             const subtabResults = document.getElementById('subtabResults');
             const subtabReviewNotesManage = document.getElementById('subtabReviewNotesManage');
 
@@ -16537,7 +16800,7 @@
                 roleBadge.className = 'role-badge super hidden';
                 roleBadge.style.setProperty('display', 'none', 'important');
                 roleBadge.innerHTML = '';
-                [subtabTaskDistribution, subtabAccountsManage, subtabWinnersPermission,
+                [subtabTaskDistribution, subtabDirectInspection, subtabAccountsManage, subtabWinnersPermission,
                  subtabGamesOrder, subtabAudit, subtabHomepageManage, subtabReviewNotesManage,
                  subtabBoys, subtabGirls, statBoysCard, statGirlsCard, subtabDeadlineExtensions].forEach(el => { if (el) { el.classList.remove('hidden'); el.style.display = ''; } });
                 const subtabGamesOrderText = document.getElementById('subtabGamesOrderText');
@@ -16561,8 +16824,8 @@
             } else if (u.role === 'BOYS_ADMIN') {
                 roleBadge.className = 'role-badge boys';
                 roleBadge.textContent = 'مسئول إدارة التربية الرياضية بنين';
-                // إظهار المسموح
-                [subtabTaskDistribution, subtabBoys, statBoysCard].forEach(el => { if (el) { el.classList.remove('hidden'); el.style.display = ''; } });
+                // إظهار المسموح: توزيع المهام + الاطلاع المباشر لقطاع البنين
+                [subtabTaskDistribution, subtabDirectInspection, subtabBoys, statBoysCard].forEach(el => { if (el) { el.classList.remove('hidden'); el.style.display = ''; } });
                 // فحص صلاحية جدولة ألعاب البنين
                 if (subtabGamesOrder) {
                     if (gameSchedulingState.boys) {
@@ -16599,8 +16862,8 @@
             } else if (u.role === 'GIRLS_ADMIN') {
                 roleBadge.className = 'role-badge girls';
                 roleBadge.textContent = 'مسئول إدارة التربية الرياضية البنات';
-                // إظهار المسموح
-                [subtabTaskDistribution, subtabGirls, statGirlsCard].forEach(el => { if (el) { el.classList.remove('hidden'); el.style.display = ''; } });
+                // إظهار المسموح: توزيع المهام + الاطلاع المباشر لقطاع البنات
+                [subtabTaskDistribution, subtabDirectInspection, subtabGirls, statGirlsCard].forEach(el => { if (el) { el.classList.remove('hidden'); el.style.display = ''; } });
                 // فحص صلاحية جدولة ألعاب البنات
                 if (subtabGamesOrder) {
                     if (gameSchedulingState.girls) {
@@ -16815,7 +17078,7 @@
         window.switchAdminSubtab = function (subtab) {
             adminSession.activeSubtab = subtab;
 
-            const tabs = ['subtabBoys', 'subtabGirls', 'subtabDeadlineExtensions', 'subtabAudit', 'subtabHomepageManage', 'subtabGamesOrder', 'subtabTemplatesOrder', 'subtabAccountsManage', 'subtabWinnersPermission', 'subtabTaskDistribution', 'subtabResults', 'subtabReviewNotesManage'];
+            const tabs = ['subtabBoys', 'subtabGirls', 'subtabDeadlineExtensions', 'subtabAudit', 'subtabHomepageManage', 'subtabGamesOrder', 'subtabTemplatesOrder', 'subtabAccountsManage', 'subtabWinnersPermission', 'subtabTaskDistribution', 'subtabDirectInspection', 'subtabResults', 'subtabReviewNotesManage'];
             tabs.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.remove('active');
@@ -16845,6 +17108,7 @@
                 accounts_manage: 'subtabAccountsManage',
                 winners_permission: 'subtabWinnersPermission',
                 task_distribution: 'subtabTaskDistribution',
+                direct_inspection: 'subtabDirectInspection',
                 results: 'subtabResults',
                 review_notes_manage: 'subtabReviewNotesManage'
             };
@@ -16865,6 +17129,7 @@
                 accounts_manage: { icon: 'fas fa-user-gear', text: 'الحسابات' },
                 winners_permission: { icon: 'fas fa-trophy', text: 'إذن وصلاحية تسجيل المراكز' },
                 task_distribution: { icon: 'fas fa-network-wired', text: 'توزيع المهام' },
+                direct_inspection: { icon: 'fas fa-binoculars', text: 'الاطلاع المباشر على المحافظات والمراجعين' },
                 results: { icon: 'fas fa-trophy', text: 'نتائج البطولات' },
                 review_notes_manage: { icon: 'fas fa-comments', text: 'أسباب وملاحظات التحديث' }
             };
@@ -16886,6 +17151,7 @@
             const accountsCard = document.getElementById('adminAccountsManageCard');
             const winnersCard = document.getElementById('adminWinnersPermissionCard');
             const distCard = document.getElementById('adminTaskDistributionCard');
+            const directInspectionCard = document.getElementById('adminDirectInspectionCard');
             const resultsCard = document.getElementById('resultsMainCard');
             const reviewNotesCard = document.getElementById('adminReviewNotesManageCard');
             const deadlineExtCard = document.getElementById('adminDeadlineExtensionsCard');
@@ -16898,6 +17164,7 @@
             if (accountsCard) accountsCard.classList.add('hidden');
             if (winnersCard) winnersCard.classList.add('hidden');
             if (distCard) distCard.classList.add('hidden');
+            if (directInspectionCard) directInspectionCard.classList.add('hidden');
             if (resultsCard) resultsCard.classList.add('hidden');
             if (reviewNotesCard) reviewNotesCard.classList.add('hidden');
             if (deadlineExtCard) deadlineExtCard.classList.add('hidden');
@@ -17070,6 +17337,13 @@
                     deadlineExtCard.classList.remove('hidden');
                     if (typeof loadGovernorateExtensions === 'function') {
                         loadGovernorateExtensions();
+                    }
+                }
+            } else if (subtab === 'direct_inspection') {
+                if (directInspectionCard) {
+                    directInspectionCard.classList.remove('hidden');
+                    if (typeof initAdminDirectInspectionCard === 'function') {
+                        initAdminDirectInspectionCard();
                     }
                 }
             }
@@ -17407,7 +17681,43 @@
                     return;
                 }
 
-                tbody.innerHTML = filesList.map(item => {
+                // فرز الملفات الأحدث أولاً لتحديد أحدث كشف معتمد والملفات السابقة
+                const sortedFilesList = [...filesList].sort((a, b) => {
+                    const tA = String(a.dateFormatted || (a.date + ' ' + (a.time || '')) || a.timestamp || '');
+                    const tB = String(b.dateFormatted || (b.date + ' ' + (b.time || '')) || b.timestamp || '');
+                    return tB.localeCompare(tA);
+                });
+
+                // حساب كل مرحلة على حدة بشكل مستقل تماماً:
+                // لا يظهر أن هناك ملف يجب حذفه إلا إذا تم رفع الملف في نفس المرحلة مرتين،
+                // فيتم كتابة "يجب حذفه" أمام الملف الأول (السابق) في هذه المرحلة فقط دون أن يكون له علاقة بأي مرحلة أخرى.
+                const seenGovTeamInCurrentStage = new Set();
+                const processedFiles = sortedFilesList.map(item => {
+                    const govKey = `${(item.userGov || item.governorate || '').trim()}___${(item.teamName || '').trim()}`;
+                    const hasServerDeleteMark = !!(item.isMustDelete || (item.fileStatus && item.fileStatus.indexOf('يجب حذفه') !== -1) || (item.fileName && item.fileName.indexOf('يجب حذفه') === 0));
+
+                    let mustDel = false;
+                    if (govKey !== '___') {
+                        if (!seenGovTeamInStageKey(seenGovTeamInCurrentStage, govKey)) {
+                            // هذا هو أحدث ملف تم رفعه لهذه المحافظة في هذه المرحلة (نشط)
+                            seenGovTeamInCurrentStage.add(govKey);
+                            mustDel = hasServerDeleteMark;
+                        } else {
+                            // تكرار في نفس المرحلة: هذا ملف سابق/أول تم رفعه في هذه المرحلة
+                            mustDel = true;
+                        }
+                    } else {
+                        mustDel = hasServerDeleteMark;
+                    }
+
+                    return { item, isMustDelete: mustDel };
+                });
+
+                function seenGovTeamInStageKey(setRef, key) {
+                    return setRef.has(key);
+                }
+
+                tbody.innerHTML = processedFiles.map(({ item, isMustDelete }) => {
                     const teamPart = item.teamName ? `_${item.teamName}` : '';
                     const officialFileName = item.fileName || `بطولات_الجمهورية_${category}_${item.userGov}_${item.gameName || selectedGame}_${item.stageName || selectedStage}${teamPart}_${item.userName}.xlsx`;
                     const fileDriveUrl = item.fileDriveUrl || (item.fileId ? `https://drive.google.com/file/d/${item.fileId}/view` : '#');
@@ -17425,11 +17735,10 @@
                         </button>
                     ` : '';
 
-                    const isMustDelete = !!(item.overwrite || item.isMustDelete);
                     const isSelected = adminSession.selectedFileIds.has(fileIdOrOp);
                     const mustDeleteBadge = isMustDelete ? `
-                        <span class="file-type-badge must-delete" title="مستبدل ومطلوب حذفه">
-                            <i class="fas fa-triangle-exclamation"></i> مطلوب حذفه
+                        <span class="file-type-badge must-delete" title="كشف سابق تم استبداله - يجب حذفه">
+                            <i class="fas fa-triangle-exclamation"></i> يجب حذفه
                         </span>
                     ` : '';
 
@@ -22216,8 +22525,8 @@
             return new Promise((resolve, reject) => {
                 const cbName = 'onGasApi_' + data.action + '_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
                 const script = document.createElement('script');
-                const isHeavyAction = (data.action === 'getFileBase64' || data.action === 'getFilesBase64' || data.action === 'adminGetFilesBase64' || data.action === 'getGovernoratesExcelFiles' || data.action === 'getCollectiveGameSheet');
-                const timeoutDuration = isHeavyAction ? 25000 : 12000;
+                const isHeavyAction = (data.action === 'getFileBase64' || data.action === 'getFilesBase64' || data.action === 'adminGetFilesBase64' || data.action === 'getGovernoratesExcelFiles' || data.action === 'getCollectiveGameSheet' || data.action === 'getStudentSubmissions' || data.action === 'getAllAccountsForSuperAdmin');
+                const timeoutDuration = isHeavyAction ? 35000 : 20000;
                 const timeoutTimer = setTimeout(() => {
                     if (window[cbName]) {
                         delete window[cbName];
@@ -22664,9 +22973,17 @@
                 displayList = displayList.filter(t => (t.gameName || '').trim() === window.activeReviewerGameFilter.trim());
             }
 
-            // لا يتم فرض اختيار مهمة تلقائياً إذا لم ينقر المراجع على محافظة
+            // التحقق من صلاحية المهمة المحددة حالياً
             if (activeReviewerTaskKey && !reviewerTasksList.some(t => t.key === activeReviewerTaskKey)) {
                 activeReviewerTaskKey = null;
+            }
+
+            // التحديد التلقائي لأول مهمة معلقة فور توفر المهام لعرض الجداول مباشرة
+            if (!activeReviewerTaskKey && displayList.length > 0) {
+                const targetTask = displayList.find(t => !t.isCompleted) || displayList[0];
+                if (targetTask) {
+                    activeReviewerTaskKey = targetTask.key;
+                }
             }
 
             const tblWrap = document.getElementById('reviewerTablesWrapper');
@@ -22836,14 +23153,32 @@
                 activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
             }
 
-            // تطبيق الفلاتر في جدول المراجعة فوراً
+            // تطبيق الفلاتر في جدول المراجعة فوراً مع تطابق ذكي للخيارات
             const govSel = document.getElementById('revFilterGov');
             const gameSel = document.getElementById('revFilterGame');
             const stageSel = document.getElementById('revFilterStage');
 
-            if (govSel) govSel.value = task.governorate;
-            if (gameSel) gameSel.value = task.gameName;
-            if (stageSel) stageSel.value = task.stageName;
+            if (govSel) {
+                const opt = Array.from(govSel.options).find(o => typeof isGovMatchClient === 'function' ? isGovMatchClient(o.value, task.governorate) : (o.value === task.governorate));
+                govSel.value = opt ? opt.value : task.governorate;
+            }
+            if (gameSel) {
+                const opt = Array.from(gameSel.options).find(o => normalizeArabicText(o.value) === normalizeArabicText(task.gameName));
+                gameSel.value = opt ? opt.value : task.gameName;
+            }
+            if (stageSel) {
+                const opt = Array.from(stageSel.options).find(o => normalizeArabicText(o.value) === normalizeArabicText(task.stageName));
+                stageSel.value = opt ? opt.value : task.stageName;
+            }
+
+            // دمج فوري لأي استمارات مسندة للمهمة محلياً لضمان توفرها للجدول فوراً
+            if (Array.isArray(task.students) && task.students.length > 0) {
+                const existingIds = new Set((cachedReviewerStudents || []).map(s => s.studentId));
+                const missing = task.students.filter(s => !existingIds.has(s.studentId));
+                if (missing.length > 0) {
+                    cachedReviewerStudents = (cachedReviewerStudents || []).concat(missing);
+                }
+            }
 
             updateActiveTaskBanner();
             handleReviewerGovOrGameChange();
@@ -23099,6 +23434,10 @@
         }
 
         function handleReviewerLogout() {
+            if (currentReviewerSession && currentReviewerSession.isAdminPreview) {
+                exitAdminDirectPreview();
+                return;
+            }
             if (currentReviewerSession && currentReviewerSession.username && typeof deregisterActiveOnlineUser === 'function') {
                 deregisterActiveOnlineUser(currentReviewerSession.username);
             }
@@ -23174,6 +23513,8 @@
             const u = currentReviewerSession ? (currentReviewerSession.username || '') : '';
             const dName = currentReviewerSession ? (currentReviewerSession.displayName || '') : '';
             const cat = currentReviewerSession ? (currentReviewerSession.category || 'بنين') : 'بنين';
+            const isPreviewMode = !!(currentReviewerSession && currentReviewerSession.isAdminPreview);
+            const cleanDName = dName.replace(/\s*\(اطلاع[^)]*\)/gi, '').trim();
             const cacheKey = 'repChamps_reviewer_students_' + (u || 'all');
 
             // 1. عرض فوري وسريع من الذاكرة المؤقتة (0ms Instant Load) مع الفلترة الوقائية
@@ -23211,17 +23552,20 @@
             if (u) {
                 payload.reviewerUsername = u;
             }
-            if (dName) {
-                payload.reviewerName = dName;
+            if (cleanDName) {
+                payload.reviewerName = cleanDName;
             }
             if (cat) {
                 payload.category = cat;
                 payload.reviewerCategory = cat;
             }
-            if (currentReviewerSession && currentReviewerSession.assignedGovs && currentReviewerSession.assignedGovs !== 'الكل') {
+            if (isPreviewMode) {
+                payload.isAdminPreview = true;
+            }
+            if (!isPreviewMode && currentReviewerSession && currentReviewerSession.assignedGovs && currentReviewerSession.assignedGovs !== 'الكل' && !currentReviewerSession.assignedGovs.includes('كل')) {
                 payload.assignedGovs = currentReviewerSession.assignedGovs;
             }
-            if (currentReviewerSession && currentReviewerSession.assignedGames && currentReviewerSession.assignedGames !== 'الكل') {
+            if (!isPreviewMode && currentReviewerSession && currentReviewerSession.assignedGames && currentReviewerSession.assignedGames !== 'الكل' && !currentReviewerSession.assignedGames.includes('كل')) {
                 payload.assignedGames = currentReviewerSession.assignedGames;
             }
 
@@ -23233,7 +23577,7 @@
 
                 if (activeTasks.length === 0 && currentReviewerSession && currentReviewerSession.role !== 'SUPER_ADMIN') {
                     const uNorm = u.toLowerCase().trim();
-                    const dNorm = normalizeArabicText(dName);
+                    const dNorm = normalizeArabicText(cleanDName || dName);
 
                     // البحث في كاش التوزيع المحلي إن كان متوفراً
                     if (Array.isArray(cachedDistributionWorkloads) && cachedDistributionWorkloads.length > 0) {
@@ -23242,7 +23586,8 @@
                             const aRev = normalizeArabicText(w.assignedReviewer || '');
                             const isUser = (aUser && (aUser === uNorm || aUser.includes(uNorm) || uNorm.includes(aUser)));
                             const isName = (aRev && (aRev === dNorm || aRev.includes(dNorm) || dNorm.includes(aRev)));
-                            return (isUser || isName) && (w.assignmentStatus === 'مسند' || w.assignmentStatus === 'نشطة');
+                            const isStatusActive = (w.assignmentStatus === 'مسند' || w.assignmentStatus === 'نشطة' || w.assignmentStatus === 'مسندة' || w.assignmentStatus === 'نشط');
+                            return (isUser || isName) && isStatusActive;
                         });
                     }
 
@@ -23257,7 +23602,8 @@
                                     const aRev = normalizeArabicText(w.assignedReviewer || '');
                                     const isUser = (aUser && (aUser === uNorm || aUser.includes(uNorm) || uNorm.includes(aUser)));
                                     const isName = (aRev && (aRev === dNorm || aRev.includes(dNorm) || dNorm.includes(aRev)));
-                                    return (isUser || isName) && (w.assignmentStatus === 'مسند' || w.assignmentStatus === 'نشطة');
+                                    const isStatusActive = (w.assignmentStatus === 'مسند' || w.assignmentStatus === 'نشطة' || w.assignmentStatus === 'مسندة' || w.assignmentStatus === 'نشط');
+                                    return (isUser || isName) && isStatusActive;
                                 });
                             }
                         } catch (eDist) {}
@@ -23269,7 +23615,7 @@
                 // 3. الفلترة الصارمة للاستمارات: منع تسريب أي استمارات لمحافظات أو ألعاب مسندة لزملاء آخرين أو غير مسندة
                 let rawSubmissions = (resSubs && Array.isArray(resSubs.submissions)) ? resSubs.submissions : [];
 
-                if (currentReviewerSession && currentReviewerSession.role !== 'SUPER_ADMIN') {
+                if (currentReviewerSession && currentReviewerSession.role !== 'SUPER_ADMIN' && !isPreviewMode) {
                     if (cachedReviewerMyTasks.length > 0) {
                         rawSubmissions = rawSubmissions.filter(s => {
                             return cachedReviewerMyTasks.some(t => {
@@ -23284,6 +23630,35 @@
                         // لا توجد مهام مسندة للمراجع نهائياً
                         rawSubmissions = [];
                     }
+                } else if (isPreviewMode) {
+                    // في وضع الاطلاع المباشر: إذا توفرت مهام مسندة نطبقها، وإن لم تتوفر استمارات نجلب استمارات الفئة مباشرة
+                    if (cachedReviewerMyTasks.length > 0) {
+                        const taskFiltered = rawSubmissions.filter(s => {
+                            return cachedReviewerMyTasks.some(t => {
+                                const mGov = isGovMatchClient(t.governorate, s.governorate);
+                                const mGame = normalizeArabicText(t.gameName) === normalizeArabicText(s.gameName);
+                                const mStage = normalizeArabicText(t.stageName) === normalizeArabicText(s.stageName);
+                                const mCat = !t.category || !s.category || normalizeArabicText(t.category) === normalizeArabicText(s.category);
+                                return mGov && mGame && mStage && mCat;
+                            });
+                        });
+                        if (taskFiltered.length > 0) {
+                            rawSubmissions = taskFiltered;
+                        }
+                    }
+
+                    if (rawSubmissions.length === 0) {
+                        try {
+                            const fbParams = { action: 'getStudentSubmissions', category: cat, isAdminPreview: true };
+                            if (cachedReviewerMyTasks.length > 0 && cachedReviewerMyTasks[0].governorate) {
+                                fbParams.governorate = cachedReviewerMyTasks[0].governorate;
+                            }
+                            const fbRes = await callBackendApi(fbParams);
+                            if (fbRes && Array.isArray(fbRes.submissions) && fbRes.submissions.length > 0) {
+                                rawSubmissions = fbRes.submissions;
+                            }
+                        } catch (eFb) {}
+                    }
                 }
 
                 cachedReviewerStudents = rawSubmissions;
@@ -23295,6 +23670,16 @@
                 }
             } catch (e) {
                 console.warn('Could not load reviewer students:', e);
+                if (!cachedReviewerStudents || cachedReviewerStudents.length === 0) {
+                    if (tbody) {
+                        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:25px 15px; color:#e11d48;">
+                            <div style="font-weight:700; margin-bottom:8px;"><i class="fas fa-triangle-exclamation"></i> تعذر استدعاء الاستمارات من الخادم حالياً</div>
+                            <button type="button" class="admin-action-btn" onclick="loadReviewerStudents()" style="background:#0284c7; color:#fff; border-color:#0284c7; padding:5px 16px; font-size:0.80rem; font-weight:700;">
+                                <i class="fas fa-rotate"></i> إعادة المحاولة
+                            </button>
+                        </td></tr>`;
+                    }
+                }
             } finally {
                 setSpinning('iconReviewerStudentsRefresh', false);
             }
@@ -23302,6 +23687,7 @@
             handleReviewerGovOrGameChange();
             updateReviewerStatsCounters();
             renderReviewerTaskTabs();
+            filterReviewerTable();
         }
 
         async function handleReviewerGovOrGameChange() {
@@ -23333,29 +23719,30 @@
                 if (localSheet && localSheet.fileUrl) {
                     if (statusText) statusText.innerHTML = `<span style="color:#059669;"><i class="fas fa-check-circle"></i> متوفر: <strong>${escapeHtml(localSheet.fileName || 'كشف مجمع')}</strong></span>`;
                     if (actionBtn) actionBtn.innerHTML = `<a href="${localSheet.fileUrl}" target="_blank" class="admin-action-btn" style="background:#e11d48; color:#fff; border-color:#be123c; padding:4px 12px; font-size:0.76rem; font-weight:700;"><i class="fas fa-file-pdf"></i> فتح الكشف المجمع</a>`;
-                    return;
                 } else {
                     if (statusText) statusText.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> جاري فحص الكشف المجمع...';
                 }
 
-                try {
-                    const res = await callBackendApi({
-                        action: 'getCollectiveGameSheet',
-                        governorate: gov,
-                        gameName: selectedGame,
-                        stageName: stage
-                    });
-                    if (res && res.success && res.sheet) {
-                        if (statusText) statusText.innerHTML = `<span style="color:#059669;"><i class="fas fa-check-circle"></i> متوفر: <strong>${escapeHtml(res.sheet.fileName)}</strong></span>`;
-                        if (actionBtn) actionBtn.innerHTML = `<a href="${res.sheet.fileUrl}" target="_blank" class="admin-action-btn" style="background:#e11d48; color:#fff; border-color:#be123c; padding:4px 12px; font-size:0.76rem; font-weight:700;"><i class="fas fa-file-pdf"></i> فتح الكشف المجمع</a>`;
-                    } else if (!localSheet) {
-                        if (statusText) statusText.innerHTML = `<span style="color:#94a3b8;">لم يتم رفع كشف مجمع لهذه اللعبة والمرحلة حتى الآن.</span>`;
-                        if (actionBtn) actionBtn.innerHTML = '';
-                    }
-                } catch (e) {
-                    if (!localSheet) {
-                        if (statusText) statusText.innerHTML = `<span style="color:#94a3b8;">لم يتم رفع كشف مجمع بعد.</span>`;
-                        if (actionBtn) actionBtn.innerHTML = '';
+                if (!localSheet || !localSheet.fileUrl) {
+                    try {
+                        const res = await callBackendApi({
+                            action: 'getCollectiveGameSheet',
+                            governorate: gov,
+                            gameName: selectedGame,
+                            stageName: stage
+                        });
+                        if (res && res.success && res.sheet) {
+                            if (statusText) statusText.innerHTML = `<span style="color:#059669;"><i class="fas fa-check-circle"></i> متوفر: <strong>${escapeHtml(res.sheet.fileName)}</strong></span>`;
+                            if (actionBtn) actionBtn.innerHTML = `<a href="${res.sheet.fileUrl}" target="_blank" class="admin-action-btn" style="background:#e11d48; color:#fff; border-color:#be123c; padding:4px 12px; font-size:0.76rem; font-weight:700;"><i class="fas fa-file-pdf"></i> فتح الكشف المجمع</a>`;
+                        } else if (!localSheet) {
+                            if (statusText) statusText.innerHTML = `<span style="color:#94a3b8;">لم يتم رفع كشف مجمع لهذه اللعبة والمرحلة حتى الآن.</span>`;
+                            if (actionBtn) actionBtn.innerHTML = '';
+                        }
+                    } catch (e) {
+                        if (!localSheet) {
+                            if (statusText) statusText.innerHTML = `<span style="color:#94a3b8;">لم يتم رفع كشف مجمع بعد.</span>`;
+                            if (actionBtn) actionBtn.innerHTML = '';
+                        }
                     }
                 }
             } else if (gov) {
@@ -23373,15 +23760,21 @@
             // جلب تلقائي لكشوف المحافظة واستماراتها من السيرفر بمجرد اختيار المحافظة
             if (gov) {
                 const u = currentReviewerSession ? currentReviewerSession.username : '';
+                const isPrev = !!(currentReviewerSession && currentReviewerSession.isAdminPreview);
+                const rCat = (currentReviewerSession && currentReviewerSession.category) ? currentReviewerSession.category : '';
 
                 // 1. جلب الكشوف المجمعة للمحافظة تلقائياً
-                callBackendApi({
+                const collPayload = {
                     action: 'getCollectiveSheets',
-                    reviewerUsername: u,
                     governorate: gov
-                }).then(res => {
+                };
+                if (!isPrev && u) collPayload.reviewerUsername = u;
+                if (isPrev) collPayload.isAdminPreview = true;
+                if (rCat) collPayload.category = rCat;
+
+                callBackendApi(collPayload).then(res => {
                     if (res && res.success && Array.isArray(res.sheets)) {
-                        const otherSheets = (cachedReviewerCollectiveSheets || []).filter(s => s.governorate !== gov);
+                        const otherSheets = (cachedReviewerCollectiveSheets || []).filter(s => typeof isGovMatchClient === 'function' ? !isGovMatchClient(s.governorate, gov) : (s.governorate !== gov));
                         cachedReviewerCollectiveSheets = otherSheets.concat(res.sheets);
                         renderReviewerCollectiveTable();
                         if (statusText && !selectedGame) {
@@ -23393,16 +23786,21 @@
                 });
 
                 // 2. جلب استمارات طلاب المحافظة تلقائياً
-                callBackendApi({
+                const subsPayload = {
                     action: 'getStudentSubmissions',
-                    governorate: gov,
-                    reviewerUsername: u
-                }).then(res => {
+                    governorate: gov
+                };
+                if (!isPrev && u) subsPayload.reviewerUsername = u;
+                if (isPrev) subsPayload.isAdminPreview = true;
+                if (rCat) subsPayload.category = rCat;
+
+                callBackendApi(subsPayload).then(res => {
                     if (res && res.success && Array.isArray(res.submissions)) {
-                        const otherStudents = (cachedReviewerStudents || []).filter(s => s.governorate !== gov);
+                        const otherStudents = (cachedReviewerStudents || []).filter(s => typeof isGovMatchClient === 'function' ? !isGovMatchClient(s.governorate, gov) : (s.governorate !== gov));
                         cachedReviewerStudents = otherStudents.concat(res.submissions);
                         filterReviewerTable();
                         updateReviewerStatsCounters();
+                        renderReviewerTaskTabs();
                     }
                 }).catch(err => {
                     console.warn('Auto-fetch student submissions error:', err);
@@ -23469,14 +23867,14 @@
                     return normName.includes(allGovsSearch) || cleanNormName.includes(cleanSearch);
                 });
             } else {
-                if (govFilter) filtered = filtered.filter(s => s.governorate === govFilter);
-                if (gameFilter) filtered = filtered.filter(s => s.gameName === gameFilter);
-                if (stageFilter) filtered = filtered.filter(s => s.stageName === stageFilter);
+                if (govFilter) filtered = filtered.filter(s => typeof isGovMatchClient === 'function' ? isGovMatchClient(s.governorate, govFilter) : (s.governorate === govFilter));
+                if (gameFilter) filtered = filtered.filter(s => normalizeArabicText(s.gameName) === normalizeArabicText(gameFilter));
+                if (stageFilter) filtered = filtered.filter(s => normalizeArabicText(s.stageName) === normalizeArabicText(stageFilter));
                 if (statusFilter) filtered = filtered.filter(s => matchRevStatus(s.status, statusFilter));
                 if (activeReviewerTaskKey && Array.isArray(reviewerTasksList)) {
                     const activeTask = reviewerTasksList.find(t => t.key === activeReviewerTaskKey);
-                    if (activeTask && activeTask.category && (!govFilter || activeTask.governorate === govFilter) && (!gameFilter || activeTask.gameName === gameFilter) && (!stageFilter || activeTask.stageName === stageFilter)) {
-                        filtered = filtered.filter(s => !s.category || s.category === activeTask.category);
+                    if (activeTask && activeTask.category && (!govFilter || isGovMatchClient(activeTask.governorate, govFilter)) && (!gameFilter || normalizeArabicText(activeTask.gameName) === normalizeArabicText(gameFilter)) && (!stageFilter || normalizeArabicText(activeTask.stageName) === normalizeArabicText(stageFilter))) {
+                        filtered = filtered.filter(s => !s.category || normalizeArabicText(s.category) === normalizeArabicText(activeTask.category));
                     }
                 }
                 if (localSearch) {
@@ -23491,9 +23889,9 @@
 
             if (filtered.length === 0) {
                 if (!cachedReviewerStudents || cachedReviewerStudents.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:32px 18px; color:#64748b;"><div style="font-size:1.05rem; font-weight:800; color:#b45309; margin-bottom:6px;"><i class="fas fa-hourglass-half fa-spin"></i> في انتظار التوجيه من خلال الأدمن السوبر</div><div style="font-size:0.82rem; color:#64748b;">لم يتم إسناد أي محافظات أو ألعاب لحسابك حالياً، أو أن التوزيع التلقائي معطّل. يمكنك البدء في فحص الاستمارات فور توجيه المشرف العام.</div></td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:32px 18px; color:#64748b;"><div style="font-size:1.05rem; font-weight:800; color:#b45309; margin-bottom:6px;"><i class="fas fa-hourglass-half"></i> في انتظار التوجيه من خلال الأدمن السوبر</div><div style="font-size:0.82rem; color:#64748b;">لم يتم إسناد أي استمارات لهذه المحافظة أو اللعبة حالياً. يمكنك استخدام زر "تحديث" بالأعلى لإعادة الفحص.</div></td></tr>';
                 } else {
-                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px; color:#94a3b8;">لا توجد ملفات مطابقة للبحث المحدد.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px; color:#94a3b8;">لا توجد استمارات مطابقة للبحث المحدد.</td></tr>';
                 }
                 return;
             }
@@ -23640,9 +24038,16 @@
                         <td style="text-align:center;">${fileCellHtml}</td>
                         <td style="text-align:center;">${statusBadge}</td>
                         <td style="text-align:center;">
-                            <button type="button" class="admin-action-btn" onclick="openDecisionModal('${escapeHtml(s.studentId)}', '${escapeHtml(s.studentName)}', '${escapeHtml(s.governorate)}')" style="padding:4px 10px; font-size:0.75rem; background:#eff6ff; color:#0284c7; border-color:#bae6fd;">
-                                <i class="fas fa-gavel"></i> القرار
-                            </button>
+                            <div style="display:inline-flex; align-items:center; gap:4px; flex-wrap:wrap; justify-content:center;">
+                                <button type="button" class="admin-action-btn" onclick="openDecisionModal('${escapeHtml(s.studentId)}', '${escapeHtml(s.studentName)}', '${escapeHtml(s.governorate)}')" style="padding:4px 8px; font-size:0.75rem; background:#eff6ff; color:#0284c7; border-color:#bae6fd;">
+                                    <i class="fas fa-gavel"></i> القرار
+                                </button>
+                                ${(isNeedsUp) ? `
+                                    <button type="button" class="admin-action-btn" onclick="revertStudentUpdateDecision('${escapeHtml(s.studentId)}', '${escapeHtml(s.studentName)}')" style="padding:4px 7px; font-size:0.72rem; background:#fff7ed; color:#c2410c; border:1px solid #fed7aa; font-weight:700;" title="الرجوع في القرار وإلغاء طلب التحديث وإعادة الاستمارة لحالة قيد المراجعة">
+                                        <i class="fas fa-undo"></i> تراجع
+                                    </button>
+                                ` : ''}
+                            </div>
                         </td>
                         <td style="text-align:center; ${isDirectorUser ? '' : 'display:none;'}" class="col-winner-rank">${winnerCellHtml}</td>
                         <td style="text-align:center;" class="col-audit-log">
@@ -23840,10 +24245,12 @@
             currentDecisionChoice = choice;
             const btnApprove = document.getElementById('btnChoiceApprove');
             const btnUpdate = document.getElementById('btnChoiceUpdate');
+            const btnRevert = document.getElementById('btnChoiceRevert');
             const reasonsBlock = document.getElementById('updateReasonsBlock');
 
             if (btnApprove) btnApprove.classList.toggle('active', choice === 'APPROVED');
             if (btnUpdate) btnUpdate.classList.toggle('active', choice === 'NEEDS_UPDATE');
+            if (btnRevert) btnRevert.classList.toggle('active', choice === 'REVERT');
 
             if (reasonsBlock) {
                 if (choice === 'NEEDS_UPDATE') {
@@ -24021,15 +24428,29 @@
             }
 
             const notes = document.getElementById('decisionNotes') ? document.getElementById('decisionNotes').value.trim() : '';
-            const reviewerName = currentReviewerSession ? currentReviewerSession.displayName : 'مراجع معتمد';
+            let reviewerName = 'مراجع معتمد';
+            if (window._adminOriginalSession || (window.adminSession && window.adminSession.user)) {
+                const actAdm = (window._adminOriginalSession && window._adminOriginalSession.user) || (window.adminSession && window.adminSession.user) || {};
+                if (actAdm.role === 'BOYS_ADMIN') {
+                    reviewerName = 'مشرف بطولات البنين (Admin 2 - تقييم إداري مباشر)';
+                } else if (actAdm.role === 'GIRLS_ADMIN') {
+                    reviewerName = 'مشرفة بطولات البنات (Admin 3 - تقييم إداري مباشر)';
+                } else {
+                    reviewerName = (window.adminSession && window.adminSession.displayName) ? window.adminSession.displayName : 'المشرف العام (تقييم إداري مباشر)';
+                }
+            } else if (currentReviewerSession && currentReviewerSession.displayName) {
+                reviewerName = currentReviewerSession.displayName;
+            }
+            const isRevert = (currentDecisionChoice === 'REVERT');
 
             const payload = {
-                action: 'submitReviewDecision',
+                action: isRevert ? 'revertStudentDecision' : 'submitReviewDecision',
                 studentId: selectedDecisionStudentId,
                 decision: currentDecisionChoice,
+                targetStatus: 'يحتاج المراجعة',
                 reviewerName: reviewerName,
                 reasons: reasons,
-                notes: notes
+                notes: notes || (isRevert ? 'تم الرجوع في القرار وإلغاء طلب التحديث وإعادة الاستمارة لقيد المراجعة' : '')
             };
 
             const btnConfirm = document.getElementById('btnConfirmDecision');
@@ -24039,29 +24460,127 @@
             try {
                 res = await callBackendApi(payload);
             } catch (err) {
-                res = { success: true, message: 'تم اعتماد القرار محلياً.' };
+                res = { success: true, message: isRevert ? 'تم الرجوع في القرار محلياً.' : 'تم اعتماد القرار محلياً.' };
             }
             if (btnConfirm) btnConfirm.disabled = false;
 
-            const match = cachedReviewerStudents.find(s => s.studentId === selectedDecisionStudentId);
-            if (match) {
-                match.status = (currentDecisionChoice === 'APPROVED') ? 'تمت المراجعة وتم السماح له بالاشتراك' : 'ضرورة التحديث';
-                if (currentDecisionChoice === 'NEEDS_UPDATE') {
-                    match.updateReasons = reasons.join(' - ');
+            const updateStudentStatus = (list) => {
+                if (!list || !Array.isArray(list)) return;
+                const match = list.find(s => s.studentId === selectedDecisionStudentId);
+                if (match) {
+                    if (currentDecisionChoice === 'APPROVED') {
+                        match.status = 'تمت المراجعة وتم السماح له بالاشتراك';
+                        match.updateReasons = '-';
+                    } else if (isRevert) {
+                        match.status = 'يحتاج المراجعة';
+                        match.updateReasons = '-';
+                    } else {
+                        match.status = 'ضرورة التحديث';
+                        match.updateReasons = reasons.join(' - ');
+                    }
                 }
-                const reviewerGov = currentReviewerSession ? currentReviewerSession.governorate : '';
-                try {
-                    sessionStorage.setItem('repChamps_reviewer_students_' + (reviewerGov || 'all'), JSON.stringify(cachedReviewerStudents));
-                } catch (e) { console.warn('Could not save reviewer students to sessionStorage', e); }
-            }
+            };
+
+            updateStudentStatus(cachedReviewerStudents);
+            updateStudentStatus(cachedAllReviewerStudents);
+            updateStudentStatus(cachedRegistrarStudents);
+
+            const reviewerGov = currentReviewerSession ? currentReviewerSession.governorate : '';
+            try {
+                sessionStorage.setItem('repChamps_reviewer_students_' + (reviewerGov || 'all'), JSON.stringify(cachedReviewerStudents));
+            } catch (e) { console.warn('Could not save reviewer students to sessionStorage', e); }
 
             closeDecisionModal();
             filterReviewerTable();
             updateReviewerStatsCounters();
+            if (typeof renderTdGovStudentsTable === 'function' && document.getElementById('tdGovStudentsCard') && !document.getElementById('tdGovStudentsCard').classList.contains('hidden')) {
+                renderTdGovStudentsTable();
+            }
 
-            showToast(res && res.message ? res.message : 'تم اعتماد القرار بنجاح وتوثيقه في سجل العمليات.', 'success');
+            showToast(res && res.message ? res.message : (isRevert ? 'تم الرجوع في القرار بنجاح وإعادة الاستمارة لقيد المراجعة.' : 'تم اعتماد القرار بنجاح.'), 'success');
             checkAndAdvanceTaskOnCompletion();
         }
+
+        // =========================================================================
+        // صلاحية الرجوع في القرار الخاص بالاستمارات قيد التحديث (الأدمن ومسؤول البطولة)
+        // =========================================================================
+        window.revertStudentUpdateDecision = async function(studentId, studentName) {
+            if (!studentId) return;
+
+            const displayName = studentName ? `الطالب (${studentName})` : `هذا الطالب`;
+            const confirmed = await new Promise(resolve => {
+                if (typeof showCustomConfirm === 'function') {
+                    showCustomConfirm(
+                        'الرجوع في القرار',
+                        `هل أنت متأكد من الرجوع في قرار طلب التحديث لـ ${displayName} وإلغاء طلب التحديث وإعادة الاستمارة لحالة (يحتاج المراجعة)؟`,
+                        () => resolve(true),
+                        () => resolve(false)
+                    );
+                } else {
+                    resolve(confirm(`هل أنت متأكد من الرجوع في قرار طلب التحديث لـ ${displayName} وإعادة الاستمارة لحالة (يحتاج المراجعة)؟`));
+                }
+            });
+
+            if (!confirmed) return;
+
+            let reviewerName = 'إدارة البطولة';
+            if (window._adminOriginalSession || (window.adminSession && window.adminSession.user)) {
+                const actAdm = (window._adminOriginalSession && window._adminOriginalSession.user) || (window.adminSession && window.adminSession.user) || {};
+                if (actAdm.role === 'BOYS_ADMIN') {
+                    reviewerName = 'مشرف بطولات البنين (Admin 2 - تقييم إداري مباشر)';
+                } else if (actAdm.role === 'GIRLS_ADMIN') {
+                    reviewerName = 'مشرفة بطولات البنات (Admin 3 - تقييم إداري مباشر)';
+                } else {
+                    reviewerName = (window.adminSession && window.adminSession.displayName) ? window.adminSession.displayName : 'المشرف العام (تقييم إداري مباشر)';
+                }
+            } else if (currentReviewerSession && currentReviewerSession.displayName) {
+                reviewerName = currentReviewerSession.displayName;
+            }
+            const adminUser = window.adminSession ? window.adminSession.username : '';
+
+            try {
+                const res = await callBackendApi({
+                    action: 'revertStudentDecision',
+                    studentId: studentId,
+                    targetStatus: 'يحتاج المراجعة',
+                    reviewerName: reviewerName,
+                    adminUsername: adminUser,
+                    notes: 'تم الرجوع في القرار وإلغاء طلب التحديث وإعادة الاستمارة لقيد المراجعة'
+                });
+
+                const updateStudentStatus = (list) => {
+                    if (!list || !Array.isArray(list)) return;
+                    const st = list.find(s => s.studentId === studentId);
+                    if (st) {
+                        st.status = 'يحتاج المراجعة';
+                        st.updateReasons = '-';
+                    }
+                };
+
+                updateStudentStatus(cachedReviewerStudents);
+                updateStudentStatus(cachedAllReviewerStudents);
+                updateStudentStatus(cachedRegistrarStudents);
+
+                const reviewerGov = currentReviewerSession ? currentReviewerSession.governorate : '';
+                try {
+                    sessionStorage.setItem('repChamps_reviewer_students_' + (reviewerGov || 'all'), JSON.stringify(cachedReviewerStudents));
+                } catch (e) {}
+
+                if (typeof filterReviewerTable === 'function') filterReviewerTable();
+                if (typeof updateReviewerStatsCounters === 'function') updateReviewerStatsCounters();
+                if (typeof renderTdGovStudentsTable === 'function' && document.getElementById('tdGovStudentsCard') && !document.getElementById('tdGovStudentsCard').classList.contains('hidden')) {
+                    renderTdGovStudentsTable();
+                }
+                if (typeof filterRegistrarTable === 'function' && currentRegistrarSession) {
+                    filterRegistrarTable();
+                }
+
+                showToast(res && res.message ? res.message : 'تم الرجوع في القرار بنجاح وإعادة الاستمارة لحالة (يحتاج المراجعة).', 'success', 4000);
+            } catch (err) {
+                console.error('revertStudentUpdateDecision error:', err);
+                showToast('تعذر الرجوع في القرار: ' + (err.message || err), 'error');
+            }
+        };
 
         // =========================================================================
         // استوديو المراجعة الذهبي المزدوج (Golden Split-Screen Review Studio)
@@ -24376,29 +24895,91 @@
 
         // فتح استوديو المراجعة الذهبي
         window.openGoldenReviewStudio = function (studentId, overrideFileUrl) {
-            const allSubs = (cachedReviewerStudents && cachedReviewerStudents.length > 0)
+            let targetStudent = null;
+            let list = [];
+
+            // 1. البحث في كاش المراجعين
+            const revSubs = (cachedReviewerStudents && cachedReviewerStudents.length > 0)
                 ? cachedReviewerStudents
                 : (cachedAllReviewerStudents || []);
-            const targetStudent = allSubs.find(s => s.studentId === studentId);
+            targetStudent = revSubs.find(s => String(s.studentId) === String(studentId));
+            if (targetStudent) {
+                if (window.lastFilteredReviewerStudents && Array.isArray(window.lastFilteredReviewerStudents) && window.lastFilteredReviewerStudents.length > 0) {
+                    list = window.lastFilteredReviewerStudents.filter(s => s.governorate === targetStudent.governorate);
+                }
+                if (!list || list.length === 0) {
+                    list = revSubs.filter(s => s.governorate === targetStudent.governorate);
+                }
+            }
+
+            // 2. البحث في كاش مسؤولي المحافظات (Registrar Cache)
+            if (!targetStudent && typeof cachedRegistrarStudents !== 'undefined' && Array.isArray(cachedRegistrarStudents)) {
+                targetStudent = cachedRegistrarStudents.find(s => String(s.studentId) === String(studentId));
+                if (targetStudent) {
+                    list = (window.lastFilteredRegistrarStudents && Array.isArray(window.lastFilteredRegistrarStudents) && window.lastFilteredRegistrarStudents.length > 0)
+                        ? window.lastFilteredRegistrarStudents
+                        : cachedRegistrarStudents;
+                }
+            }
+
+            // 3. البحث في كاش مديري البطولات (Tournament Director Cache)
+            if (!targetStudent && typeof cachedTournDirectorStageData !== 'undefined' && cachedTournDirectorStageData) {
+                if (Array.isArray(cachedTournDirectorStageData.governorates)) {
+                    for (const g of cachedTournDirectorStageData.governorates) {
+                        if (Array.isArray(g.students)) {
+                            const found = g.students.find(s => String(s.studentId) === String(studentId));
+                            if (found) {
+                                targetStudent = found;
+                                list = g.students;
+                                break;
+                            }
+                        }
+                    }
+                } else if (Array.isArray(cachedTournDirectorStageData)) {
+                    targetStudent = cachedTournDirectorStageData.find(s => String(s.studentId) === String(studentId));
+                    if (targetStudent) list = cachedTournDirectorStageData;
+                }
+            }
+            if (!targetStudent && typeof cachedTournDirectorStudents !== 'undefined' && Array.isArray(cachedTournDirectorStudents)) {
+                targetStudent = cachedTournDirectorStudents.find(s => String(s.studentId) === String(studentId));
+                if (targetStudent) list = cachedTournDirectorStudents;
+            }
+
+            // 4. البحث في الكاش الشامل للطلاب إن وجد
+            if (!targetStudent && window._allSystemStudents && Array.isArray(window._allSystemStudents)) {
+                targetStudent = window._allSystemStudents.find(s => String(s.studentId) === String(studentId));
+                if (targetStudent) {
+                    list = window._allSystemStudents.filter(s => s.governorate === targetStudent.governorate);
+                }
+            }
+
+            // 5. في حالة عدم العثور التلقائي ولكن المعرف أو الرابط متاح: إنشاء كائن مرجعي فوري لعدم التعطيل
             if (!targetStudent) {
-                showToast('تعذر العثور على بيانات الطالب المحدد.', 'error');
-                return;
+                if (studentId || overrideFileUrl) {
+                    targetStudent = {
+                        studentId: studentId || ('ST_' + Date.now()),
+                        studentName: 'استمارة طالب #' + (studentId || ''),
+                        fileUrl: overrideFileUrl || '',
+                        governorate: (currentRegistrarSession && currentRegistrarSession.governorate) || 'المعاينة المباشرة',
+                        status: 'يحتاج المراجعة'
+                    };
+                    list = [targetStudent];
+                } else {
+                    showToast('تعذر العثور على بيانات الطالب المحدد.', 'error');
+                    return;
+                }
             }
 
-            // تحديد قائمة طلاب المحافظة الحالية للتنقل بينهم
-            let list = [];
-            if (window.lastFilteredReviewerStudents && Array.isArray(window.lastFilteredReviewerStudents) && window.lastFilteredReviewerStudents.length > 0) {
-                list = window.lastFilteredReviewerStudents.filter(s => s.governorate === targetStudent.governorate);
-            }
-            if (!list || list.length === 0) {
-                list = allSubs.filter(s => s.governorate === targetStudent.governorate);
-            }
-            if (!list || list.length === 0) {
-                list = [targetStudent];
+            if (overrideFileUrl) {
+                goldenStudioState.overrideFileUrl = overrideFileUrl;
+                targetStudent.fileUrl = overrideFileUrl;
+            } else {
+                goldenStudioState.overrideFileUrl = null;
             }
 
-            // التأكد من وجود الطالب المستهدف في القائمة
-            let targetIdx = list.findIndex(s => s.studentId === studentId);
+            // التأكد من وجود الطالب المستهدف في قائمة الاستوديو للتنقل السلس
+            if (!list || list.length === 0) list = [targetStudent];
+            let targetIdx = list.findIndex(s => String(s.studentId) === String(studentId));
             if (targetIdx === -1) {
                 list.unshift(targetStudent);
                 targetIdx = 0;
@@ -24729,17 +25310,25 @@
             // 2. إغلاق الاستوديو
             closeGoldenReviewStudio();
 
-            // 3. الانتقال لصفحة المراجع وتأكيد ظهورها
-            if (typeof showReviewerDashboard === 'function') {
-                showReviewerDashboard();
+            // 3. العودة للواجهة النشطة الحالية (بوابة المحافظة أو مدير البطولة أو المراجع)
+            const regView = document.getElementById('registrarPortalView');
+            const tdView = document.getElementById('tournamentDirectorView');
+            if (regView && !regView.classList.contains('hidden')) {
+                if (typeof filterRegistrarTable === 'function') filterRegistrarTable();
+            } else if (tdView && !tdView.classList.contains('hidden')) {
+                if (typeof renderTdGovStudentsTable === 'function') renderTdGovStudentsTable();
+            } else {
+                if (typeof showReviewerDashboard === 'function') {
+                    showReviewerDashboard();
+                }
+                const revView = document.getElementById('reviewPortalView');
+                if (revView) {
+                    revView.classList.remove('hidden');
+                    revView.style.display = 'block';
+                }
+                if (typeof filterReviewerTable === 'function') filterReviewerTable();
+                if (typeof updateReviewerStatsCounters === 'function') updateReviewerStatsCounters();
             }
-            const revView = document.getElementById('reviewPortalView');
-            if (revView) {
-                revView.classList.remove('hidden');
-                revView.style.display = 'block';
-            }
-            if (typeof filterReviewerTable === 'function') filterReviewerTable();
-            if (typeof updateReviewerStatsCounters === 'function') updateReviewerStatsCounters();
 
             // 4. تقرير ما تم تسجيله أونلاين وما لم يتم عند الخروج نهائياً
             if (goldenStudioState && goldenStudioState.syncTracker && Array.isArray(goldenStudioState.syncTracker.records) && goldenStudioState.syncTracker.records.length > 0) {
@@ -25324,11 +25913,36 @@
             const student = list[idx];
             goldenStudioState.currentStudent = student;
 
-            // 1. تحديث بيانات الطالب: المحافظة واسم الطالب فقط لا غير
+            // 1. تحديث بيانات الطالب: المحافظة واسم الطالب وشارة صلاحية المشرف
             const nameEl = document.getElementById('goldenStudentNameDisplay');
             const metaEl = document.getElementById('goldenStudentMetaDisplay');
             const titleEl = document.getElementById('goldenStudentPdfTitle');
             const govBadgeEl = document.getElementById('goldenStudentGovGameStageBadge');
+            const adminBadge = document.getElementById('goldenAdminEvaluationBadge');
+
+            const isAdminMode = !!(window._adminOriginalSession || (window.adminSession && window.adminSession.user));
+            if (adminBadge) {
+                if (isAdminMode) {
+                    adminBadge.style.display = 'inline-flex';
+                    const actAdmin = (window._adminOriginalSession && window._adminOriginalSession.user) || (window.adminSession && window.adminSession.user) || {};
+                    const aRole = actAdmin.role || '';
+                    if (aRole === 'BOYS_ADMIN') {
+                        adminBadge.innerHTML = '<i class="fas fa-mars"></i> تقييم مشرف البنين (Admin 2)';
+                        adminBadge.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+                        adminBadge.title = 'تقييم معتمد بصلاحية مشرف إدارة التربية الرياضية بنين';
+                    } else if (aRole === 'GIRLS_ADMIN') {
+                        adminBadge.innerHTML = '<i class="fas fa-venus"></i> تقييم مشرفة البنات (Admin 3)';
+                        adminBadge.style.background = 'linear-gradient(135deg, #db2777, #be185d)';
+                        adminBadge.title = 'تقييم معتمد بصلاحية مشرفة إدارة التربية الرياضية بنات';
+                    } else {
+                        adminBadge.innerHTML = '<i class="fas fa-crown"></i> تقييم المشرف العام (Admin 1)';
+                        adminBadge.style.background = 'linear-gradient(135deg, #7c3aed, #4f46e5)';
+                        adminBadge.title = 'تقييم معتمد بصلاحية المشرف العام بدلاً من المراجع';
+                    }
+                } else {
+                    adminBadge.style.display = 'none';
+                }
+            }
 
             if (govBadgeEl) {
                 govBadgeEl.innerHTML = '<i class="fas fa-location-dot"></i> المحافظة: <strong>' + escapeHtml(student.governorate || 'المحافظة') + '</strong>';
@@ -25420,6 +26034,7 @@
             }
 
             const stFileUrl = overrideFileUrl || 
+                goldenStudioState.overrideFileUrl ||
                 student.fileUrl || 
                 student.url || 
                 student.file_url || 
@@ -27225,7 +27840,20 @@
             updateGoldenLiveProgress();
 
             // 4. تنفيذ العملية في الخلفية فورياً على السيرفر دون إيقاف المراجع أو تعطيله
-            const reviewerName = (typeof currentReviewerSession !== 'undefined' && currentReviewerSession ? currentReviewerSession.displayName : '') || 'مراجع معتمد';
+            let reviewerName = 'مراجع معتمد';
+            if (window._adminOriginalSession || (window.adminSession && window.adminSession.user)) {
+                const actAdm = (window._adminOriginalSession && window._adminOriginalSession.user) || (window.adminSession && window.adminSession.user) || {};
+                if (actAdm.role === 'BOYS_ADMIN') {
+                    reviewerName = 'مشرف بطولات البنين (Admin 2 - تقييم إداري مباشر)';
+                } else if (actAdm.role === 'GIRLS_ADMIN') {
+                    reviewerName = 'مشرفة بطولات البنات (Admin 3 - تقييم إداري مباشر)';
+                } else {
+                    reviewerName = (window.adminSession && window.adminSession.displayName) ? window.adminSession.displayName : 'المشرف العام (تقييم إداري مباشر)';
+                }
+            } else if (typeof currentReviewerSession !== 'undefined' && currentReviewerSession && currentReviewerSession.displayName) {
+                reviewerName = currentReviewerSession.displayName;
+            }
+
             callBackendApi({
                 action: 'submitReviewDecision',
                 studentId: student.studentId,
@@ -27245,12 +27873,39 @@
                     );
                 }
                 if (isOk) {
+                    const newStatus = (decision === 'APPROVED') ? 'تمت المراجعة وتم السماح له بالاشتراك' : 'ضرورة التحديث';
+                    student.status = newStatus;
+                    if (decision === 'NEEDS_UPDATE') student.updateReasons = (reasons || []).join(' - ');
+
                     const allSubs = (Array.isArray(cachedReviewerStudents) && cachedReviewerStudents.length > 0)
                         ? cachedReviewerStudents
                         : (cachedAllReviewerStudents || []);
-                    const match = allSubs.find(s => s.studentId === student.studentId);
+                    const match = allSubs.find(s => String(s.studentId) === String(student.studentId));
                     if (match) {
-                        match.status = (decision === 'APPROVED') ? 'تمت المراجعة وتم السماح له بالاشتراك' : 'ضرورة التحديث';
+                        match.status = newStatus;
+                        if (decision === 'NEEDS_UPDATE') match.updateReasons = (reasons || []).join(' - ');
+                    }
+
+                    if (typeof cachedRegistrarStudents !== 'undefined' && Array.isArray(cachedRegistrarStudents)) {
+                        const regMatch = cachedRegistrarStudents.find(s => String(s.studentId) === String(student.studentId));
+                        if (regMatch) {
+                            regMatch.status = newStatus;
+                            if (decision === 'NEEDS_UPDATE') regMatch.updateReasons = (reasons || []).join(' - ');
+                        }
+                    }
+
+                    if (typeof cachedTournDirectorStageData !== 'undefined' && cachedTournDirectorStageData) {
+                        if (Array.isArray(cachedTournDirectorStageData.governorates)) {
+                            cachedTournDirectorStageData.governorates.forEach(g => {
+                                if (Array.isArray(g.students)) {
+                                    const m = g.students.find(s => String(s.studentId) === String(student.studentId));
+                                    if (m) {
+                                        m.status = newStatus;
+                                        if (decision === 'NEEDS_UPDATE') m.updateReasons = (reasons || []).join(' - ');
+                                    }
+                                }
+                            });
+                        }
                     }
                 }
             }).catch(e => {
@@ -27382,7 +28037,19 @@
             const total = decisionsList.length;
             let successCount = 0;
             let failCount = 0;
-            const reviewerName = currentReviewerSession ? currentReviewerSession.displayName : 'مراجع معتمد';
+            let reviewerName = 'مراجع معتمد';
+            if (window._adminOriginalSession || (window.adminSession && window.adminSession.user)) {
+                const actAdm = (window._adminOriginalSession && window._adminOriginalSession.user) || (window.adminSession && window.adminSession.user) || {};
+                if (actAdm.role === 'BOYS_ADMIN') {
+                    reviewerName = 'مشرف بطولات البنين (Admin 2 - تقييم إداري مباشر)';
+                } else if (actAdm.role === 'GIRLS_ADMIN') {
+                    reviewerName = 'مشرفة بطولات البنات (Admin 3 - تقييم إداري مباشر)';
+                } else {
+                    reviewerName = (window.adminSession && window.adminSession.displayName) ? window.adminSession.displayName : 'المشرف العام (تقييم إداري مباشر)';
+                }
+            } else if (typeof currentReviewerSession !== 'undefined' && currentReviewerSession && currentReviewerSession.displayName) {
+                reviewerName = currentReviewerSession.displayName;
+            }
 
             for (let i = 0; i < total; i++) {
                 const [studentId, dObj] = decisionsList[i];
@@ -27407,15 +28074,40 @@
                     const isOk = (res && res.success !== false);
                     if (isOk) {
                         successCount++;
-                        // تحديث بيانات الطالب محلياً في الذاكرة
+                        const newStatus = (dObj.decision === 'APPROVED') ? 'تمت المراجعة وتم السماح له بالاشتراك' : 'ضرورة التحديث';
+                        const updateReasonsStr = (dObj.reasons || []).join(' - ');
+
+                        // 1. تحديث بيانات الطالب محلياً في كاش المراجع
                         const allSubs = (cachedReviewerStudents && cachedReviewerStudents.length > 0)
                             ? cachedReviewerStudents
                             : (cachedAllReviewerStudents || []);
-                        const match = allSubs.find(s => s.studentId === studentId);
+                        const match = allSubs.find(s => String(s.studentId) === String(studentId));
                         if (match) {
-                            match.status = (dObj.decision === 'APPROVED') ? 'تمت المراجعة وتم السماح له بالاشتراك' : 'ضرورة التحديث';
-                            if (dObj.decision === 'NEEDS_UPDATE') {
-                                match.updateReasons = (dObj.reasons || []).join(' - ');
+                            match.status = newStatus;
+                            if (dObj.decision === 'NEEDS_UPDATE') match.updateReasons = updateReasonsStr;
+                        }
+
+                        // 2. تحديث بيانات الطالب محلياً في كاش المحافظة
+                        if (typeof cachedRegistrarStudents !== 'undefined' && Array.isArray(cachedRegistrarStudents)) {
+                            const regMatch = cachedRegistrarStudents.find(s => String(s.studentId) === String(studentId));
+                            if (regMatch) {
+                                regMatch.status = newStatus;
+                                if (dObj.decision === 'NEEDS_UPDATE') regMatch.updateReasons = updateReasonsStr;
+                            }
+                        }
+
+                        // 3. تحديث بيانات الطالب في كاش مدير البطولة
+                        if (typeof cachedTournDirectorStageData !== 'undefined' && cachedTournDirectorStageData) {
+                            if (Array.isArray(cachedTournDirectorStageData.governorates)) {
+                                cachedTournDirectorStageData.governorates.forEach(g => {
+                                    if (Array.isArray(g.students)) {
+                                        const m = g.students.find(s => String(s.studentId) === String(studentId));
+                                        if (m) {
+                                            m.status = newStatus;
+                                            if (dObj.decision === 'NEEDS_UPDATE') m.updateReasons = updateReasonsStr;
+                                        }
+                                    }
+                                });
                             }
                         }
 
@@ -27493,9 +28185,11 @@
             }
             goldenStudioState.stagedDecisions.clear();
             closeGoldenReviewStudio();
-            filterReviewerTable();
-            updateReviewerStatsCounters();
-            checkAndAdvanceTaskOnCompletion();
+            if (typeof filterReviewerTable === 'function') filterReviewerTable();
+            if (typeof updateReviewerStatsCounters === 'function') updateReviewerStatsCounters();
+            if (typeof filterRegistrarTable === 'function') filterRegistrarTable();
+            if (typeof renderTdGovStudentsTable === 'function') renderTdGovStudentsTable();
+            if (typeof checkAndAdvanceTaskOnCompletion === 'function') checkAndAdvanceTaskOnCompletion();
             showToast('تم تحديث جدول الاستمارات بنجاح.', 'success');
         };
 
@@ -27611,8 +28305,32 @@
                 if (govEl) govEl.innerHTML = `<i class="fas fa-location-dot"></i> المحافظة: <strong style="color:#ffffff;">${currentRegistrarSession.governorate || 'عام'}</strong> <span style="display:inline-flex; align-items:center; gap:4px; font-size:0.7rem; color:#a7f3d0; background:rgba(255,255,255,0.15); padding:2px 6px; border-radius:4px; margin-right:6px;"><i class="fas fa-tower-broadcast fa-fade"></i> تحديث مباشر أونلاين</span>`;
             }
 
+            const initialCat = (currentRegistrarSession && currentRegistrarSession.previewCategory && currentRegistrarSession.previewCategory !== 'all')
+                ? currentRegistrarSession.previewCategory
+                : 'all';
             if (typeof setRegistrarCategoryFilter === 'function') {
-                setRegistrarCategoryFilter('all');
+                setRegistrarCategoryFilter(initialCat);
+            }
+            if (currentRegistrarSession && currentRegistrarSession.isAdminPreview && currentRegistrarSession.previewCategory && currentRegistrarSession.previewCategory !== 'all') {
+                const btnAll = document.getElementById('btnRegCat_all');
+                const btnBoys = document.getElementById('btnRegCat_boys');
+                const btnGirls = document.getElementById('btnRegCat_girls');
+                if (currentRegistrarSession.previewCategory === 'بنين') {
+                    if (btnAll) btnAll.style.display = 'none';
+                    if (btnGirls) btnGirls.style.display = 'none';
+                    if (btnBoys) { btnBoys.style.display = ''; btnBoys.classList.add('active'); }
+                } else if (currentRegistrarSession.previewCategory === 'بنات') {
+                    if (btnAll) btnAll.style.display = 'none';
+                    if (btnBoys) btnBoys.style.display = 'none';
+                    if (btnGirls) { btnGirls.style.display = ''; btnGirls.classList.add('active'); }
+                }
+            } else {
+                const btnAll = document.getElementById('btnRegCat_all');
+                const btnBoys = document.getElementById('btnRegCat_boys');
+                const btnGirls = document.getElementById('btnRegCat_girls');
+                if (btnAll) btnAll.style.display = '';
+                if (btnBoys) btnBoys.style.display = '';
+                if (btnGirls) btnGirls.style.display = '';
             }
             loadRegistrarStudents(true);
             loadRegistrarCollectiveSheets(true);
@@ -27861,6 +28579,10 @@
         }
 
         function handleRegistrarLogout() {
+            if (currentRegistrarSession && currentRegistrarSession.isAdminPreview) {
+                exitAdminDirectPreview();
+                return;
+            }
             if (currentRegistrarSession && currentRegistrarSession.username && typeof deregisterActiveOnlineUser === 'function') {
                 deregisterActiveOnlineUser(currentRegistrarSession.username);
             }
@@ -27891,6 +28613,10 @@
         }
 
         window.setRegistrarCategoryFilter = function (cat) {
+            // التحقق من نطاق المعاينة المقيد لمشرف البنين أو البنات
+            if (currentRegistrarSession && currentRegistrarSession.isAdminPreview && currentRegistrarSession.previewCategory && currentRegistrarSession.previewCategory !== 'all') {
+                cat = currentRegistrarSession.previewCategory;
+            }
             window.currentRegistrarCategoryFilter = cat || 'all';
 
             const btnAll = document.getElementById('btnRegCat_all');
@@ -28359,7 +29085,16 @@
                     : true;
 
                 let actionHtml = '';
-                if (!isModificationAllowed) {
+                if (currentRegistrarSession && currentRegistrarSession.isAdminPreview) {
+                    actionHtml = `
+                        <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
+                            <button type="button" class="admin-action-btn" onclick="openGoldenReviewStudio('${escapeHtml(s.studentId)}', '${escapeHtml(s.fileUrl || '')}')" style="background:linear-gradient(135deg, #7c3aed, #6d28d9); color:#fff; border-color:#5b21b6; font-weight:800; padding:4px 9px; font-size:0.74rem; border-radius:6px; box-shadow:0 2px 5px rgba(124,58,237,0.3); display:inline-flex; align-items:center; gap:4px; cursor:pointer;" title="تقييم استمارة الطالب في الاستوديو الذهبي بصلاحية المشرف العام بدلاً من المراجع">
+                                <i class="fas fa-crown"></i> تقييم المشرف
+                            </button>
+                            <span style="font-size:0.68rem; color:#6d28d9; font-weight:700;">بدلاً من المراجع</span>
+                        </div>
+                    `;
+                } else if (!isModificationAllowed) {
                     actionHtml = `
                         <span style="font-size:0.72rem; color:#dc2626; font-weight:700; background:#fef2f2; padding:3px 7px; border-radius:4px; border:1px solid #fecaca; display:inline-flex; align-items:center; gap:3px;" title="انتهى موعد استلام هذه المسابقة - التعديل مغلق إلا بقرار من إدارة البطولة">
                             <i class="fas fa-lock"></i> انتهت المهلة
@@ -28396,19 +29131,19 @@
                 if (s.previousFileUrl) {
                     fileCellHtml = `
                         <div style="display:flex; flex-direction:column; gap:4px; align-items:center;">
-                            <a href="${s.previousFileUrl}" target="_blank" class="file-tag old" title="الملف السابق" style="display:inline-flex; align-items:center; gap:3px; padding:3px 8px; border-radius:6px; font-size:0.75rem; text-decoration:none;">
+                            <button type="button" onclick="openGoldenReviewStudio('${escapeHtml(s.studentId)}', '${escapeHtml(s.previousFileUrl)}')" class="file-tag old" title="فتح الملف السابق في الاستوديو الذهبي" style="display:inline-flex; align-items:center; gap:3px; padding:3px 8px; border-radius:6px; font-size:0.75rem; border:none; cursor:pointer;">
                                 <i class="fas fa-file-pdf"></i> السابق
-                            </a>
-                            <a href="${s.fileUrl || '#'}" target="_blank" class="file-tag new" title="الملف البديل المحدث" style="display:inline-flex; align-items:center; gap:3px; padding:3px 8px; border-radius:6px; font-size:0.75rem; text-decoration:none;">
+                            </button>
+                            <button type="button" onclick="openGoldenReviewStudio('${escapeHtml(s.studentId)}', '${escapeHtml(s.fileUrl || '')}')" class="file-tag new" title="فتح الملف المحدث في الاستوديو الذهبي" style="display:inline-flex; align-items:center; gap:3px; padding:3px 8px; border-radius:6px; font-size:0.75rem; border:none; cursor:pointer;">
                                 <i class="fas fa-file-circle-check"></i> المحدث
-                            </a>
+                            </button>
                         </div>
                     `;
                 } else if (s.fileUrl) {
                     fileCellHtml = `
-                        <a href="${s.fileUrl}" target="_blank" class="admin-action-btn" style="padding:4px 10px; font-size:0.78rem; font-weight:700; color:#e11d48; border-color:#fecdd3; background:#fff1f2; border-radius:6px; display:inline-flex; align-items:center; gap:4px; text-decoration:none; white-space:nowrap;" title="فتح ملف الاستمارة PDF">
-                            <i class="fas fa-file-pdf"></i> عرض PDF
-                        </a>
+                        <button type="button" onclick="openGoldenReviewStudio('${escapeHtml(s.studentId)}', '${escapeHtml(s.fileUrl)}')" class="admin-action-btn" style="padding:4px 10px; font-size:0.78rem; font-weight:700; color:#e11d48; border-color:#fecdd3; background:#fff1f2; border-radius:6px; display:inline-flex; align-items:center; gap:4px; white-space:nowrap; cursor:pointer;" title="فتح استمارة الطالب في الاستوديو الذهبي">
+                            <i class="fas fa-file-pdf"></i> عرض الاستمارة
+                        </button>
                     `;
                 } else {
                     fileCellHtml = `<span style="font-size:0.74rem; color:#94a3b8;">غير متوفر</span>`;
@@ -28464,7 +29199,12 @@
                 return `
                     <tr>
                         <td style="text-align:center; font-weight:700;">${idx + 1}</td>
-                        <td style="font-weight:700; color:#0f172a;"><i class="fas fa-user-graduate" style="color:#059669; margin-left:6px;"></i>${escapeHtml(s.studentName)}</td>
+                        <td style="font-weight:700; color:#0f172a;">
+                            <a href="javascript:void(0)" onclick="openGoldenReviewStudio('${escapeHtml(s.studentId)}', '${escapeHtml(s.fileUrl || '')}')" style="color:#0f172a; text-decoration:none; display:inline-flex; align-items:center; gap:4px;" title="فتح استمارة الطالب في استوديو المراجعة الذهبي">
+                                <i class="fas fa-user-graduate" style="color:#059669; margin-left:2px;"></i>
+                                <span style="border-bottom:1px dashed #059669;">${escapeHtml(s.studentName)}</span>
+                            </a>
+                        </td>
                         <td style="font-size:0.8rem; color:#475569;">${escapeHtml(s.gameName)} - ${escapeHtml(s.stageName)}</td>
                         <td style="text-align:center;">${fileCellHtml}</td>
                         <td style="text-align:center;">${statusBadge}</td>
@@ -31576,6 +32316,636 @@
             }
         }
 
+        // ==========================================
+        // منظومة الاطلاع والمعاينة المباشرة للمشرف العام (Admin Direct Inspection)
+        // ==========================================
+        const ALL_EGYPTIAN_GOVERNORATES_LIST = [
+            'القاهرة', 'الجيزة', 'الإسكندرية', 'الدقهلية', 'البحر الأحمر', 
+            'البحيرة', 'الفيوم', 'الغربية', 'الإسماعيلية', 'المنوفية', 
+            'المنيا', 'القليوبية', 'الوادي الجديد', 'السويس', 'أسوان', 
+            'أسيوط', 'بني سويف', 'بورسعيد', 'دمياط', 'الشرقية', 
+            'جنوب سيناء', 'كفر الشيخ', 'مطروح', 'الأقصر', 'قنا', 
+            'شمال سيناء', 'سوهاج'
+        ];
+
+        window._adminInspectionCategory = 'all';
+        window._adminInspectionQuery = '';
+
+        window.initAdminDirectInspectionCard = function () {
+            const activeAdmin = (window.adminSession && window.adminSession.user) || {};
+            const adminRole = activeAdmin.role || 'SUPER_ADMIN';
+
+            // 1. ضبط الفئة الافتراضية وشارات الدور بناءً على صلاحية المشرف
+            const headerTitle = document.getElementById('directInspectionHeaderTitle');
+            const headerDesc = document.getElementById('directInspectionHeaderDesc');
+            const roleBadge = document.getElementById('directInspectionAdminRoleBadge');
+            const govTitle = document.getElementById('directInspectionGovTitle');
+            const revPanelTitle = document.getElementById('directInspectionRevPanelTitle');
+            const pillAll = document.getElementById('pillDirectInspectAll');
+            const pillBoys = document.getElementById('pillDirectInspectBoys');
+            const pillGirls = document.getElementById('pillDirectInspectGirls');
+            const pillTd = document.getElementById('pillDirectInspectTd');
+
+            if (adminRole === 'BOYS_ADMIN') {
+                window._adminInspectionCategory = 'بنين';
+                if (headerTitle) headerTitle.textContent = 'منظومة الاطلاع والمعاينة المباشرة - قطاع البنين';
+                if (headerDesc) headerDesc.textContent = 'توجيه لجان مراجعة البنين والمعاينة الفورية مع إمكانية فحص واعتماد استمارات البنين مباشرة';
+                if (roleBadge) {
+                    roleBadge.style.background = 'rgba(37,99,235,0.2)';
+                    roleBadge.style.borderColor = '#2563eb';
+                    roleBadge.style.color = '#60a5fa';
+                    roleBadge.innerHTML = '<i class="fas fa-mars"></i> تقييم بصلاحية مشرف البنين (Admin 2)';
+                }
+                if (govTitle) govTitle.textContent = 'بوابات مسؤولي المحافظات (استمارات البنين)';
+                if (revPanelTitle) revPanelTitle.textContent = 'لجان مراجعة البنين ومديرو البطولات';
+                if (pillAll) { pillAll.style.display = 'none'; pillAll.classList.remove('active'); }
+                if (pillGirls) { pillGirls.style.display = 'none'; pillGirls.classList.remove('active'); }
+                if (pillBoys) { pillBoys.style.display = ''; pillBoys.classList.add('active'); }
+                if (pillTd) { pillTd.style.display = ''; pillTd.classList.remove('active'); }
+            } else if (adminRole === 'GIRLS_ADMIN') {
+                window._adminInspectionCategory = 'بنات';
+                if (headerTitle) headerTitle.textContent = 'منظومة الاطلاع والمعاينة المباشرة - قطاع البنات';
+                if (headerDesc) headerDesc.textContent = 'توجيه لجان مراجعة البنات والمعاينة الفورية مع إمكانية فحص واعتماد استمارات البنات مباشرة';
+                if (roleBadge) {
+                    roleBadge.style.background = 'rgba(219,39,119,0.2)';
+                    roleBadge.style.borderColor = '#db2777';
+                    roleBadge.style.color = '#f472b6';
+                    roleBadge.innerHTML = '<i class="fas fa-venus"></i> تقييم بصلاحية مشرفة البنات (Admin 3)';
+                }
+                if (govTitle) govTitle.textContent = 'بوابات مسؤولي المحافظات (استمارات البنات)';
+                if (revPanelTitle) revPanelTitle.textContent = 'لجان مراجعة البنات ومديرات البطولات';
+                if (pillAll) { pillAll.style.display = 'none'; pillAll.classList.remove('active'); }
+                if (pillBoys) { pillBoys.style.display = 'none'; pillBoys.classList.remove('active'); }
+                if (pillGirls) { pillGirls.style.display = ''; pillGirls.classList.add('active'); }
+                if (pillTd) { pillTd.style.display = ''; pillTd.classList.remove('active'); }
+            } else {
+                window._adminInspectionCategory = 'all';
+                if (headerTitle) headerTitle.textContent = 'منظومة الاطلاع والمعاينة المباشرة للبوابات واللجان';
+                if (headerDesc) headerDesc.textContent = 'توجيه لجان المراجعة والمعاينة الفورية مع إمكانية فحص واعتماد الاستمارات مباشرة من الاستوديو الذهبي';
+                if (roleBadge) {
+                    roleBadge.style.background = 'rgba(245,158,11,0.2)';
+                    roleBadge.style.borderColor = '#f59e0b';
+                    roleBadge.style.color = '#fbbf24';
+                    roleBadge.innerHTML = '<i class="fas fa-crown"></i> تقييم بصلاحية المشرف العام (Admin 1)';
+                }
+                if (govTitle) govTitle.textContent = 'بوابات مسؤولي المحافظات (27 محافظة)';
+                if (revPanelTitle) revPanelTitle.textContent = 'لجان المراجعة وتوجيه اللجان (بنين وبنات)';
+                if (pillAll) { pillAll.style.display = ''; pillAll.classList.add('active'); }
+                if (pillBoys) { pillBoys.style.display = ''; pillBoys.classList.remove('active'); }
+                if (pillGirls) { pillGirls.style.display = ''; pillGirls.classList.remove('active'); }
+                if (pillTd) { pillTd.style.display = ''; pillTd.classList.remove('active'); }
+            }
+
+            // 2. ملء قائمة اختيار المحافظات في البطاقة والشريط العائم
+            const selGov = document.getElementById('selDirectInspectGov');
+            const stickyGovSel = document.getElementById('stickyGovPreviewSelect');
+            if (selGov) {
+                const curVal = selGov.value;
+                selGov.innerHTML = '<option value="">-- اختر المحافظة للمعاينة المباشرة --</option>';
+                ALL_EGYPTIAN_GOVERNORATES_LIST.forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = g;
+                    opt.textContent = g;
+                    selGov.appendChild(opt);
+                });
+                if (curVal) selGov.value = curVal;
+            }
+            if (stickyGovSel) {
+                const curValSticky = stickyGovSel.value;
+                stickyGovSel.innerHTML = '<option value="">-- تبديل المحافظة --</option>';
+                ALL_EGYPTIAN_GOVERNORATES_LIST.forEach(g => {
+                    const opt = document.createElement('option');
+                    opt.value = g;
+                    opt.textContent = g;
+                    stickyGovSel.appendChild(opt);
+                });
+                if (curValSticky) stickyGovSel.value = curValSticky;
+            }
+
+            // 3. فحص وتوليد شارات المحافظات في حال وجود الحاوية القديمة
+            renderDirectInspectionGovBadges();
+
+            // 4. ملء قائمة المراجعين ومديري البطولات وتوجيهات اللجان
+            populateDirectInspectionReviewers();
+
+            // 5. تحميل الحسابات ومسؤولي البطولات في الخلفية لضمان البيانات الحية
+            if (!superAdminAccountsData || !Array.isArray(superAdminAccountsData.reviewers) || superAdminAccountsData.reviewers.length === 0) {
+                if (typeof loadAllAccountsFromBackend === 'function') {
+                    loadAllAccountsFromBackend().then(() => populateDirectInspectionReviewers()).catch(() => {});
+                }
+            }
+            if (!Array.isArray(cachedTournamentDirectors) || cachedTournamentDirectors.length === 0) {
+                if (typeof loadTournamentDirectorsFromBackend === 'function') {
+                    loadTournamentDirectorsFromBackend().then(() => populateDirectInspectionReviewers()).catch(() => {});
+                }
+            }
+        };
+
+        function renderDirectInspectionGovBadges(filterText) {
+            const container = document.getElementById('directInspectionGovBadgesContainer');
+            if (!container) return;
+
+            const q = (filterText || '').trim().toLowerCase();
+            const filtered = ALL_EGYPTIAN_GOVERNORATES_LIST.filter(g => !q || g.toLowerCase().includes(g));
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="width:100%; text-align:center; padding:12px; font-size:0.75rem; color:#94a3b8;">لا توجد محافظة مطابقة للبحث</div>';
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(g => {
+                html += `
+                    <button type="button" onclick="adminDirectPreviewGovernorate('${escapeHtml(g)}')" 
+                            style="display:inline-flex; align-items:center; gap:5px; background:#ffffff; border:1px solid #cbd5e1; border-radius:6px; padding:5px 9px; font-size:0.75rem; font-weight:700; color:#1e293b; cursor:pointer; transition:all 0.18s; box-shadow:0 1px 3px rgba(0,0,0,0.03);"
+                            onmouseover="this.style.borderColor='#059669'; this.style.color='#059669'; this.style.background='#f0fdf4';"
+                            onmouseout="this.style.borderColor='#cbd5e1'; this.style.color='#1e293b'; this.style.background='#ffffff';"
+                            title="معاينة بوابة محافظة ${escapeHtml(g)} في الوقت الفعلي">
+                        <i class="fas fa-location-dot" style="color:#059669; font-size:0.7rem;"></i>
+                        <span>${escapeHtml(g)}</span>
+                    </button>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        window.filterDirectInspectionGovBadges = function (val) {
+            renderDirectInspectionGovBadges(val);
+        };
+
+        function getAllInspectionAccounts() {
+            const list = [];
+            const seenUsernames = new Set();
+            const activeAdmin = (window.adminSession && window.adminSession.user) || {};
+            const adminRole = activeAdmin.role || 'SUPER_ADMIN';
+
+            // 1. المراجعون المعتمدون من superAdminAccountsData
+            if (typeof superAdminAccountsData !== 'undefined' && Array.isArray(superAdminAccountsData.reviewers)) {
+                superAdminAccountsData.reviewers.forEach(r => {
+                    const u = (r.username || '').trim();
+                    if (!u) return;
+                    seenUsernames.add(u.toLowerCase());
+                    const cat = normalizeCategory(r.category);
+                    const isTd = !!(r.isTournDirector || r.isDirector);
+                    list.push({
+                        username: u,
+                        displayName: r.displayName || u,
+                        category: cat,
+                        isTournDirector: isTd,
+                        gameName: r.gameName || '',
+                        stageScope: r.stageScope || 'كافة المراحل',
+                        assignedGovs: r.governorate || r.assignedGovs || 'كل المحافظات',
+                        directive: r.directive || (cat === 'بنين' ? 'مراجعة وتدقيق استمارات قطاع البنين' : 'مراجعة وتدقيق استمارات قطاع البنات')
+                    });
+                });
+            }
+
+            // 2. إذا لم تكن superAdminAccountsData محملة بالكامل، استعن بجدول توزيع المهام
+            if (Array.isArray(cachedDistributionWorkloads) && cachedDistributionWorkloads.length > 0) {
+                cachedDistributionWorkloads.forEach(w => {
+                    const u = (w.assignedReviewerUsername || w.assignedReviewer || '').trim();
+                    if (u && !seenUsernames.has(u.toLowerCase())) {
+                        seenUsernames.add(u.toLowerCase());
+                        const cat = normalizeCategory(w.category);
+                        list.push({
+                            username: u,
+                            displayName: w.assignedReviewer || u,
+                            category: cat,
+                            isTournDirector: false,
+                            gameName: '',
+                            stageScope: 'كافة المراحل',
+                            assignedGovs: w.governorate || 'كل المحافظات',
+                            directive: cat === 'بنين' ? 'مراجعة وتدقيق استمارات قطاع البنين' : 'مراجعة وتدقيق استمارات قطاع البنات'
+                        });
+                    }
+                });
+            }
+
+            // 3. مسؤولو ومديرو البطولات من cachedTournamentDirectors
+            if (Array.isArray(cachedTournamentDirectors) && cachedTournamentDirectors.length > 0) {
+                cachedTournamentDirectors.forEach(td => {
+                    const u = (td.username || '').trim();
+                    if (!u) return;
+                    const existing = list.find(item => item.username.toLowerCase() === u.toLowerCase());
+                    if (existing) {
+                        existing.isTournDirector = true;
+                        existing.gameName = td.gameName || existing.gameName;
+                        existing.stageScope = td.stageScope || existing.stageScope;
+                        existing.directive = `إدارة وتأكيد نتائج بطولة (${existing.gameName || 'عام'}) - ${existing.stageScope || 'كافة المراحل'}`;
+                    } else {
+                        seenUsernames.add(u.toLowerCase());
+                        const cat = normalizeCategory(td.category);
+                        list.push({
+                            username: u,
+                            displayName: td.displayName || u,
+                            category: cat,
+                            isTournDirector: true,
+                            gameName: td.gameName || 'كافة الألعاب',
+                            stageScope: td.stageScope || 'كافة المراحل',
+                            assignedGovs: 'كافة المحافظات المشاركة',
+                            directive: `إدارة وتأكيد نتائج بطولة (${td.gameName || 'عام'}) - ${td.stageScope || 'كافة المراحل'}`
+                        });
+                    }
+                });
+            }
+
+            // 4. خيارات افتراضية نموذجية في حالة عدم توفر حسابات بعد
+            if (list.length === 0) {
+                list.push(
+                    { username: 'reviewer1', displayName: 'لجنة مراجعة بنين (قطاع 1)', category: 'بنين', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'القاهرة، الجيزة، الإسكندرية', directive: 'مراجعة وتدقيق استمارات قطاع البنين بالكامل' },
+                    { username: 'reviewer2', displayName: 'لجنة مراجعة بنات (قطاع 1)', category: 'بنات', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'القاهرة، الجيزة، الإسكندرية', directive: 'مراجعة وتدقيق استمارات قطاع البنات بالكامل' },
+                    { username: 'reviewer3', displayName: 'لجنة مراجعة بنين (قطاع الوجه البحري)', category: 'بنين', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'الدقهلية، البحيرة، الغربية', directive: 'التدقيق الشامل لبطولات بنين للوجه البحري' },
+                    { username: 'reviewer4', displayName: 'لجنة مراجعة بنات (قطاع الصعيد والقناة)', category: 'بنات', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'أسيوط، سوهاج، الإسماعيلية', directive: 'التدقيق الشامل لبطولات بنات الصعيد والقناة' },
+                    { username: 'director_gym', displayName: 'د. خالد عبد العزيز (مدير بطولة الجمباز)', category: 'بنين', isTournDirector: true, gameName: 'الجمباز', stageScope: 'كافة المراحل', assignedGovs: 'كافة المحافظات المشاركة', directive: 'إدارة واعتماد كشوف ومراكز بطولة الجمباز بنين' },
+                    { username: 'director_swim', displayName: 'أ. هالة إبراهيم (مديرة بطولة السباحة)', category: 'بنات', isTournDirector: true, gameName: 'السباحة', stageScope: 'كافة المراحل', assignedGovs: 'كافة المحافظات المشاركة', directive: 'إدارة واعتماد كشوف ومراكز بطولة السباحة بنات' }
+                );
+            }
+
+            // تصفية صارمة للحسابات بحسب دور المشرف الحالي
+            if (adminRole === 'BOYS_ADMIN') {
+                return list.filter(item => item.category === 'بنين');
+            } else if (adminRole === 'GIRLS_ADMIN') {
+                return list.filter(item => item.category === 'بنات');
+            }
+
+            return list;
+        }
+
+        window.setInspectionCategoryFilter = function (category, btn) {
+            window._adminInspectionCategory = category || 'all';
+
+            // تحديث حالة الأزرار
+            const pills = document.querySelectorAll('#inspectionCategoryPills .inspection-filter-pill');
+            pills.forEach(p => p.classList.remove('active'));
+            if (btn) {
+                btn.classList.add('active');
+            } else {
+                const targetBtn = document.querySelector(`#inspectionCategoryPills button[onclick*="'${category}'"]`);
+                if (targetBtn) targetBtn.classList.add('active');
+            }
+
+            renderFilteredDirectInspectionReviewers();
+        };
+
+        window.filterDirectInspectionReviewers = function (val) {
+            window._adminInspectionQuery = (val || '').trim().toLowerCase();
+            renderFilteredDirectInspectionReviewers();
+        };
+
+        function renderFilteredDirectInspectionReviewers() {
+            const all = getAllInspectionAccounts();
+            const cat = window._adminInspectionCategory || 'all';
+            const q = window._adminInspectionQuery || '';
+
+            const filtered = all.filter(item => {
+                // تصفية الفئة
+                if (cat === 'بنين') {
+                    if (item.category !== 'بنين' || item.isTournDirector) return false;
+                } else if (cat === 'بنات') {
+                    if (item.category !== 'بنات' || item.isTournDirector) return false;
+                } else if (cat === 'td') {
+                    if (!item.isTournDirector) return false;
+                }
+
+                // تصفية نص البحث
+                if (q) {
+                    const text = `${item.username} ${item.displayName} ${item.category} ${item.assignedGovs} ${item.gameName} ${item.stageScope} ${item.directive}`.toLowerCase();
+                    if (!text.includes(q)) return false;
+                }
+
+                return true;
+            });
+
+            // تحديث شارة العدد
+            const badge = document.getElementById('directInspectionRevCountBadge');
+            if (badge) {
+                badge.textContent = `${filtered.length} متاح`;
+            }
+
+            // تحديث حاوية بطاقات اللجان
+            const listContainer = document.getElementById('directInspectionReviewersListContainer');
+            if (listContainer) {
+                if (filtered.length === 0) {
+                    listContainer.innerHTML = '<div style="text-align:center; padding:18px; font-size:0.75rem; color:#94a3b8;"><i class="fas fa-inbox" style="font-size:1.4rem; display:block; margin-bottom:6px;"></i>لا توجد لجان أو حسابات مطابقة للفلتر المحدد</div>';
+                } else {
+                    listContainer.innerHTML = filtered.map(item => {
+                        const isTd = item.isTournDirector;
+                        const isBoys = item.category === 'بنين';
+
+                        let iconHtml = '';
+                        let borderHighlight = '#e2e8f0';
+                        let bgBadge = '#f1f5f9';
+                        let colBadge = '#475569';
+                        let roleLabel = '';
+
+                        if (isTd) {
+                            iconHtml = '<i class="fas fa-crown" style="color:#d97706;"></i>';
+                            borderHighlight = '#fef3c7';
+                            bgBadge = '#fffbeb';
+                            colBadge = '#b45309';
+                            roleLabel = `مدير بطولة (${escapeHtml(item.gameName || 'عام')})`;
+                        } else if (isBoys) {
+                            iconHtml = '<i class="fas fa-mars" style="color:#2563eb;"></i>';
+                            borderHighlight = '#dbeafe';
+                            bgBadge = '#eff6ff';
+                            colBadge = '#1d4ed8';
+                            roleLabel = 'لجنة مراجعة بنين';
+                        } else {
+                            iconHtml = '<i class="fas fa-venus" style="color:#db2777;"></i>';
+                            borderHighlight = '#fce7f3';
+                            bgBadge = '#fdf2f8';
+                            colBadge = '#be185d';
+                            roleLabel = 'لجنة مراجعة بنات';
+                        }
+
+                        return `
+                            <div style="display:flex; align-items:center; justify-content:space-between; background:#ffffff; border:1px solid ${borderHighlight}; border-radius:8px; padding:8px 12px; gap:10px; transition:all 0.15s ease;">
+                                <div style="display:flex; align-items:flex-start; gap:10px; min-width:0; flex:1;">
+                                    <div style="width:32px; height:32px; border-radius:8px; background:${bgBadge}; display:flex; align-items:center; justify-content:center; font-size:0.9rem; flex-shrink:0; margin-top:2px;">
+                                        ${iconHtml}
+                                    </div>
+                                    <div style="min-width:0; flex:1;">
+                                        <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                                            <span style="font-size:0.8rem; font-weight:800; color:#0f172a;">${escapeHtml(item.displayName)}</span>
+                                            <span style="font-size:0.68rem; padding:1px 6px; border-radius:4px; background:${bgBadge}; color:${colBadge}; font-weight:800;">${roleLabel}</span>
+                                            <span style="font-size:0.68rem; color:#64748b; font-weight:600;">(@${escapeHtml(item.username)})</span>
+                                        </div>
+                                        <div style="font-size:0.71rem; color:#475569; margin-top:3px; line-height:1.4;">
+                                            <span style="color:#0284c7; font-weight:700;"><i class="fas fa-location-dot" style="font-size:0.65rem;"></i> النطاق:</span> ${escapeHtml(item.assignedGovs || item.stageScope || 'كل المحافظات')}
+                                            ${item.directive ? ` <span style="color:#cbd5e1; margin:0 3px;">|</span> <span style="color:#10b981; font-weight:700;"><i class="fas fa-bullseye" style="font-size:0.65rem;"></i> التوجيه:</span> ${escapeHtml(item.directive)}` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="adminDirectPreviewReviewer('${escapeHtml(item.username)}', '${escapeHtml(item.displayName)}', ${isTd})" 
+                                        style="background:${isTd ? '#d97706' : (isBoys ? '#2563eb' : '#db2777')}; color:#ffffff; border:none; border-radius:6px; padding:5px 12px; font-size:0.74rem; font-weight:800; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; flex-shrink:0; transition:opacity 0.2s;"
+                                        onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'"
+                                        title="معاينة بوابة ${escapeHtml(item.displayName)} مباشرة بصلاحية المشرف العام">
+                                    <i class="fas fa-eye"></i> معاينة البوابة
+                                </button>
+                            </div>
+                        `;
+                    }).join('');
+                }
+            }
+        }
+
+        function populateDirectInspectionReviewers() {
+            const allAccounts = getAllInspectionAccounts();
+            const selRev = document.getElementById('selDirectInspectReviewer');
+            const stickyRevSel = document.getElementById('stickyReviewerPreviewSelect');
+
+            // تجميع الحسابات حسب المجموعات
+            const boysRev = allAccounts.filter(a => !a.isTournDirector && a.category === 'بنين');
+            const girlsRev = allAccounts.filter(a => !a.isTournDirector && a.category === 'بنات');
+            const tdAccounts = allAccounts.filter(a => a.isTournDirector);
+
+            function buildOptGroupsHtml(defaultText) {
+                let html = `<option value="">${defaultText}</option>`;
+                if (boysRev.length > 0) {
+                    html += '<optgroup label="👦 لجان مراجعة البنين">';
+                    boysRev.forEach(r => {
+                        html += `<option value="${escapeHtml(r.username)}" data-td="0">${escapeHtml(r.displayName)} [${escapeHtml(r.assignedGovs || 'عام')}]</option>`;
+                    });
+                    html += '</optgroup>';
+                }
+                if (girlsRev.length > 0) {
+                    html += '<optgroup label="👧 لجان مراجعة البنات">';
+                    girlsRev.forEach(r => {
+                        html += `<option value="${escapeHtml(r.username)}" data-td="0">${escapeHtml(r.displayName)} [${escapeHtml(r.assignedGovs || 'عام')}]</option>`;
+                    });
+                    html += '</optgroup>';
+                }
+                if (tdAccounts.length > 0) {
+                    html += '<optgroup label="👑 مديرو ومسؤولو البطولات">';
+                    tdAccounts.forEach(r => {
+                        html += `<option value="${escapeHtml(r.username)}" data-td="1">${escapeHtml(r.displayName)} [بطولة: ${escapeHtml(r.gameName || 'عام')}]</option>`;
+                    });
+                    html += '</optgroup>';
+                }
+                return html;
+            }
+
+            // تحديث السيلكت الأساسي في البطاقة
+            if (selRev) {
+                const curVal = selRev.value;
+                selRev.innerHTML = buildOptGroupsHtml('-- اختر المراجع أو اللجنة للمعاينة --');
+                if (curVal) selRev.value = curVal;
+            }
+
+            // تحديث سيلكت الشريط العائم
+            if (stickyRevSel) {
+                const curValSticky = stickyRevSel.value;
+                stickyRevSel.innerHTML = buildOptGroupsHtml('-- تبديل المراجع / مدير البطولة --');
+                if (curValSticky) stickyRevSel.value = curValSticky;
+            }
+
+            // رندر البطاقات التفاعلية مع الفلتر الحالي
+            renderFilteredDirectInspectionReviewers();
+        }
+
+        window.executeAdminDirectGovPreview = function () {
+            const sel = document.getElementById('selDirectInspectGov');
+            if (!sel || !sel.value) {
+                showToast('يرجى تحديد المحافظة المراد الدخول لمعاينتها أولاً.', 'warn');
+                return;
+            }
+            adminDirectPreviewGovernorate(sel.value);
+        };
+
+        window.executeAdminDirectReviewerPreview = function () {
+            const sel = document.getElementById('selDirectInspectReviewer');
+            if (!sel || !sel.value) {
+                showToast('يرجى تحديد المراجع أو مدير البطولة المراد الدخول لمعاينته أولاً.', 'warn');
+                return;
+            }
+            const selectedOpt = sel.options[sel.selectedIndex];
+            const isTd = selectedOpt && selectedOpt.getAttribute('data-td') === '1';
+            adminDirectPreviewReviewer(sel.value, selectedOpt ? selectedOpt.textContent.split(' [')[0] : '', isTd);
+        };
+
+        window.adminDirectPreviewGovernorate = function (govName) {
+            if (!govName) return;
+
+            // حفظ جلسة الأدمن الأصلية
+            if (!window._adminOriginalSession && window.adminSession) {
+                window._adminOriginalSession = JSON.parse(JSON.stringify(window.adminSession));
+            }
+
+            const activeAdmin = (window._adminOriginalSession && window._adminOriginalSession.user) || (window.adminSession && window.adminSession.user) || {};
+            const adminRole = activeAdmin.role || 'SUPER_ADMIN';
+            const catScope = (adminRole === 'BOYS_ADMIN') ? 'بنين' : ((adminRole === 'GIRLS_ADMIN') ? 'بنات' : 'all');
+
+            // إنشاء جلسة مسؤول المحافظة للمعاينة
+            const previewRegistrarSession = {
+                username: 'preview_' + govName,
+                displayName: 'مسؤول محافظة ' + govName + (catScope !== 'all' ? ` (اطلاع قطاع ${catScope})` : ' (اطلاع مباشر للمشرف)'),
+                governorate: govName,
+                role: 'REGISTRAR',
+                previewCategory: catScope,
+                isAdminPreview: true,
+                adminRole: adminRole
+            };
+            sessionStorage.setItem('repChamps_activeRegistrar', JSON.stringify(previewRegistrarSession));
+            currentRegistrarSession = previewRegistrarSession;
+
+            // إظهار شريط المعاينة العائم وتحديث بياناته
+            showAdminPreviewStickyBanner('REGISTRAR', govName);
+
+            // الانتقال لبوابة المحافظة وتحديث اللوحة مباشرة
+            changeTab('registrarPortal');
+            if (typeof showRegistrarDashboard === 'function') {
+                showRegistrarDashboard();
+            }
+            showToast(`أنت الآن في وضع الاطلاع المباشر على بوابة محافظة (${govName})${catScope !== 'all' ? ` - قطاع ${catScope}` : ''}`, 'info');
+        };
+
+        window.adminDirectPreviewReviewer = function (username, displayNameOpt, asTournDirectorOpt) {
+            if (!username) return;
+
+            // حفظ جلسة الأدمن الأصلية
+            if (!window._adminOriginalSession && window.adminSession) {
+                window._adminOriginalSession = JSON.parse(JSON.stringify(window.adminSession));
+            }
+
+            const activeAdmin = (window._adminOriginalSession && window._adminOriginalSession.user) || (window.adminSession && window.adminSession.user) || {};
+            const adminRole = activeAdmin.role || 'SUPER_ADMIN';
+
+            // فحص بيانات المراجع أو مدير البطولة
+            let rev = null;
+            if (typeof superAdminAccountsData !== 'undefined' && Array.isArray(superAdminAccountsData.reviewers)) {
+                rev = superAdminAccountsData.reviewers.find(r => (r.username || '').toLowerCase() === username.toLowerCase());
+            }
+
+            let td = null;
+            if (Array.isArray(cachedTournamentDirectors)) {
+                td = cachedTournamentDirectors.find(t => (t.username || '').toLowerCase() === username.toLowerCase());
+            }
+
+            const isTd = (typeof asTournDirectorOpt === 'boolean')
+                ? asTournDirectorOpt
+                : ((td !== null && !rev) || !!(rev && (rev.isTournDirector || rev.isDirector)));
+
+            const dispName = displayNameOpt || (td && (td.displayName || td.username)) || (rev && rev.displayName) || username;
+            const assignedGovs = (rev && (rev.governorate || rev.assignedGovs)) || (td && td.governorate) || 'الكل';
+            const cat = (td && td.category) || (rev && rev.category) || 'بنين';
+
+            const previewReviewerSession = {
+                username: username,
+                displayName: dispName + ' (اطلاع مباشر للمشرف)',
+                role: 'REVIEWER',
+                assignedGovs: assignedGovs,
+                category: cat,
+                isTournDirector: isTd,
+                isAdminPreview: true,
+                adminRole: adminRole
+            };
+            sessionStorage.setItem('repChamps_activeReviewer', JSON.stringify(previewReviewerSession));
+            currentReviewerSession = previewReviewerSession;
+
+            // وضع معاينة مدير البطولة
+            if (isTd) {
+                let assignments = [];
+                if (Array.isArray(cachedTournamentDirectors)) {
+                    assignments = cachedTournamentDirectors.filter(t => (t.username || '').toLowerCase() === username.toLowerCase());
+                }
+                if (assignments.length === 0 && td) assignments = [td];
+                if (assignments.length === 0) {
+                    assignments = [{
+                        assignmentId: 'preview_td_' + username,
+                        username: username,
+                        displayName: dispName,
+                        category: cat,
+                        gameName: (td && td.gameName) || 'كافة الألعاب',
+                        stageScope: (td && td.stageScope) || 'كافة المراحل',
+                        status: 'نشط'
+                    }];
+                }
+                currentReviewerDirectorAssignments = assignments;
+
+                showAdminPreviewStickyBanner('TOURN_DIRECTOR', dispName, username);
+                changeTab('reviewPortal');
+                if (typeof switchToTournDirectorPanel === 'function') {
+                    switchToTournDirectorPanel();
+                }
+                showToast(`أنت الآن في وضع الاطلاع المباشر على بوابة مدير البطولة (${dispName})`, 'info');
+                return;
+            }
+
+            // وضع معاينة المراجع العادي
+            showAdminPreviewStickyBanner('REVIEWER', dispName, username);
+            changeTab('reviewPortal');
+            if (typeof showReviewerDashboard === 'function') {
+                showReviewerDashboard();
+            }
+            showToast(`أنت الآن في وضع الاطلاع المباشر على بوابة (${dispName})`, 'info');
+        };
+
+        function showAdminPreviewStickyBanner(type, name, usernameOpt) {
+            const banner = document.getElementById('adminDirectPreviewStickyBanner');
+            if (!banner) return;
+
+            banner.classList.remove('hidden');
+            banner.style.removeProperty('display');
+
+            const titleEl = document.getElementById('stickyPreviewBannerTitle');
+            const subTitleEl = document.getElementById('stickyPreviewBannerSubtitle');
+            const stickyGovSel = document.getElementById('stickyGovPreviewSelect');
+            const stickyRevSel = document.getElementById('stickyReviewerPreviewSelect');
+
+            if (type === 'REGISTRAR') {
+                if (titleEl) titleEl.textContent = `مسؤول محافظة: ${name}`;
+                if (subTitleEl) subTitleEl.textContent = `معاينة استمارات وكشوف محافظة ${name} كما يراها مسؤول التسجيل أونلاين`;
+                if (stickyGovSel) stickyGovSel.value = name;
+                if (stickyRevSel) stickyRevSel.value = '';
+            } else if (type === 'TOURN_DIRECTOR') {
+                if (titleEl) titleEl.textContent = `مدير البطولة: ${name}`;
+                if (subTitleEl) subTitleEl.textContent = `معاينة بوابة واعتمادات مدير البطولة ${name} في الوقت الفعلي`;
+                if (stickyGovSel) stickyGovSel.value = '';
+                if (stickyRevSel) stickyRevSel.value = usernameOpt || name;
+            } else {
+                if (titleEl) titleEl.textContent = `المراجع: ${name}`;
+                if (subTitleEl) subTitleEl.textContent = `معاينة جدول مهام واعتمادات المراجع ${name} في الوقت الفعلي`;
+                if (stickyGovSel) stickyGovSel.value = '';
+                if (stickyRevSel) stickyRevSel.value = usernameOpt || name;
+            }
+
+            // إضافة هامش علوي لجسم الصفحة لعدم حجب أي جزء من الهيدر
+            document.body.style.paddingTop = '54px';
+        }
+
+        function hideAdminPreviewStickyBanner() {
+            const banner = document.getElementById('adminDirectPreviewStickyBanner');
+            if (banner) {
+                banner.classList.add('hidden');
+                banner.style.display = 'none';
+            }
+            document.body.style.paddingTop = '';
+        }
+
+        window.exitAdminDirectPreview = function () {
+            // إزالة جلسات المعاينة
+            sessionStorage.removeItem('repChamps_activeRegistrar');
+            sessionStorage.removeItem('repChamps_activeReviewer');
+            currentRegistrarSession = null;
+            currentReviewerSession = null;
+            currentReviewerDirectorAssignments = [];
+
+            // استعادة جلسة الأدمن الأصلية
+            if (window._adminOriginalSession) {
+                window.adminSession = JSON.parse(JSON.stringify(window._adminOriginalSession));
+            }
+
+            // إخفاء الشريط العائم
+            hideAdminPreviewStickyBanner();
+
+            // العودة للأدمن ولوحة الاطلاع المباشر
+            changeTab('admin');
+            if (typeof switchAdminSubtab === 'function') {
+                switchAdminSubtab('direct_inspection');
+            }
+            showToast('تم إنهاء وضع المعاينة والرجوع المباشر للوحة تحكم المشرف.', 'success');
+        };
+
         function switchAccountSubtab(tab) {
             activeAccountSubtab = tab;
             const subtabs = ['accSubtabReviewers', 'accSubtabRegistrars', 'accSubtabAdmins', 'accSubtabTournDirectors'];
@@ -32741,52 +34111,66 @@
                 return unique;
             }
 
-            // الأعمدة الأساسية العشرة المطلوبة بكلماتها المفتاحية
+            function normArabic(s) {
+                if (!s) return '';
+                return String(s)
+                    .replace(/[إأآا]/g, 'ا')
+                    .replace(/ة/g, 'ه')
+                    .replace(/ى/g, 'ي')
+                    .replace(/[\u064B-\u065F]/g, '')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+            }
+
+            // أنماط الأعمدة للتعرف المعنوي على ترويسة الجداول
             const REQUIRED_COLS_PATTERNS = [
-                { key: 'name',      patterns: [/^اسم/, /اسم.*(طالب|لاعب|مشارك)/] },
+                { key: 'serial',    patterns: [/^(م|م\.|مسلسل|رقم|كود|ت)$/] },
+                { key: 'name',      patterns: [/اسم.*(طالب|لاعب|مشارك|تلميذ)|^(اسم|الاسم|اسم الطالب|اسم اللاعب)$/] },
                 { key: 'gov',       patterns: [/محافظ/] },
                 { key: 'admin',     patterns: [/إدار|ادار/] },
                 { key: 'school',    patterns: [/مدرس/] },
-                { key: 'grade',     patterns: [/^الصف$|^صف$/] },
+                { key: 'grade',     patterns: [/الصف|صف/] },
                 { key: 'edutype',   patterns: [/نوع.*(تعليم|دراسة)|تعليم/] },
                 { key: 'natid',     patterns: [/قومي|رقم.*(قومي|هوية)/] },
                 { key: 'birthdate', patterns: [/ميلاد|تاريخ.*(ميلاد|الولادة)/] },
-                { key: 'race',      patterns: [/سباق|مسابقة|نشاط|رياضة|لعبة/] },
-                { key: 'phone',     patterns: [/هاتف|تليفون|موبايل|جوال/i] }
+                { key: 'race',      patterns: [/سباق|مسابقة|نشاط|رياضة|لعبة|وزن|ميزان|سلاح|فئة/] },
+                { key: 'phone',     patterns: [/هاتف|تليفون|موبايل|جوال/i] },
+                { key: 'supervisor',patterns: [/مشرف|مسؤول|مسئول|مدرب|قائد/] },
+                { key: 'rank',      patterns: [/مركز|ترتيب|ميدالية|نتيجة|فائز/] },
+                { key: 'notes',     patterns: [/ملاحظ/] }
             ];
 
             function scoreHeaderRow(row) {
                 if (!Array.isArray(row)) return 0;
                 const nonEmpty = row.map(c => String(c !== undefined && c !== null ? c : '').trim()).filter(v => v.length > 0);
                 if (nonEmpty.length < 2) return 0;
-                // عدد الكلمات المفتاحية الأساسية الموجودة في هذا الصف
+
                 let hits = 0;
                 const matched = new Set();
                 for (const v of nonEmpty) {
+                    const normV = normArabic(v);
                     for (const col of REQUIRED_COLS_PATTERNS) {
                         if (!matched.has(col.key)) {
                             for (const pat of col.patterns) {
-                                if (pat.test(v)) { hits++; matched.add(col.key); break; }
+                                if (pat.test(v) || pat.test(normV)) {
+                                    hits++;
+                                    matched.add(col.key);
+                                    break;
+                                }
                             }
                         }
                     }
                 }
-                // أعمدة إضافية شائعة
                 let bonus = nonEmpty.length;
-                for (const v of nonEmpty) {
-                    if (/^(م|م\.|مسلسل|رقم|كود|ت)$/.test(v)) bonus += 5;
-                    else if (/مركز|ترتيب|ميدالية|نتيجة|فائز/.test(v)) bonus += 3;
-                    else if (/ملاحظات|ملاحظة|موقف|حالة|بيان/.test(v)) bonus += 2;
-                }
-                return hits * 20 + bonus;
+                return hits * 25 + bonus;
             }
 
-            function findSheetHeaderAndRows(ws) {
+            function findSheetHeaderAndRows(ws, defaultGovName = '') {
                 if (!ws) return { headerIdx: -1, headerRow: [], dataRows: [] };
                 const rawRows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
                 if (!Array.isArray(rawRows) || rawRows.length === 0) return { headerIdx: -1, headerRow: [], dataRows: [] };
 
-                // ابحث عن الصف الذي يحتوي على أعلى عدد من الأعمدة الأساسية
+                // البحث عن أفضل صف يمثل الترويسة
                 let bestHeaderIdx = 0;
                 let maxScore = -1;
                 for (let r = 0; r < Math.min(30, rawRows.length); r++) {
@@ -32800,7 +34184,7 @@
                     if (Array.isArray(rawRows[r]) && rawRows[r].length > maxCols) maxCols = rawRows[r].length;
                 }
 
-                // بناء الترويسة النظيفة بأسماء الأعمدة الأصلية تماماً
+                // بناء ترويسة نظيفة بأسماء الأعمدة
                 const cleanHeader = [];
                 for (let c = 0; c < maxCols; c++) {
                     let hVal = String(rawHeader[c] !== undefined && rawHeader[c] !== null ? rawHeader[c] : '').replace(/[\r\n\t]+/g, ' ').trim();
@@ -32810,18 +34194,26 @@
                     cleanHeader.push(hVal || `عمود_${c + 1}`);
                 }
 
-                // تحديد مؤشرات الأعمدة الأساسية العشرة في هذا الشيت
-                const essentialColIndices = REQUIRED_COLS_PATTERNS.map(col => {
-                    for (let c = 0; c < cleanHeader.length; c++) {
-                        const v = cleanHeader[c];
-                        for (const pat of col.patterns) {
-                            if (pat.test(v)) return c;
-                        }
-                    }
-                    return -1;
-                }).filter(i => i !== -1); // تجاهل الأعمدة التي لم تُوجد
+                // تحديد مواضع الأعمدة الدلالية للتحقق من هوية الطالب
+                let nameColIdx = -1;
+                let natIdColIdx = -1;
+                let govColIdx = -1;
 
-                // استخراج صفوف البيانات مع فلترة الصفوف الناقصة
+                for (let c = 0; c < cleanHeader.length; c++) {
+                    const colName = cleanHeader[c];
+                    const colNorm = normArabic(colName);
+                    if (nameColIdx === -1 && (/اسم.*(طالب|لاعب|مشارك|تلميذ)/.test(colName) || /^(اسم|الاسم|اسم الطالب|اسم اللاعب)$/.test(colNorm))) {
+                        nameColIdx = c;
+                    }
+                    if (natIdColIdx === -1 && (/قومي|رقم.*(قومي|هوية)/.test(colName) || colNorm.indexOf('قومي') !== -1)) {
+                        natIdColIdx = c;
+                    }
+                    if (govColIdx === -1 && /محافظ/.test(colName)) {
+                        govColIdx = c;
+                    }
+                }
+
+                // استخراج صفوف بيانات الطلاب
                 const dataRows = [];
                 for (let r = bestHeaderIdx + 1; r < rawRows.length; r++) {
                     const row = rawRows[r];
@@ -32830,30 +34222,75 @@
                     if (nonEmpty.length === 0) continue;
 
                     // استبعاد صفوف الترويسة المكررة
-                    if (scoreHeaderRow(row) >= maxScore * 0.7 && maxScore > 30) continue;
+                    if (scoreHeaderRow(row) >= maxScore * 0.65 && maxScore > 25) continue;
 
-                    // استبعاد صفوف التوقيعات
+                    // استبعاد صفوف التوقيعات والاعتماد
                     const fullText = row.map(c => String(c || '').trim()).join(' ');
-                    if (nonEmpty.length <= 3 && /توقيع|يعتمد|مدير|الموجه|المشرف|رئيس|لجنة|مدير عام|وكيل الوزارة/.test(fullText)) continue;
+                    if (nonEmpty.length <= 4 && /(توقيع|يعتمد|الموجه الأول|مدير الإدارة|المشرف العام|رئيس اللجنة|مدير عام|وكيل الوزارة|خاتم الشعار|لجنة النظام والتحكيم)/.test(fullText)) continue;
+
+                    // استبعاد صفوف الإجماليات والملاحظات الإدارية ما لم تحتوي على رقم قومي أو اسم طالب
+                    if (nonEmpty.length <= 3 && /(إجمالي|اجمالي|ملاحظات هامة|تعليمات هامة|شروط الاشتراك)/.test(fullText) && !/\b\d{10,14}\b/.test(fullText)) continue;
+
+                    // استبعاد الصفوف التي تحتوي على مجرد رقم مسلسل فارغ
                     if (nonEmpty.length === 1 && /^\d+$/.test(fullText.trim())) continue;
 
-                    // *** الشرط الأساسي: الصف يجب أن يحتوي على قيم في جميع الأعمدة الأساسية الموجودة ***
-                    if (essentialColIndices.length > 0) {
-                        let hasAllEssential = true;
-                        for (const ci of essentialColIndices) {
-                            const val = ci < row.length ? row[ci] : '';
-                            if (val === undefined || val === null || String(val).trim() === '') {
-                                hasAllEssential = false;
+                    // *** التحقق الذكي من أن الصف يخص طالباً/مشاركاً فعلياً دون استبعاد أي طالب مهما نقصت بياناته الفرعية ***
+                    let isStudentRow = false;
+
+                    // 1. فحص وجود اسم طالب في عمود الاسم
+                    if (nameColIdx !== -1 && nameColIdx < row.length) {
+                        const nVal = String(row[nameColIdx] || '').trim();
+                        if (nVal.length >= 2 && !/^\d+$/.test(nVal) && !/^(اسم|طالب|كشف|مسلسل|توقيع|ملاحظات|يعتمد)$/.test(nVal)) {
+                            isStudentRow = true;
+                        }
+                    }
+
+                    // 2. فحص وجود رقم قومي في عمود الرقم القومي
+                    if (!isStudentRow && natIdColIdx !== -1 && natIdColIdx < row.length) {
+                        const idClean = String(row[natIdColIdx] || '').replace(/\s+/g, '');
+                        if (/\b\d{10,14}\b/.test(idClean)) {
+                            isStudentRow = true;
+                        }
+                    }
+
+                    // 3. فحص عام لكافة الخلايا في الصف في حال عدم تطابق ترويسة الاسم بدقة
+                    if (!isStudentRow) {
+                        for (let ci = 0; ci < row.length; ci++) {
+                            const cStr = String(row[ci] || '').trim();
+                            if (/\b\d{14}\b/.test(cStr.replace(/\s+/g, ''))) {
+                                isStudentRow = true;
+                                break;
+                            }
+                            const words = cStr.split(/\s+/).filter(Boolean);
+                            if (words.length >= 2 && /^[\u0621-\u064A\s]+$/.test(cStr) && !/(توقيع|يعتمد|مدير|إدارة|مدرسة|ملاحظات)/.test(cStr)) {
+                                isStudentRow = true;
                                 break;
                             }
                         }
-                        if (!hasAllEssential) continue;
                     }
 
+                    // 4. قبول الصف إذا كان يحتوي على بيانات كافية (3 خلايا غير فارغة على الأقل) ولم يكن ترويسة أو توقيعاً
+                    if (!isStudentRow && nonEmpty.length >= 3) {
+                        isStudentRow = true;
+                    }
+
+                    if (!isStudentRow) continue;
+
+                    // بناء خلايا الصف كاملة
                     const rowCells = [];
                     for (let c = 0; c < maxCols; c++) {
-                        rowCells.push(row[c] !== undefined && row[c] !== null ? row[c] : '');
+                        let cellVal = row[c] !== undefined && row[c] !== null ? row[c] : '';
+                        rowCells.push(cellVal);
                     }
+
+                    // إذا كان عمود المحافظة موجوداً وفارغاً، نملأه تلقائياً باسم المحافظة
+                    if (govColIdx !== -1 && govColIdx < rowCells.length && defaultGovName) {
+                        const currentGovCell = String(rowCells[govColIdx] || '').trim();
+                        if (!currentGovCell || currentGovCell === '-') {
+                            rowCells[govColIdx] = defaultGovName;
+                        }
+                    }
+
                     dataRows.push(rowCells);
                 }
 
@@ -32865,42 +34302,56 @@
 
             files.forEach(fileItem => {
                 const gov = fileItem.governorate || 'محافظة';
-                const fileName = fileItem.fileName || (fileItem.fileId ? `${gov}.xlsx` : '');
                 let ws = fileItem.ws || null;
+                let govAllDataRows = [];
+                let govHeaderRow = null;
 
                 if (!ws && fileItem.base64) {
                     try {
                         const wb = XLSX.read(fileItem.base64, { type: 'base64' });
                         if (wb && wb.SheetNames && wb.SheetNames.length > 0) {
-                            let bestWs = null;
-                            let maxRows = -1;
+                            let bestSheetWs = null;
+                            let maxSheetRows = -1;
+
                             for (let s = 0; s < wb.SheetNames.length; s++) {
-                                const curWs = wb.Sheets[wb.SheetNames[s]];
+                                const sName = wb.SheetNames[s];
+                                const curWs = wb.Sheets[sName];
                                 if (!curWs) continue;
-                                const parsed = findSheetHeaderAndRows(curWs);
-                                if (parsed.dataRows.length > maxRows) {
-                                    maxRows = parsed.dataRows.length;
-                                    bestWs = curWs;
+
+                                const parsed = findSheetHeaderAndRows(curWs, gov);
+                                if (parsed.dataRows && parsed.dataRows.length > 0) {
+                                    if (!govHeaderRow) {
+                                        govHeaderRow = parsed.headerRow;
+                                    }
+                                    govAllDataRows = govAllDataRows.concat(parsed.dataRows);
+                                    if (parsed.dataRows.length > maxSheetRows) {
+                                        maxSheetRows = parsed.dataRows.length;
+                                        bestSheetWs = curWs;
+                                    }
                                 }
                             }
-                            if (bestWs) ws = bestWs;
+                            if (bestSheetWs) {
+                                ws = bestSheetWs;
+                            }
                         }
                     } catch (readErr) {
                         console.warn('Error reading workbook for gov:', gov, readErr);
                     }
                 }
 
-                if (!ws && Array.isArray(fileItem.fallbackStudents) && fileItem.fallbackStudents.length > 0) {
+                // خطة الإنقاذ للطلاب المسجلين بالمنظومة (fallbackStudents) في حال فشل قراءة الملف أو خلوه من البيانات
+                if (govAllDataRows.length === 0 && Array.isArray(fileItem.fallbackStudents) && fileItem.fallbackStudents.length > 0) {
                     const activeStudents = fileItem.fallbackStudents.filter(s => {
                         const st = String(s.status || '').trim();
                         return st !== 'DELETED' && !st.includes('محذوف') && !s.isDeleted && !s.deleted;
                     });
                     if (activeStudents.length > 0) {
-                        const fallbackHeader = ['م', 'اسم الطالب', 'الرقم القومي', 'المدرسة', 'المرحلة الدراسية', 'المركز المحقق', 'اسم المشرف', 'هاتف المشرف'];
-                        const fallbackData = [fallbackHeader];
+                        const fallbackHeader = ['م', 'المحافظة', 'اسم الطالب', 'الرقم القومي', 'المدرسة', 'المرحلة الدراسية', 'المركز المحقق', 'اسم المشرف', 'هاتف المشرف'];
+                        const fallbackDataRows = [];
                         activeStudents.forEach((s, sIdx) => {
-                            fallbackData.push([
+                            fallbackDataRows.push([
                                 sIdx + 1,
+                                gov,
                                 s.studentName || '-',
                                 s.winnerNationalId || s.nationalId || '-',
                                 s.school || s.responsibleName || '-',
@@ -32910,23 +34361,31 @@
                                 s.responsiblePhone || '-'
                             ]);
                         });
-                        ws = XLSX.utils.aoa_to_sheet(fallbackData);
+                        govHeaderRow = fallbackHeader;
+                        govAllDataRows = fallbackDataRows;
+                        ws = XLSX.utils.aoa_to_sheet([fallbackHeader, ...fallbackDataRows]);
                     }
                 }
 
-                if (ws) {
-                    const parsed = findSheetHeaderAndRows(ws);
+                // إذا كان ws موجوداً ككائن ورقة عمل مباشر
+                if (govAllDataRows.length === 0 && ws) {
+                    const parsed = findSheetHeaderAndRows(ws, gov);
                     if (parsed.headerRow && parsed.headerRow.length > 0) {
-                        parsedGovList.push({
-                            gov: gov,
-                            headerRow: parsed.headerRow,
-                            dataRows: parsed.dataRows
-                        });
-                        individualGovSheets.push({
-                            govName: gov,
-                            ws: ws
-                        });
+                        govHeaderRow = parsed.headerRow;
+                        govAllDataRows = parsed.dataRows;
                     }
+                }
+
+                if (govHeaderRow && govHeaderRow.length > 0) {
+                    parsedGovList.push({
+                        gov: gov,
+                        headerRow: govHeaderRow,
+                        dataRows: govAllDataRows
+                    });
+                    individualGovSheets.push({
+                        govName: gov,
+                        ws: ws || XLSX.utils.aoa_to_sheet([govHeaderRow, ...govAllDataRows])
+                    });
                 }
             });
 
@@ -32939,27 +34398,77 @@
                 };
             }
 
-            // الصف الأول من الشيت المجمع: هو ترويسة الشيت الأول فقط بنفس أسماء الأعمدة الأصلية تماماً
-            const masterHeaderRow = [...parsedGovList[0].headerRow];
+            // الصف الأول من الشيت المجمع: هو ترويسة الشيت الأول مع التأكد من وجود عمود المحافظة
+            let masterHeaderRow = [...parsedGovList[0].headerRow];
             const isFirstColSerial = /^(م|م\.|مسلسل|رقم|كود|ت)$/.test(String(masterHeaderRow[0] || '').trim());
 
-            // تجميع صفوف البيانات من كافة الشيتات مع استبعاد الترويسة (الصف الأول) لكل شيت بعد الشيت الأول
+            // التأكد من أن عمود المحافظة موجود بوضوح في الترويسة المجمعة الشاملة
+            let masterGovColIdx = masterHeaderRow.findIndex(h => /محافظ/.test(String(h || '')));
+            if (masterGovColIdx === -1) {
+                if (isFirstColSerial) {
+                    masterHeaderRow.splice(1, 0, 'المحافظة');
+                    masterGovColIdx = 1;
+                } else {
+                    masterHeaderRow.unshift('المحافظة');
+                    masterGovColIdx = 0;
+                }
+            }
+
+            // مطابقة الأعمدة الذكية بين كل محافظة والترويسة المجمعة
+            function findBestColIndex(targetHeaderName, currentHeaderRow) {
+                const normTarget = normArabic(targetHeaderName);
+
+                // 1. مطابقة مباشرة
+                for (let i = 0; i < currentHeaderRow.length; i++) {
+                    if (normArabic(currentHeaderRow[i]) === normTarget) return i;
+                }
+
+                // 2. مطابقة بالأنماط المعنوية
+                for (const colObj of REQUIRED_COLS_PATTERNS) {
+                    let targetMatches = false;
+                    for (const pat of colObj.patterns) {
+                        if (pat.test(targetHeaderName) || pat.test(normTarget)) {
+                            targetMatches = true;
+                            break;
+                        }
+                    }
+                    if (targetMatches) {
+                        for (let i = 0; i < currentHeaderRow.length; i++) {
+                            const curH = currentHeaderRow[i];
+                            const normCur = normArabic(curH);
+                            for (const pat of colObj.patterns) {
+                                if (pat.test(curH) || pat.test(normCur)) return i;
+                            }
+                        }
+                    }
+                }
+
+                // 3. مطابقة بالاحتواء (substring)
+                for (let i = 0; i < currentHeaderRow.length; i++) {
+                    const normCur = normArabic(currentHeaderRow[i]);
+                    if (normCur.length >= 3 && normTarget.length >= 3) {
+                        if (normCur.indexOf(normTarget) !== -1 || normTarget.indexOf(normCur) !== -1) return i;
+                    }
+                }
+
+                return -1;
+            }
+
             const allConsolidatedDataRows = [];
             let globalSerialCounter = 1;
 
-            parsedGovList.forEach((govItem, gIdx) => {
+            parsedGovList.forEach(govItem => {
                 const currentHeader = govItem.headerRow;
                 const rows = govItem.dataRows;
 
-                const colIndices = [];
-                for (let c = 0; c < masterHeaderRow.length; c++) {
-                    const targetName = String(masterHeaderRow[c]).trim().toLowerCase();
-                    let matchIdx = currentHeader.findIndex(h => String(h).trim().toLowerCase() === targetName);
-                    if (matchIdx === -1 && c < currentHeader.length) {
-                        matchIdx = c;
+                // بناء خريطة الأعمدة لهذا الشيت نسبة إلى masterHeaderRow
+                const colIndices = masterHeaderRow.map((targetH, tIdx) => {
+                    if (tIdx === masterGovColIdx) {
+                        const curGovIdx = currentHeader.findIndex(h => /محافظ/.test(String(h || '')));
+                        return curGovIdx;
                     }
-                    colIndices.push(matchIdx);
-                }
+                    return findBestColIndex(targetH, currentHeader);
+                });
 
                 rows.forEach(r => {
                     const rowCells = [];
@@ -32968,32 +34477,137 @@
                         let val = (srcIdx >= 0 && srcIdx < r.length && r[srcIdx] !== undefined && r[srcIdx] !== null) ? r[srcIdx] : '';
                         rowCells.push(val);
                     }
+
+                    // وضع الرقم المسلسل المتسلسل العام
                     if (isFirstColSerial) {
                         rowCells[0] = globalSerialCounter++;
                     }
+
+                    // التأكد من ملء المحافظة دائماً
+                    if (masterGovColIdx !== -1) {
+                        const currentGovVal = String(rowCells[masterGovColIdx] || '').trim();
+                        if (!currentGovVal || currentGovVal === '-') {
+                            rowCells[masterGovColIdx] = govItem.gov;
+                        }
+                    }
+
                     allConsolidatedDataRows.push(rowCells);
                 });
             });
 
-            // إنشاء ورقة العمل المجمعة: الصف الأول ترويسة الشيت الأول + صفوف البيانات المجمعة
-            const consolidatedAOA = [masterHeaderRow, ...allConsolidatedDataRows];
-            const wsConsolidated = XLSX.utils.aoa_to_sheet(consolidatedAOA);
-            wsConsolidated['!views'] = [{ RTL: true, rightToLeft: true }];
+            // فحص شرط التقسيم الخاص بالمرحلة الابتدائية لرياضتي الجمباز أو الكاراتيه
+            const normGame = normArabic(defaultGame || '');
+            const normStage = normArabic(defaultStage || '');
+            const isGymOrKarate = /(جمباز|كاراتيه|gymnast|karate)/i.test(normGame);
+            const isPrimaryStage = /(ابتدائ|primary)/i.test(normStage);
+            const isPrimarySplit = isGymOrKarate && isPrimaryStage;
 
-            // حساب أبعاد الأعمدة تلقائياً للشيت المجمع
-            const masterColsWidths = masterHeaderRow.map((hdr, cIdx) => {
-                let maxL = String(hdr || '').length;
-                const sampleLimit = Math.min(consolidatedAOA.length, 120);
-                for (let r = 1; r < sampleLimit; r++) {
-                    const cellL = String(consolidatedAOA[r][cIdx] || '').length;
-                    if (cellL > maxL) maxL = cellL;
+            // تحديد عمود الصف الدراسي للفرز الدقيق
+            let masterGradeColIdx = -1;
+            for (let c = 0; c < masterHeaderRow.length; c++) {
+                const colName = masterHeaderRow[c];
+                const colNorm = normArabic(colName);
+                if (/الصف|صف|grade/i.test(colNorm) || /الصف|صف/.test(colName)) {
+                    masterGradeColIdx = c;
+                    break;
                 }
-                return { wch: Math.min(Math.max(maxL + 4, 12), 45) };
-            });
-            wsConsolidated['!cols'] = masterColsWidths;
+            }
 
-            // الورقة الأولى في المصنف: الكشف_المجمع
-            XLSX.utils.book_append_sheet(masterWb, wsConsolidated, 'الكشف_المجمع');
+            function classifyStudentGrade(row) {
+                let gradeStr = '';
+                if (masterGradeColIdx !== -1 && masterGradeColIdx < row.length) {
+                    gradeStr = String(row[masterGradeColIdx] || '').trim();
+                }
+                if (!gradeStr) {
+                    for (let c = 0; c < row.length; c++) {
+                        const cellVal = String(row[c] || '').trim();
+                        const nCell = normArabic(cellVal);
+                        if (/(خامس|سادس|خامسه|سادسه|\b5\b|\b6\b|الصف 5|الصف 6|الصف الخامس|الصف السادس)/.test(nCell)) {
+                            return '5-6';
+                        }
+                        if (/(اول|ثاني|ثالث|رابع|اولي|ثانيه|ثالثه|رابعه|\b1\b|\b2\b|\b3\b|\b4\b|الصف 1|الصف 2|الصف 3|الصف 4|الصف الاول|الصف الثاني|الصف الثالث|الصف الرابع)/.test(nCell)) {
+                            return '1-4';
+                        }
+                    }
+                }
+
+                const nGrade = normArabic(gradeStr);
+                // الصفوف من 5 إلى 6
+                if (/(خامس|سادس|خامسه|سادسه|\b5\b|\b6\b)/.test(nGrade)) {
+                    return '5-6';
+                }
+                // الصفوف من 1 إلى 4
+                if (/(اول|ثاني|ثالث|رابع|اولي|ثانيه|ثالثه|رابعه|\b1\b|\b2\b|\b3\b|\b4\b)/.test(nGrade)) {
+                    return '1-4';
+                }
+
+                // فحص الرقم القومي إن وجد
+                for (let c = 0; c < row.length; c++) {
+                    const idClean = String(row[c] || '').replace(/\s+/g, '');
+                    if (/^3\d{13}$/.test(idClean)) {
+                        const y = parseInt(idClean.substring(1, 3), 10) + 2000;
+                        if (y <= 2014) return '5-6';
+                        if (y >= 2015) return '1-4';
+                    }
+                }
+                return '1-4';
+            }
+
+            function computeSheetColsWidth(headerRow, aoa) {
+                const sampleLimit = Math.min(aoa.length, 120);
+                return headerRow.map((hdr, cIdx) => {
+                    let maxL = String(hdr || '').length;
+                    for (let r = 1; r < sampleLimit; r++) {
+                        const cellL = String(aoa[r] && aoa[r][cIdx] !== undefined ? aoa[r][cIdx] : '').length;
+                        if (cellL > maxL) maxL = cellL;
+                    }
+                    return { wch: Math.min(Math.max(maxL + 4, 12), 45) };
+                });
+            }
+
+            let rowsGrade1to4 = [];
+            let rowsGrade5to6 = [];
+
+            if (isPrimarySplit) {
+                // تصنيف كل صف إما لصفوف 1-4 أو لصفوف 5-6
+                allConsolidatedDataRows.forEach(r => {
+                    const gradeGroup = classifyStudentGrade(r);
+                    if (gradeGroup === '5-6') {
+                        rowsGrade5to6.push(r);
+                    } else {
+                        rowsGrade1to4.push(r);
+                    }
+                });
+
+                // شيت 1: الصف الأول إلى الصف الرابع مع ترقيم مسلسل مستقل
+                const aoa1 = [masterHeaderRow, ...rowsGrade1to4.map((r, idx) => {
+                    const rowCopy = [...r];
+                    if (isFirstColSerial) rowCopy[0] = idx + 1;
+                    return rowCopy;
+                })];
+                const ws1 = XLSX.utils.aoa_to_sheet(aoa1);
+                ws1['!views'] = [{ RTL: true, rightToLeft: true }];
+                ws1['!cols'] = computeSheetColsWidth(masterHeaderRow, aoa1);
+                XLSX.utils.book_append_sheet(masterWb, ws1, 'الصفوف_الأول_إلى_الرابع');
+
+                // شيت 2: الصف الخامس إلى الصف السادس مع ترقيم مسلسل مستقل
+                const aoa2 = [masterHeaderRow, ...rowsGrade5to6.map((r, idx) => {
+                    const rowCopy = [...r];
+                    if (isFirstColSerial) rowCopy[0] = idx + 1;
+                    return rowCopy;
+                })];
+                const ws2 = XLSX.utils.aoa_to_sheet(aoa2);
+                ws2['!views'] = [{ RTL: true, rightToLeft: true }];
+                ws2['!cols'] = computeSheetColsWidth(masterHeaderRow, aoa2);
+                XLSX.utils.book_append_sheet(masterWb, ws2, 'الصفوف_الخامس_والسادس');
+            } else {
+                // إنشاء ورقة العمل المجمعة الواحدة كالمعتاد
+                const consolidatedAOA = [masterHeaderRow, ...allConsolidatedDataRows];
+                const wsConsolidated = XLSX.utils.aoa_to_sheet(consolidatedAOA);
+                wsConsolidated['!views'] = [{ RTL: true, rightToLeft: true }];
+                wsConsolidated['!cols'] = computeSheetColsWidth(masterHeaderRow, consolidatedAOA);
+                XLSX.utils.book_append_sheet(masterWb, wsConsolidated, 'الكشف_المجمع');
+            }
 
             // الأوراق التالية: أوراق عمل كل محافظة مستقلة باسم المحافظة
             individualGovSheets.forEach(item => {
@@ -33008,7 +34622,10 @@
                 workbook: masterWb,
                 totalStudents: allConsolidatedDataRows.length,
                 totalGovs: individualGovSheets.length,
-                masterColumnsCount: masterHeaderRow.length
+                masterColumnsCount: masterHeaderRow.length,
+                isPrimarySplit: isPrimarySplit,
+                countGrade1to4: rowsGrade1to4.length,
+                countGrade5to6: rowsGrade5to6.length
             };
         };
 
@@ -33097,48 +34714,54 @@
                     filesToFetch.push({
                         fileId: fid,
                         fileName: g.excelFileName || `${g.governorate}.xlsx`,
-                        governorate: g.governorate
+                        governorate: g.governorate,
+                        meta: g
                     });
                     govFileMap[g.governorate] = fid;
                 }
             });
 
-            // خطوة تعزيز إضافية: إذا لم نجد ملفات إكسيل في الذاكرة المؤقتة، نطلب من السيرفر كشف ملفات الإكسيل للمرحلة مباشرة
-            if (filesToFetch.length === 0) {
+            // خطوة تعزيز حاسمة: استدعاء ملفات إكسيل التسجيل للمرحلة من السيرفر دائماً لضمان شمول كافة المحافظات المرفوعة
+            try {
                 if (logBox) {
-                    logBox.innerHTML += `<div>جاري فحص واسترداد ملفات إكسيل التسجيل للمحافظات من السيرفر...</div>`;
+                    logBox.innerHTML += `<div>جاري فحص واسترداد كافة ملفات إكسيل التسجيل للمحافظات من السيرفر...</div>`;
                     logBox.scrollTop = logBox.scrollHeight;
                 }
-                try {
-                    const tok = (adminSession && adminSession.token) ? adminSession.token : '';
-                    const uName = (currentReviewerSession && currentReviewerSession.username) ? currentReviewerSession.username : 'admin1';
-                    const gefRes = await callBackendApi({
-                        action: 'getGovernoratesExcelFiles',
-                        category: (currentReviewerSession && currentReviewerSession.category) ? currentReviewerSession.category : 'بنين',
-                        gameName: tournDirectorSelectedGame,
-                        stageName: tournDirectorSelectedStage,
-                        token: tok,
-                        username: uName
-                    });
-                    if (gefRes && gefRes.success && Array.isArray(gefRes.files) && gefRes.files.length > 0) {
-                        gefRes.files.forEach(gf => {
-                            if (gf.fileId) {
+                const tok = (adminSession && adminSession.token) ? adminSession.token : '';
+                const uName = (currentReviewerSession && currentReviewerSession.username) ? currentReviewerSession.username : 'admin1';
+                const gefRes = await callBackendApi({
+                    action: 'getGovernoratesExcelFiles',
+                    category: (currentReviewerSession && currentReviewerSession.category) ? currentReviewerSession.category : 'بنين',
+                    gameName: tournDirectorSelectedGame,
+                    stageName: tournDirectorSelectedStage,
+                    token: tok,
+                    username: uName
+                });
+                if (gefRes && gefRes.success && Array.isArray(gefRes.files) && gefRes.files.length > 0) {
+                    gefRes.files.forEach(gf => {
+                        if (gf.fileId) {
+                            const existIdx = filesToFetch.findIndex(f => f.governorate === gf.governorate || (typeof isGovMatchClient === 'function' && isGovMatchClient(f.governorate, gf.governorate)));
+                            if (existIdx === -1) {
                                 filesToFetch.push({
                                     fileId: gf.fileId,
                                     fileName: gf.fileName || `${gf.governorate}.xlsx`,
-                                    governorate: gf.governorate
+                                    governorate: gf.governorate,
+                                    meta: gf
                                 });
                                 govFileMap[gf.governorate] = gf.fileId;
+                            } else if (!filesToFetch[existIdx].fileId) {
+                                filesToFetch[existIdx].fileId = gf.fileId;
+                                govFileMap[gf.governorate] = gf.fileId;
                             }
-                        });
-                        if (logBox) {
-                            logBox.innerHTML += `<div>✓ تم العثور على ${filesToFetch.length} ملف إكسيل مسجل بالسيرفر.</div>`;
-                            logBox.scrollTop = logBox.scrollHeight;
                         }
+                    });
+                    if (logBox) {
+                        logBox.innerHTML += `<div>✓ تم رصد ${filesToFetch.length} كشف إكسيل مسجل للمحافظات المشاركة.</div>`;
+                        logBox.scrollTop = logBox.scrollHeight;
                     }
-                } catch (gefErr) {
-                    console.warn('getGovernoratesExcelFiles fallback failed:', gefErr);
                 }
+            } catch (gefErr) {
+                console.warn('getGovernoratesExcelFiles fallback check error:', gefErr);
             }
 
             // 3. جلب محتوى ملفات الإكسيل كـ Base64 عبر خادم Google Apps Script بحزم سريعة
@@ -33216,34 +34839,55 @@
 
             if (isTournamentAggregationCancelled) return;
 
-            // 4. قراءة محتوى ملفات الإكسيل وتجميع كافة البيانات والأعمدة دون استثناء
+            // 4. قراءة محتوى ملفات الإكسيل وتجميع كافة البيانات والأعمدة دون استثناء لكافة المحافظات
             if (logBox) {
                 logBox.innerHTML += `<div>[3/4] جاري تفريغ ودمج كافة الأعمدة والبيانات من ملفات المحافظات...</div>`;
                 logBox.scrollTop = logBox.scrollHeight;
             }
 
-            const filesToConsolidate = govs.map((g, idx) => {
+            // بناء قائمة المحافظات المجمعة الشاملة لضمان شمول من لديه ملف ومن لديه استمارات مسجلة
+            const seenConsolidatedGovs = new Set();
+            const filesToConsolidate = [];
+
+            // أ. إضافة المحافظات التي تملك ملفات إكسيل
+            filesToFetch.forEach((f, idx) => {
+                const govName = f.governorate;
+                if (!seenConsolidatedGovs.has(govName)) {
+                    seenConsolidatedGovs.add(govName);
+                    const matchedGov = govs.find(g => g.governorate === govName || (typeof isGovMatchClient === 'function' && isGovMatchClient(g.governorate, govName))) || f.meta || {};
+                    const b64 = fetchedFilesMap[f.fileId] || null;
+                    filesToConsolidate.push({
+                        governorate: govName,
+                        fileName: f.fileName || `${govName}.xlsx`,
+                        fileId: f.fileId,
+                        base64: b64,
+                        uploaderName: matchedGov.uploaderName || (matchedGov.collectiveSheet && matchedGov.collectiveSheet.uploaderName) || '',
+                        uploaderPhone: matchedGov.uploaderPhone || (matchedGov.collectiveSheet && matchedGov.collectiveSheet.uploaderPhone) || '',
+                        date: matchedGov.date || (matchedGov.collectiveSheet && matchedGov.collectiveSheet.uploadDate) || '',
+                        status: 'معتمد',
+                        fallbackStudents: matchedGov.students || []
+                    });
+                }
+            });
+
+            // ب. إضافة أي محافظات مسجلة في govs لم نصل لملف إكسيل لها ولكن تملك طلاباً مسجلين
+            govs.forEach(g => {
                 const govName = g.governorate;
-                const fid = govFileMap[govName];
-                const b64 = fid ? fetchedFilesMap[fid] : null;
-                const fileLabel = g.excelFileName || (fid ? `${govName}.xlsx` : '');
-
-                const parsePct = 45 + Math.round(((idx + 1) / govs.length) * 45);
-                if (pBar) pBar.style.width = `${parsePct}%`;
-                if (pText) pText.textContent = `${parsePct}%`;
-                if (statusText) statusText.textContent = `معالجة ${govName}...`;
-
-                return {
-                    governorate: govName,
-                    fileName: fileLabel,
-                    fileId: fid,
-                    base64: b64,
-                    uploaderName: g.uploaderName || (g.collectiveSheet && g.collectiveSheet.uploaderName) || (g.collectiveSheet && g.collectiveSheet.supervisorName) || '',
-                    uploaderPhone: g.uploaderPhone || (g.collectiveSheet && g.collectiveSheet.uploaderPhone) || '',
-                    date: g.date || (g.collectiveSheet && g.collectiveSheet.uploadDate) || '',
-                    status: g.collectiveSheet ? (g.collectiveSheet.status || 'تم الرفع') : 'معتمد',
-                    fallbackStudents: g.students || []
-                };
+                if (!seenConsolidatedGovs.has(govName)) {
+                    seenConsolidatedGovs.add(govName);
+                    const fid = govFileMap[govName];
+                    filesToConsolidate.push({
+                        governorate: govName,
+                        fileName: g.excelFileName || (fid ? `${govName}.xlsx` : ''),
+                        fileId: fid,
+                        base64: fid ? fetchedFilesMap[fid] : null,
+                        uploaderName: g.uploaderName || '',
+                        uploaderPhone: g.uploaderPhone || '',
+                        date: g.date || '',
+                        status: 'معتمد',
+                        fallbackStudents: g.students || []
+                    });
+                }
             });
 
             if (isTournamentAggregationCancelled) return;
@@ -33282,15 +34926,17 @@
 
             if (pBar) pBar.style.width = '100%';
             if (pText) pText.textContent = '100%';
-            if (statusText) statusText.textContent = 'تم تجميع وتصدير الكشف المجمع بنجاح!';
+            const successNote = aggResult.isPrimarySplit
+                ? `اكتمل التجميع بنجاح! تم إنشاء شيتين مستقلين (صفوف 1-4: ${aggResult.countGrade1to4} طالب، صفوف 5-6: ${aggResult.countGrade5to6} طالب) وأوراق المحافظات 📥`
+                : `تم تنزيل الكشف المجمع بنجاح (${aggResult.totalStudents} مشترك من ${aggResult.totalGovs} محافظة) 📥`;
             if (logBox) {
-                logBox.innerHTML += `<div style="color:#059669; font-weight:bold;">[4/4] اكتمل التجميع بنجاح! تم تحميل مصنف الإكسيل المجمع: ${outFileName} (إجمالي ${aggResult.totalStudents} مشترك من ${aggResult.totalGovs} محافظة) 📥</div>`;
+                logBox.innerHTML += `<div style="color:#059669; font-weight:bold;">[4/4] ${successNote}</div>`;
                 logBox.scrollTop = logBox.scrollHeight;
             }
             if (btnCancel) btnCancel.style.display = 'none';
             if (btnDone) btnDone.style.display = 'inline-block';
 
-            showToast(`تم تنزيل الكشف المجمع بنجاح (${aggResult.totalStudents} مشترك من ${aggResult.totalGovs} محافظة) 📥`, 'success', 5000);
+            showToast(successNote, 'success', 5000);
         }
 
         // =========================================================================
@@ -33474,9 +35120,16 @@
                     statusBadge = `
                         <div style="display:flex; flex-direction:column; gap:3px; align-items:center;">
                             <span class="file-tag new" style="background:${badgeBg}; color:${badgeColor}; border-color:${badgeBorder}; font-weight:700;"><i class="fas ${iconClass}"></i> ${badgeText}</span>
-                            <button type="button" class="admin-action-btn" onclick="openStudentReasonsModal('${escapeHtml(s.studentId)}')" style="padding:2px 7px; font-size:0.7rem; background:#fee2e2; color:#b91c1c; border-color:#fca5a5; font-weight:700;" title="عرض أسباب التحديث وفحص الاستمارة والكشف المجمع">
-                                <i class="fas fa-eye"></i> أسباب التحديث
-                            </button>
+                            <div style="display:flex; gap:3px; align-items:center;">
+                                <button type="button" class="admin-action-btn" onclick="openStudentReasonsModal('${escapeHtml(s.studentId)}')" style="padding:2px 7px; font-size:0.7rem; background:#fee2e2; color:#b91c1c; border-color:#fca5a5; font-weight:700;" title="عرض أسباب التحديث وفحص الاستمارة والكشف المجمع">
+                                    <i class="fas fa-eye"></i> الأسباب
+                                </button>
+                                ${(isNeedsUpdate) ? `
+                                    <button type="button" class="admin-action-btn" onclick="revertStudentUpdateDecision('${escapeHtml(s.studentId)}', '${escapeHtml(s.studentName)}')" style="padding:2px 7px; font-size:0.7rem; background:#fff7ed; color:#c2410c; border:1px solid #fed7aa; font-weight:700;" title="الرجوع في القرار وإلغاء طلب التحديث وإعادة الاستمارة لحالة قيد المراجعة">
+                                        <i class="fas fa-undo"></i> تراجع
+                                    </button>
+                                ` : ''}
+                            </div>
                         </div>
                     `;
                 } else {
@@ -37537,7 +39190,7 @@
                 });
             } else {
                 validFiles = currentFiles.filter(f => {
-                    const isDel = !!(f.overwrite || f.isMustDelete);
+                    const isDel = !!(f.isMustDelete || (f.fileStatus && f.fileStatus.indexOf('يجب حذفه') !== -1) || (f.fileName && f.fileName.indexOf('يجب حذفه') === 0));
                     if (isDel) return false;
                     const fName = String(f.fileName || "").toLowerCase();
                     const fId = f.fileId || f.id;
@@ -37572,11 +39225,28 @@
                 // محاولة ثالثة مرنة: قبول جميع الملفات المرفوعة غير المحذوفة
                 if (validFiles.length === 0) {
                     validFiles = currentFiles.filter(f => {
-                        const isDel = !!(f.overwrite || f.isMustDelete);
+                        const isDel = !!(f.isMustDelete || (f.fileStatus && f.fileStatus.indexOf('يجب حذفه') !== -1) || (f.fileName && f.fileName.indexOf('يجب حذفه') === 0));
                         const fId = f.fileId || f.id;
                         return !isDel && !!fId && !String(f.fileName || '').toLowerCase().endsWith('.pdf');
                     });
                 }
+
+                // فرز الملفات الأحدث أولاً لضمان اعتماد أحدث كشف لكل محافظة
+                validFiles.sort((a, b) => {
+                    const tA = String(a.dateFormatted || (a.date + ' ' + (a.time || '')) || a.timestamp || '');
+                    const tB = String(b.dateFormatted || (b.date + ' ' + (b.time || '')) || b.timestamp || '');
+                    return tB.localeCompare(tA);
+                });
+
+                // تصفية الكشوفات المكررة في نفس المرحلة: اعتماد أحدث كشف لكل محافظة واستبعاد الكشوفات السابقة
+                const latestGovFilesMap = new Map();
+                validFiles.forEach(f => {
+                    const gKey = `${(f.userGov || f.governorate || '').trim()}___${(f.teamName || '').trim()}`;
+                    if (!latestGovFilesMap.has(gKey)) {
+                        latestGovFilesMap.set(gKey, f);
+                    }
+                });
+                validFiles = Array.from(latestGovFilesMap.values());
             }
 
             if (validFiles.length === 0) {
@@ -37597,85 +39267,90 @@
                     throw new Error("مكتبة معالجة الإكسيل (SheetJS) غير محملة بالمتصفح.");
                 }
 
-                const fileIds = validFiles.map(f => ({
-                    fileId: f.fileId || f.id,
-                    fileName: f.fileName || "كشف.xlsx"
-                }));
-
                 const u = (adminSession.user && adminSession.user.username) ? adminSession.user.username : "admin1";
                 const p = (adminSession.user && adminSession.user.password) || getAdminPassword(u) || getAdminPassword("admin1") || "";
                 const tok = adminSession.token || (adminSession.user && adminSession.user.token) || sessionStorage.getItem("repChamps_adminToken") || "";
 
-                let fileItems = [];
-                let res = null;
-                try {
-                    res = await callBackendApi({
-                        action: "adminGetFilesBase64",
-                        fileIds: fileIds,
-                        username: u,
-                        password: p,
-                        token: tok
-                    });
-                    if (res && res.success && Array.isArray(res.files) && res.files.length > 0) {
-                        fileItems = res.files;
-                    }
-                } catch (apiErr) {
-                    console.warn("adminGetFilesBase64 failed, attempting zip fallback:", apiErr);
-                }
+                // جلب محتويات الملفات في حزم صغيرة سريعة لمنع انتهاء وقت الخادم المركزي
+                const batchSize = 6;
+                const fetchedAdminFilesMap = {};
 
-                // خطة الإنقاذ التلقائية (Fallback): إذا لم يتوفر adminGetFilesBase64 في النشر الحالي، نطلب الحزمة المضغوطة adminDownloadBulkZip ونفكها محلياً
-                if (fileItems.length === 0) {
+                for (let b = 0; b < validFiles.length; b += batchSize) {
+                    const chunk = validFiles.slice(b, b + batchSize);
+                    if (btn) {
+                        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> <span>جاري جلب ملفات المحافظات (${b + 1} إلى ${Math.min(b + chunk.length, validFiles.length)} من ${validFiles.length})...</span>`;
+                    }
+                    const chunkFileIds = chunk.map(f => ({
+                        fileId: f.fileId || f.id,
+                        fileName: f.fileName || "كشف.xlsx"
+                    }));
+
+                    let chunkSuccess = false;
                     try {
-                        showToast("جاري استخراج ملفات الإكسيل من الحزمة السحابية...", "info", 3000);
-                        const zipRes = await callBackendApi({
-                            action: "adminDownloadBulkZip",
-                            fileIds: fileIds,
-                            zipName: "stage_excel_files.zip",
+                        const cRes = await callBackendApi({
+                            action: "adminGetFilesBase64",
+                            fileIds: chunkFileIds,
                             username: u,
                             password: p,
                             token: tok
                         });
-                        if (zipRes && zipRes.success && zipRes.base64Content && typeof JSZip !== "undefined") {
-                            const zip = await JSZip.loadAsync(zipRes.base64Content, { base64: true });
-                            const zipEntries = Object.keys(zip.files);
-                            for (let idx = 0; idx < zipEntries.length; idx++) {
-                                const fname = zipEntries[idx];
-                                const zipEntry = zip.files[fname];
-                                if (zipEntry.dir) continue;
-                                const b64 = await zipEntry.async("base64");
-                                const matchedMeta = validFiles.find(v => v.fileName === fname || (v.fileName && fname.includes(v.fileName)) || (v.fileId && fname.includes(v.fileId))) || validFiles[idx] || {};
-                                fileItems.push({
-                                    fileId: matchedMeta.fileId || matchedMeta.id || ('file_' + idx),
-                                    fileName: fname,
-                                    base64: b64
-                                });
-                            }
+                        if (cRes && cRes.success && Array.isArray(cRes.files) && cRes.files.length > 0) {
+                            cRes.files.forEach(f => {
+                                if (f.fileId && f.base64) {
+                                    fetchedAdminFilesMap[f.fileId] = f.base64;
+                                    chunkSuccess = true;
+                                }
+                            });
                         }
-                    } catch (zipErr) {
-                        console.warn("adminDownloadBulkZip fallback failed:", zipErr);
+                    } catch (apiErr) {
+                        console.warn("adminGetFilesBase64 chunk failed, trying zip fallback:", apiErr);
                     }
+
+                    // خطة الإنقاذ التلقائية للدفعة عبر ZIP إذا لم تتوفر استجابة Base64 المباشرة
+                    if (!chunkSuccess) {
+                        try {
+                            const zipRes = await callBackendApi({
+                                action: "adminDownloadBulkZip",
+                                fileIds: chunkFileIds,
+                                zipName: `stage_excel_files_${b}.zip`,
+                                username: u,
+                                password: p,
+                                token: tok
+                            });
+                            if (zipRes && zipRes.success && zipRes.base64Content && typeof JSZip !== "undefined") {
+                                const zip = await JSZip.loadAsync(zipRes.base64Content, { base64: true });
+                                const zipEntries = Object.keys(zip.files);
+                                for (let idx = 0; idx < zipEntries.length; idx++) {
+                                    const fname = zipEntries[idx];
+                                    const zipEntry = zip.files[fname];
+                                    if (zipEntry.dir) continue;
+                                    const b64 = await zipEntry.async("base64");
+                                    const matchedMeta = chunk.find(v => v.fileName === fname || (v.fileName && fname.includes(v.fileName)) || (v.fileId && fname.includes(v.fileId))) || chunk[idx];
+                                    if (matchedMeta) {
+                                        const fid = matchedMeta.fileId || matchedMeta.id;
+                                        fetchedAdminFilesMap[fid] = b64;
+                                    }
+                                }
+                            }
+                        } catch (zipErr) {
+                            console.warn("adminDownloadBulkZip chunk fallback failed:", zipErr);
+                        }
+                    }
+                    await new Promise(r => setTimeout(r, 60));
                 }
 
-                if (fileItems.length === 0) {
-                    const rawMsg = (res && (res.message || res.error)) ? (res.message || res.error) : "تعذر جلب محتويات الملفات من السيرفر.";
-                    if (rawMsg.includes("غير مدعوم") || rawMsg.includes("adminGetFilesBase64")) {
-                        throw new Error("تتطلب هذه الميزة نشر كود Backend_Bundle.gs الجديد في Google Apps Script عبر: نشر > إدارة عمليات النشر > تعديل > إصدار جديد.");
-                    }
-                    throw new Error(rawMsg);
-                }
-
-                const filesToConsolidate = fileItems.map((item, idx) => {
-                    const meta = validFiles.find(v => (v.fileId === item.fileId || v.id === item.fileId || v.fileName === item.fileName)) || validFiles[idx] || {};
+                const filesToConsolidate = validFiles.map((meta, idx) => {
+                    const fid = meta.fileId || meta.id;
                     const gov = meta.userGov || meta.governorate || "محافظة";
                     const team = meta.teamName ? ` - ${meta.teamName}` : "";
                     return {
                         governorate: `${gov}${team}`,
-                        fileName: item.fileName || meta.fileName || `${gov}.xlsx`,
-                        fileId: item.fileId,
-                        base64: item.base64,
+                        fileName: meta.fileName || `${gov}.xlsx`,
+                        fileId: fid,
+                        base64: fetchedAdminFilesMap[fid] || null,
                         uploaderName: meta.uploaderName || meta.userName || '',
                         uploaderPhone: meta.uploaderPhone || meta.phone || '',
-                        date: meta.date || meta.uploadDate || '',
+                        date: meta.dateFormatted || meta.date || '',
                         status: "معتمد"
                     };
                 });
@@ -37696,7 +39371,10 @@
                 const outFileName = `مصنف_إكسيل_مجمع_${category}_${game}_${stage ? stage + '_' : ''}${scopeLabel}.xlsx`;
                 XLSX.writeFile(aggResult.workbook, outFileName);
 
-                showToast(`تم بنجاح تجميع ودمج ${aggResult.totalGovs} كشف إكسيل (${aggResult.totalStudents} مشترك) في الكشف المجمع الشامل وأوراق المحافظات!`, "success", 5500);
+                const adminSuccessMsg = aggResult.isPrimarySplit
+                    ? `تم بنجاح تجميع ودمج ${aggResult.totalGovs} كشف إكسيل في شيتين مستقلين (صفوف 1-4: ${aggResult.countGrade1to4}، صفوف 5-6: ${aggResult.countGrade5to6}) وأوراق المحافظات!`
+                    : `تم بنجاح تجميع ودمج ${aggResult.totalGovs} كشف إكسيل (${aggResult.totalStudents} مشترك) في الكشف المجمع الشامل وأوراق المحافظات!`;
+                showToast(adminSuccessMsg, "success", 5500);
                 if (typeof logAdminAudit === "function") {
                     logAdminAudit(`دمج ملفات إكسيل متعددة الأوراق (${aggResult.totalGovs} ملف)`, outFileName, "نجاح");
                 }
