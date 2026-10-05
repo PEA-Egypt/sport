@@ -7637,24 +7637,51 @@
                 gap: 12px !important;
             }
             #adminDirectPreviewStickyBanner {
-                padding: 6px 10px !important;
+                padding: 4px 8px !important;
+            }
+            #stickyPreviewBannerSubtitle {
+                display: none !important;
+            }
+            .sticky-banner-inner {
+                gap: 4px !important;
+            }
+            .sticky-banner-icon-box {
+                width: 24px !important;
+                height: 24px !important;
+                font-size: 0.82rem !important;
             }
             .sticky-banner-controls {
                 width: 100% !important;
                 display: flex !important;
-                flex-direction: column !important;
-                gap: 6px !important;
+                flex-direction: row !important;
+                gap: 4px !important;
+                margin-top: 2px !important;
             }
             .sticky-banner-controls > div {
-                width: 100% !important;
+                flex: 1 1 0 !important;
+                width: 50% !important;
+                min-width: 0 !important;
                 box-sizing: border-box !important;
+                padding: 2px 4px !important;
+            }
+            .sticky-banner-controls label {
+                display: none !important;
+            }
+            .sticky-banner-controls select {
+                width: 100% !important;
+                font-size: 0.72rem !important;
+                padding: 2px 4px !important;
+                height: 24px !important;
             }
             .sticky-banner-exit-btn {
-                width: 100% !important;
+                width: auto !important;
             }
             .sticky-banner-exit-btn button {
-                width: 100% !important;
-                justify-content: center !important;
+                width: auto !important;
+                padding: 3px 8px !important;
+                font-size: 0.72rem !important;
+                height: 26px !important;
+                white-space: nowrap !important;
             }
         }
     </style>
@@ -7735,41 +7762,41 @@
     </button>
 
     <!-- شريط وضع الاطلاع المباشر للمشرف العام العائم في أعلى الصفحة -->
-    <div id="adminDirectPreviewStickyBanner" class="hidden" style="position:fixed; top:0; left:0; right:0; z-index:999999; background:linear-gradient(90deg, #0f172a, #1e293b, #0f172a); color:#f8fafc; border-bottom:3.5px solid #f59e0b; box-shadow:0 6px 24px rgba(0,0,0,0.45); padding:8px 16px; font-family:inherit; direction:rtl;">
-        <div style="max-width:1440px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
-            <div style="display:flex; align-items:center; gap:10px;">
-                <div style="width:36px; height:36px; border-radius:8px; background:rgba(245,158,11,0.22); border:1.5px solid #f59e0b; color:#fbbf24; display:flex; align-items:center; justify-content:center; font-size:1.15rem; flex-shrink:0;">
+    <div id="adminDirectPreviewStickyBanner" class="hidden" style="position:fixed; top:0; left:0; right:0; z-index:999999; background:linear-gradient(90deg, #0f172a, #1e293b, #0f172a); color:#f8fafc; border-bottom:3px solid #f59e0b; box-shadow:0 6px 20px rgba(0,0,0,0.45); padding:6px 14px; font-family:inherit; direction:rtl;">
+        <div class="sticky-banner-inner" style="max-width:1440px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+            <div class="sticky-banner-main-info" style="display:flex; align-items:center; gap:8px;">
+                <div class="sticky-banner-icon-box" style="width:30px; height:30px; border-radius:8px; background:rgba(245,158,11,0.22); border:1.5px solid #f59e0b; color:#fbbf24; display:flex; align-items:center; justify-content:center; font-size:1rem; flex-shrink:0;">
                     <i class="fas fa-binoculars fa-fade"></i>
                 </div>
                 <div>
                     <div style="display:flex; align-items:center; gap:6px;">
-                        <span style="background:#f59e0b; color:#0f172a; font-size:0.72rem; font-weight:900; padding:2px 7px; border-radius:4px; letter-spacing:0.5px;">وضع الاطلاع المباشر</span>
-                        <span style="font-size:0.88rem; font-weight:800; color:#ffffff;" id="stickyPreviewBannerTitle">المشاهدة الحالية</span>
+                        <span style="background:#f59e0b; color:#0f172a; font-size:0.68rem; font-weight:900; padding:1px 6px; border-radius:4px; letter-spacing:0.5px;">اطلاع مباشر</span>
+                        <span style="font-size:0.84rem; font-weight:800; color:#ffffff;" id="stickyPreviewBannerTitle">المشاهدة الحالية</span>
                     </div>
-                    <div style="font-size:0.72rem; color:#94a3b8;" id="stickyPreviewBannerSubtitle">أنت تتصفح البوابة بصلاحية المشرف العام للاطلاع والتحقق الفوري</div>
+                    <div style="font-size:0.7rem; color:#94a3b8;" id="stickyPreviewBannerSubtitle">أنت تتصفح البوابة بصلاحية المشرف العام للاطلاع والتحقق الفوري</div>
                 </div>
             </div>
 
-            <div class="sticky-banner-controls" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-                <div style="display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);">
+            <div class="sticky-banner-controls" style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <div style="display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.08); padding:2px 7px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);">
                     <label style="font-size:0.72rem; color:#cbd5e1; font-weight:700; white-space:nowrap;"><i class="fas fa-location-dot" style="color:#38bdf8;"></i> المحافظة:</label>
-                    <select id="stickyGovPreviewSelect" onchange="if(this.value) adminDirectPreviewGovernorate(this.value)" style="background:#1e293b; color:#ffffff; border:1px solid #475569; border-radius:4px; padding:3px 6px; font-size:0.76rem; font-weight:700; cursor:pointer; width:100%; max-width:140px;">
-                        <option value="">-- تبديل المحافظة --</option>
+                    <select id="stickyGovPreviewSelect" onchange="if(this.value) adminDirectPreviewGovernorate(this.value)" style="background:#1e293b; color:#ffffff; border:1px solid #475569; border-radius:4px; padding:2px 6px; font-size:0.75rem; font-weight:700; cursor:pointer; width:100%; max-width:130px;">
+                        <option value="">-- المحافظة --</option>
                     </select>
                 </div>
 
-                <div style="display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.08); padding:3px 8px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);">
+                <div style="display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.08); padding:2px 7px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);">
                     <label style="font-size:0.72rem; color:#cbd5e1; font-weight:700; white-space:nowrap;"><i class="fas fa-user-check" style="color:#a7f3d0;"></i> المراجع:</label>
-                    <select id="stickyReviewerPreviewSelect" onchange="if(this.value) adminDirectPreviewReviewer(this.value)" style="background:#1e293b; color:#ffffff; border:1px solid #475569; border-radius:4px; padding:3px 6px; font-size:0.76rem; font-weight:700; cursor:pointer; width:100%; max-width:150px;">
-                        <option value="">-- تبديل المراجع --</option>
+                    <select id="stickyReviewerPreviewSelect" onchange="if(this.value) adminDirectPreviewReviewer(this.value)" style="background:#1e293b; color:#ffffff; border:1px solid #475569; border-radius:4px; padding:2px 6px; font-size:0.75rem; font-weight:700; cursor:pointer; width:100%; max-width:140px;">
+                        <option value="">-- المراجع --</option>
                     </select>
                 </div>
             </div>
 
-            <div class="sticky-banner-exit-btn" style="display:flex; align-items:center; gap:8px;">
-                <button type="button" onclick="exitAdminDirectPreview()" style="background:linear-gradient(135deg, #dc2626, #b91c1c); color:#ffffff; border:1px solid #ef4444; border-radius:7px; padding:6px 14px; font-size:0.8rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 6px rgba(220,38,38,0.4); transition:all 0.2s;" title="إنهاء المعاينة والرجوع المباشر للوحة المشرف">
+            <div class="sticky-banner-exit-btn" style="display:flex; align-items:center; gap:6px;">
+                <button type="button" onclick="exitAdminDirectPreview()" style="background:linear-gradient(135deg, #dc2626, #b91c1c); color:#ffffff; border:1px solid #ef4444; border-radius:7px; padding:4px 11px; font-size:0.76rem; font-weight:800; cursor:pointer; display:inline-flex; align-items:center; gap:5px; box-shadow:0 2px 6px rgba(220,38,38,0.4); transition:all 0.2s;" title="إنهاء المعاينة والرجوع المباشر للوحة المشرف">
                     <i class="fas fa-arrow-right-from-bracket"></i>
-                    <span>إنهاء الاطلاع والعودة للوحة المشرف</span>
+                    <span>إنهاء الاطلاع</span>
                 </button>
             </div>
         </div>
@@ -10385,6 +10412,9 @@
                         <button type="button" id="btnUpdateGoldenCollective" onclick="openGoldenCollectiveReasonsDialog()" class="golden-ctrl-btn" style="background:linear-gradient(135deg, #d97706, #b45309); color:#ffffff; border:1px solid #fcd34d; font-weight:800; font-size:0.82rem; padding:6px 18px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:7px; box-shadow:0 2px 8px rgba(217,119,6,0.4); transition:all 0.15s;" title="تحديد أسباب طلب تحديث كشف الـ PDF">
                             <i class="fas fa-triangle-exclamation"></i> طلب تحديث
                         </button>
+                        <button type="button" onclick="closeGoldenCollectiveSheetModal(true); openGoldenGovExcelSheetModal();" class="golden-ctrl-btn" style="background:linear-gradient(135deg, #047857, #065f46); color:#ffffff; border:1px solid #10b981; font-weight:800; font-size:0.82rem; padding:6px 16px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:7px; box-shadow:0 2px 8px rgba(4,120,87,0.4); transition:all 0.15s;" title="الانتقال لتقييم ملف الإكسيل">
+                            <i class="fas fa-file-excel"></i> تقييم الإكسيل
+                        </button>
                         <button type="button" onclick="closeGoldenCollectiveSheetModal()" style="background:linear-gradient(135deg, #ef4444, #dc2626); color:#ffffff; border:1px solid #f87171; border-radius:8px; font-size:0.82rem; padding:6px 18px; cursor:pointer; font-weight:800; display:inline-flex; align-items:center; gap:7px; box-shadow:0 2px 8px rgba(239,68,68,0.4); transition:all 0.15s;" title="الخروج من الكشف (Esc)">
                             <i class="fas fa-arrow-right-from-bracket"></i> خروج
                         </button>
@@ -10428,6 +10458,9 @@
                         </button>
                         <button type="button" onclick="goldenEvaluateGovExcelSheet('UPDATE_REQUIRED')" class="golden-ctrl-btn" style="background:linear-gradient(135deg, #d97706, #b45309); color:#ffffff; border:1px solid #fcd34d; font-weight:800; font-size:0.8rem; padding:6px 14px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(217,119,6,0.4);" title="طلب تحديث ملف الإكسيل وإنهاء التقييم">
                             <i class="fas fa-pen-to-square"></i> طلب تحديث الإكسيل
+                        </button>
+                        <button type="button" onclick="closeGoldenGovExcelSheetModal(true); openGoldenCollectiveSheetModal();" class="golden-ctrl-btn" style="background:#1e293b; color:#38bdf8; border:1px solid #0284c7; font-weight:800; font-size:0.8rem; padding:6px 12px; border-radius:8px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;" title="الرجوع إلى الكشف المجمع (PDF)">
+                            <i class="fas fa-table-list"></i> الكشف المجمع
                         </button>
                         <a id="goldenGovExcelSheetExternalLink" href="#" target="_blank" class="golden-btn" style="background:#0284c7; color:#fff; font-size:0.75rem; padding:5px 10px; text-decoration:none; border-radius:8px;" title="فتح في نافذة مستقلة أو تنزيل">
                             <i class="fas fa-arrow-up-right-from-square"></i> فتح خارجي
@@ -24798,6 +24831,7 @@
 
             if (!fileUrlOrId || fileUrlOrId === '#' || fileUrlOrId === '-') {
                 iframeEl.src = 'about:blank';
+                iframeEl._lastLoadedSrc = '';
                 if (loadingOverlayEl) loadingOverlayEl.style.display = 'none';
                 if (emptyEl) emptyEl.style.display = 'flex';
                 return;
@@ -25010,10 +25044,12 @@
             }
 
             if (overrideFileUrl) {
-                goldenStudioState.overrideFileUrl = overrideFileUrl;
                 targetStudent.fileUrl = overrideFileUrl;
+                goldenStudioState.overrideFileUrl = overrideFileUrl;
+                goldenStudioState.overrideFileStudentId = targetStudent.studentId;
             } else {
                 goldenStudioState.overrideFileUrl = null;
+                goldenStudioState.overrideFileStudentId = null;
             }
 
             // التأكد من وجود الطالب المستهدف في قائمة الاستوديو للتنقل السلس
@@ -26053,9 +26089,23 @@
                 btnPrev.style.cursor = (idx === 0) ? 'not-allowed' : 'pointer';
             }
             if (btnNext) {
-                btnNext.disabled = (curNum === total);
-                btnNext.style.opacity = (curNum === total) ? '0.45' : '1';
-                btnNext.style.cursor = (curNum === total) ? 'not-allowed' : 'pointer';
+                if (curNum === total) {
+                    btnNext.disabled = false;
+                    btnNext.style.opacity = '1';
+                    btnNext.style.cursor = 'pointer';
+                    btnNext.style.background = 'linear-gradient(135deg, #0284c7, #0369a1)';
+                    btnNext.style.borderColor = '#38bdf8';
+                    btnNext.innerHTML = 'الكشف المجمع <i class="fas fa-table-list"></i>';
+                    btnNext.title = 'الانتقال لتقييم الكشف المجمع وملف الإكسيل';
+                } else {
+                    btnNext.disabled = false;
+                    btnNext.style.opacity = '1';
+                    btnNext.style.cursor = 'pointer';
+                    btnNext.style.removeProperty('background');
+                    btnNext.style.removeProperty('border-color');
+                    btnNext.innerHTML = 'التالي <i class="fas fa-chevron-left"></i>';
+                    btnNext.title = 'الانتقال للطالب التالي';
+                }
             }
 
             // 5. تحميل ملف استمارة الطالب في الإطار الأيمن مع دعم النسخ المحدثة
@@ -26073,7 +26123,7 @@
             }
 
             const stFileUrl = overrideFileUrl || 
-                goldenStudioState.overrideFileUrl ||
+                (goldenStudioState.overrideFileStudentId === student.studentId ? goldenStudioState.overrideFileUrl : null) ||
                 student.fileUrl || 
                 student.url || 
                 student.file_url || 
@@ -27846,8 +27896,18 @@
             const newIdx = goldenStudioState.currentIndex + direction;
             if (newIdx >= 0 && newIdx < list.length) {
                 goldenStudioState.currentIndex = newIdx;
+                goldenStudioState.overrideFileUrl = null;
+                goldenStudioState.overrideFileStudentId = null;
                 renderGoldenStudioStudent();
                 updateGoldenLiveProgress();
+            } else if (direction > 0 && newIdx >= list.length) {
+                // عند الوصول لنهاية الطلاب والضغط على التالي -> فتح الكشف المجمع للتقييم فورياً
+                showToast('🎉 وصلت لنهاية طلاب المحافظة! جاري فتح الكشف المجمع للمراجعة والتقييم...', 'info', 2200);
+                setTimeout(() => {
+                    if (typeof openGoldenCollectiveSheetModal === 'function') {
+                        openGoldenCollectiveSheetModal();
+                    }
+                }, 400);
             }
         };
 
@@ -27964,8 +28024,10 @@
             if (goldenStudioState.currentIndex < goldenStudioState.studentsList.length - 1) {
                 navigateGoldenStudent(1);
             } else {
+                goldenStudioState.overrideFileUrl = null;
+                goldenStudioState.overrideFileStudentId = null;
                 renderGoldenStudioStudent();
-                showToast('🎉 تهانينا! تمت مراجعة جميع استمارات الطلاب بنجاح. جاري فتح الكشف المجمع...', 'success', 2500);
+                showToast('🎉 تهانينا! تمت مراجعة جميع استمارات الطلاب بنجاح. جاري فتح الكشف المجمع وملف الإكسيل...', 'success', 2500);
                 setTimeout(() => {
                     if (typeof openGoldenCollectiveSheetModal === 'function') {
                         openGoldenCollectiveSheetModal();
@@ -32881,43 +32943,59 @@
             sessionStorage.setItem('repChamps_activeReviewer', JSON.stringify(previewReviewerSession));
             currentReviewerSession = previewReviewerSession;
 
-            // وضع معاينة مدير البطولة
-            if (isTd) {
-                let assignments = [];
-                if (Array.isArray(cachedTournamentDirectors)) {
-                    assignments = cachedTournamentDirectors.filter(t => (t.username || '').toLowerCase() === username.toLowerCase());
-                }
-                if (assignments.length === 0 && td) assignments = [td];
-                if (assignments.length === 0) {
-                    assignments = [{
-                        assignmentId: 'preview_td_' + username,
-                        username: username,
-                        displayName: dispName,
-                        category: cat,
-                        gameName: (td && td.gameName) || 'كافة الألعاب',
-                        stageScope: (td && td.stageScope) || 'كافة المراحل',
-                        status: 'نشط'
-                    }];
-                }
-                currentReviewerDirectorAssignments = assignments;
-
-                showAdminPreviewStickyBanner('TOURN_DIRECTOR', dispName, username);
-                changeTab('reviewPortal');
-                if (typeof switchToTournDirectorPanel === 'function') {
-                    switchToTournDirectorPanel();
-                }
-                showToast(`أنت الآن في وضع الاطلاع المباشر على بوابة مدير البطولة (${dispName})`, 'info');
-                return;
+            // إعداد تكليفات مسؤول البطولة إن وُجدت لتمكين زر التحول إليها بسلاسة
+            let assignments = [];
+            if (Array.isArray(cachedTournamentDirectors)) {
+                assignments = cachedTournamentDirectors.filter(t => (t.username || '').toLowerCase() === username.toLowerCase());
             }
+            if (assignments.length === 0 && td) assignments = [td];
+            if (assignments.length === 0 && isTd) {
+                assignments = [{
+                    assignmentId: 'preview_td_' + username,
+                    username: username,
+                    displayName: dispName,
+                    category: cat,
+                    gameName: (td && td.gameName) || 'كافة الألعاب',
+                    stageScope: (td && td.stageScope) || 'كافة المراحل',
+                    status: 'نشط'
+                }];
+            }
+            currentReviewerDirectorAssignments = assignments;
 
-            // وضع معاينة المراجع العادي
+            // الفتح دائماً على صفحة المراجعة أولاً بناءً على طلب المستخدم
             showAdminPreviewStickyBanner('REVIEWER', dispName, username);
             changeTab('reviewPortal');
             if (typeof showReviewerDashboard === 'function') {
                 showReviewerDashboard();
             }
-            showToast(`أنت الآن في وضع الاطلاع المباشر على بوابة (${dispName})`, 'info');
+
+            // إظهار زر الانتقال لصفحة مسؤول البطولة إذا كان المراجع مكلفاً كمسؤول بطولة
+            const btnTd = document.getElementById('btnOpenTournDirectorPage');
+            if (btnTd) {
+                if (isTd || (currentReviewerDirectorAssignments && currentReviewerDirectorAssignments.length > 0)) {
+                    btnTd.style.display = 'inline-flex';
+                    btnTd.title = `الانتقال إلى صفحة مسؤول البطولة (${currentReviewerDirectorAssignments.length} تكليف)`;
+                } else {
+                    btnTd.style.display = 'none';
+                }
+            }
+            showToast(`أنت الآن في وضع الاطلاع المباشر على صفحة المراجعة (${dispName})`, 'info');
         };
+
+        function updateStickyBannerPadding() {
+            const banner = document.getElementById('adminDirectPreviewStickyBanner');
+            if (banner && !banner.classList.contains('hidden') && banner.style.display !== 'none') {
+                const rect = banner.getBoundingClientRect();
+                const h = rect.height || banner.offsetHeight || 50;
+                document.body.style.paddingTop = Math.ceil(h + 8) + 'px';
+            } else {
+                document.body.style.paddingTop = '0px';
+            }
+        }
+        if (typeof window !== 'undefined') {
+            window.addEventListener('resize', updateStickyBannerPadding);
+            window.addEventListener('orientationchange', updateStickyBannerPadding);
+        }
 
         function showAdminPreviewStickyBanner(type, name, usernameOpt) {
             const banner = document.getElementById('adminDirectPreviewStickyBanner');
@@ -32948,8 +33026,9 @@
                 if (stickyRevSel) stickyRevSel.value = usernameOpt || name;
             }
 
-            // إضافة هامش علوي لجسم الصفحة لعدم حجب أي جزء من الهيدر
-            document.body.style.paddingTop = '54px';
+            // حساب الارتفاع الفعلي للشريط لمنع حجب أي جزء من الهيدر أو اسم المراجع أو الأزرار
+            setTimeout(updateStickyBannerPadding, 30);
+            setTimeout(updateStickyBannerPadding, 150);
         }
 
         function hideAdminPreviewStickyBanner() {
@@ -32958,7 +33037,7 @@
                 banner.classList.add('hidden');
                 banner.style.display = 'none';
             }
-            document.body.style.paddingTop = '';
+            document.body.style.paddingTop = '0px';
         }
 
         window.exitAdminDirectPreview = function () {
