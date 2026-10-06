@@ -11505,7 +11505,7 @@
                                     <i class="fas fa-arrows-rotate" id="iconHeaderAdminFilesRefresh"></i>
                                     <span>تحديث من السيرفر</span>
                                 </button>
-                                <button type="button" class="admin-sidebar-toggle-btn hidden" id="headerDistRefreshBtn" onclick="loadDistributionOverviewFromBackend()" title="تحديث اللوحة عبر السيرفر" style="padding:3px 10px; font-size:0.75rem; color:#0284c7; border-color:#bae6fd; background:#f0f9ff; font-weight:700;">
+                                <button type="button" class="admin-sidebar-toggle-btn hidden" id="headerDistRefreshBtn" onclick="loadDistributionOverviewFromBackend(true)" title="تحديث اللوحة عبر السيرفر" style="padding:3px 10px; font-size:0.75rem; color:#0284c7; border-color:#bae6fd; background:#f0f9ff; font-weight:700;">
                                     <i class="fas fa-arrows-rotate" id="iconDistributionRefresh"></i>
                                     <span>تحديث</span>
                                 </button>
@@ -14270,6 +14270,9 @@
             }
 
             // إخفاء/إظهار الأقسام
+            if (tab !== 'registrarPortal' && typeof stopRegistrarAutoSync === 'function') {
+                stopRegistrarAutoSync();
+            }
             if (adminSection) adminSection.classList.add('hidden');
             if (typeof adminSession !== 'undefined') adminSession.isOpen = false;
 
@@ -14297,6 +14300,9 @@
                 initReviewPortalView();
             } else if (tab === 'registrarPortal') {
                 initRegistrarPortalView();
+                if (window.currentRegistrarSession && typeof startRegistrarAutoSync === 'function') {
+                    startRegistrarAutoSync();
+                }
             } else if (tab === 'resultsView') {
                 initResultsView();
             } else if (tab === 'history') {
@@ -14317,6 +14323,7 @@
         // العودة لشاشة الاختيار الرئيسية
         function showLanding() {
             recordPageVisit('landing');
+            if (typeof stopRegistrarAutoSync === 'function') stopRegistrarAutoSync();
             if (window._renderPortalSignatures) window._renderPortalSignatures();
             if (window.applyHomepageCardsConfig) window.applyHomepageCardsConfig();
             resetUploadCategorySelection();
@@ -16897,6 +16904,9 @@
                 } catch (e) {}
                 adminSession.user = null;
                 adminSession.selectedFileIds.clear();
+                if (typeof stopHeartbeatTracker === 'function' && !window.currentReviewerSession && !window.currentRegistrarSession) {
+                    stopHeartbeatTracker();
+                }
                 showAdminLoginCard();
             }
         };
@@ -19769,7 +19779,15 @@
             } catch (e) {}
         };
 
-        // مؤقت النبض الدوري للنشاط (كل 45 ثانية)
+        // مؤقت النبض الدوري للنشاط (كل 45 ثانية) وإدارته لمنع تسريب الموارد
+        function stopHeartbeatTracker() {
+            if (heartbeatTimer) {
+                clearInterval(heartbeatTimer);
+                heartbeatTimer = null;
+            }
+        }
+        window.stopHeartbeatTracker = stopHeartbeatTracker;
+
         function startHeartbeatTracker() {
             if (heartbeatTimer) return;
             heartbeatTimer = setInterval(() => {
@@ -19805,6 +19823,8 @@
 
                 if (currentUser) {
                     registerActiveOnlineUser(currentUser);
+                } else {
+                    stopHeartbeatTracker();
                 }
             }, 45000);
         }
@@ -20408,9 +20428,12 @@
             else if (currentActiveAuditSubtab === 'online_users') renderOnlineUsersTable();
         };
 
-        // مؤقت فحص الصيانة اليومية كل 15 دقيقة
+        // مؤقت فحص الصيانة اليومية كل 15 دقيقة (مع منع تكرار المؤقتات)
         try {
-            setInterval(function () {
+            if (window.dailyAuditMaintenanceTimer) {
+                clearInterval(window.dailyAuditMaintenanceTimer);
+            }
+            window.dailyAuditMaintenanceTimer = setInterval(function () {
                 if (typeof window.checkAndPerformDailyAuditMaintenance === 'function') {
                     window.checkAndPerformDailyAuditMaintenance();
                 }
@@ -23651,6 +23674,9 @@
                 });
             } catch (eC) {}
             sessionStorage.removeItem('repChamps_activeReviewer');
+            if (typeof stopHeartbeatTracker === 'function' && (!window.adminSession || !window.adminSession.user) && !window.currentRegistrarSession) {
+                stopHeartbeatTracker();
+            }
             showReviewerLogin();
         }
 
@@ -28463,7 +28489,7 @@
             }
         }
 
-        // تحديث البيانات فور عودة المستخدم للتبويب أو فتح قفل شاشة الموبايل
+        // تحديث البيانات فور عودة المستخدم للتبويب أو فتح قفل شاشة الموبايل وإيقاف المؤقت عند إخفاء التبويب
         if (typeof document !== 'undefined' && !window._regVisibilityAttached) {
             window._regVisibilityAttached = true;
             document.addEventListener('visibilitychange', () => {
@@ -28471,7 +28497,10 @@
                     if (currentRegistrarSession && !document.getElementById('registrarPortalView')?.classList.contains('hidden')) {
                         loadRegistrarStudents(true, true);
                         loadRegistrarCollectiveSheets(true, true);
+                        startRegistrarAutoSync();
                     }
+                } else if (document.visibilityState === 'hidden') {
+                    stopRegistrarAutoSync();
                 }
             });
         }
@@ -28831,6 +28860,9 @@
                 deregisterActiveOnlineUser(currentRegistrarSession.username);
             }
             stopRegistrarAutoSync();
+            if (typeof stopHeartbeatTracker === 'function' && (!window.adminSession || !window.adminSession.user) && !window.currentReviewerSession) {
+                stopHeartbeatTracker();
+            }
             currentRegistrarSession = null;
             cachedRegistrarStudents = [];
             cachedRegistrarCollectiveSheets = [];
@@ -29491,25 +29523,34 @@
         }
         window.isWorkloadAssigned = isWorkloadAssigned;
 
-        async function loadDistributionOverviewFromBackend() {
+        async function loadDistributionOverviewFromBackend(forceBypassCache) {
             setSpinning('iconDistributionRefresh', true);
 
-            // عرض فوري سريع من الذاكرة المحلية إن وجد (SWR Cache)
-            try {
-                const cachedW = sessionStorage.getItem('repChamps_dist_workloads_cache');
-                const cachedR = sessionStorage.getItem('repChamps_dist_reviewers_cache');
-                if (cachedW && (!cachedDistributionWorkloads || cachedDistributionWorkloads.length === 0)) {
-                    cachedDistributionWorkloads = JSON.parse(cachedW).map(w => {
-                        w.assignmentStatus = isWorkloadAssigned(w) ? 'مسندة' : 'غير مسندة';
-                        return w;
-                    });
-                    if (cachedR) cachedDistributionReviewers = JSON.parse(cachedR);
-                    updateDistributionStatsCards();
-                    filterDistributionWorkloadsTable();
-                    renderDistributionReviewersTable();
+            if (forceBypassCache) {
+                try {
+                    sessionStorage.removeItem('repChamps_dist_workloads_cache');
+                    sessionStorage.removeItem('repChamps_dist_reviewers_cache');
+                } catch (e) {}
+                cachedDistributionWorkloads = null;
+                cachedDistributionReviewers = null;
+            } else {
+                // عرض فوري سريع من الذاكرة المحلية إن وجد (SWR Cache)
+                try {
+                    const cachedW = sessionStorage.getItem('repChamps_dist_workloads_cache');
+                    const cachedR = sessionStorage.getItem('repChamps_dist_reviewers_cache');
+                    if (cachedW && (!cachedDistributionWorkloads || cachedDistributionWorkloads.length === 0)) {
+                        cachedDistributionWorkloads = JSON.parse(cachedW).map(w => {
+                            w.assignmentStatus = isWorkloadAssigned(w) ? 'مسندة' : 'غير مسندة';
+                            return w;
+                        });
+                        if (cachedR) cachedDistributionReviewers = JSON.parse(cachedR);
+                        updateDistributionStatsCards();
+                        filterDistributionWorkloadsTable();
+                        renderDistributionReviewersTable();
+                    }
+                } catch (e) {
+                    console.warn('Could not read distribution cache', e);
                 }
-            } catch (e) {
-                console.warn('Could not read distribution cache', e);
             }
 
             const wTbody = document.getElementById('distributionWorkloadsTableBody');
@@ -30587,7 +30628,7 @@
                 closeAssignTaskModal();
                 updateDistributionStatsCards();
                 filterDistributionWorkloadsTable();
-                loadDistributionOverviewFromBackend().catch(() => {});
+                loadDistributionOverviewFromBackend(true).catch(() => {});
 
                 if (lastWhatsApp) {
                     showWhatsAppNotificationModal(lastWhatsApp);
