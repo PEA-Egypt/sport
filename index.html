@@ -10888,9 +10888,9 @@
                             <div class="form-group" style="margin-bottom:0;">
                                 <label for="accAdminRoleSelect" style="font-size:0.78rem; font-weight:700; color:#334155; margin-bottom:4px; display:block;">نوع الصلاحية الإدارية <span class="req" style="color:#dc2626;">*</span></label>
                                 <select id="accAdminRoleSelect" style="width:100%; padding:7px 10px; font-size:0.83rem; border:1.5px solid #cbd5e1; border-radius:8px; background:#f8fafc; color:#0f172a; box-sizing:border-box;">
-                                    <option value="SUPER_ADMIN">مسؤول شامل (SUPER_ADMIN)</option>
-                                    <option value="BOYS_ADMIN">مشرف بطولات البنين (BOYS_ADMIN)</option>
-                                    <option value="GIRLS_ADMIN">مشرفة بطولات البنات (GIRLS_ADMIN)</option>
+                                    <option value="SUPER_ADMIN">المسؤول الأعلى (SUPER_ADMIN) - كافة الصلاحيات لكافة الفئات</option>
+                                    <option value="BOYS_ADMIN">مشرف بطولات البنين (BOYS_ADMIN) - الاطلاع على فئة البنين فقط</option>
+                                    <option value="GIRLS_ADMIN">مشرفة بطولات البنات (GIRLS_ADMIN) - الاطلاع على فئة البنات فقط</option>
                                 </select>
                             </div>
                         </div>
@@ -10934,6 +10934,29 @@
                                     </button>
                                 </div>
                                 <input type="hidden" id="accRevCategorySelect" value="بنين">
+                            </div>
+
+                            <!-- خيار منح صلاحية الاطلاع المباشر الشامل -->
+                            <div style="background:#f0fdf4; border:1.5px solid #86efac; border-radius:10px; padding:10px 12px; margin-top:2px;">
+                                <label style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; font-size:0.8rem; font-weight:800; color:#15803d; margin-bottom:0;">
+                                    <span style="display:inline-flex; align-items:center; gap:6px;">
+                                        <i class="fas fa-eye" style="color:#059669;"></i>
+                                        <span>منح صلاحية الاطلاع المباشر الشامل</span>
+                                    </span>
+                                    <input type="checkbox" id="accRevDirectAccessCheck" style="width:18px; height:18px; accent-color:#059669; cursor:pointer;" onchange="toggleAccountModalDirectAccessCat(this.checked)">
+                                </label>
+                                <div id="accRevDirectAccessCatContainer" style="margin-top:8px; padding-top:8px; border-top:1px dashed #bbf7d0; display:none;">
+                                    <label for="accRevDirectAccessCatSelect" style="font-size:0.75rem; font-weight:700; color:#166534; margin-bottom:4px; display:block;">
+                                        فئة الاطلاع المباشر المصرح بها للمراجع:
+                                    </label>
+                                    <select id="accRevDirectAccessCatSelect" style="width:100%; padding:6px 10px; font-size:0.8rem; border:1.5px solid #86efac; border-radius:8px; background:#ffffff; color:#0f172a; box-sizing:border-box;">
+                                        <option value="بنين">قطاع البنين فقط (👦 فحص واعتماد كشوف واستمارات البنين)</option>
+                                        <option value="بنات">قطاع البنات فقط (👧 فحص واعتماد كشوف واستمارات البنات)</option>
+                                    </select>
+                                    <small style="font-size:0.69rem; color:#15803d; margin-top:3px; display:block; line-height:1.4;">
+                                        <i class="fas fa-circle-check" style="color:#059669;"></i> تمكن هذه الصلاحية المراجع من فحص وتدقيق كافة استمارات الفئة المحددة لحظياً دون اشتراط إسناد مهام محددة.
+                                    </small>
+                                </div>
                             </div>
                         </div>
 
@@ -12031,6 +12054,7 @@
                                         <th>الاسم الكامل / الصفة</th>
                                         <th>كلمة المرور</th>
                                         <th style="text-align:center; width:44px;" title="النوع"><i class="fas fa-venus-mars"></i></th>
+                                        <th style="text-align:center; min-width:120px;">الاطلاع المباشر</th>
                                         <th style="text-align:center; min-width:140px;">المهام المسندة</th>
                                         <th style="text-align:center;">إجمالي المكلف به</th>
                                         <th style="text-align:center;">الحالة</th>
@@ -12038,7 +12062,7 @@
                                     </tr>
                                 </thead>
                                 <tbody id="reviewersAccountsTableBody">
-                                    <tr><td colspan="9" style="text-align:center; padding:16px;">جاري تحميل الحسابات...</td></tr>
+                                    <tr><td colspan="10" style="text-align:center; padding:16px;">جاري تحميل الحسابات...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -22979,18 +23003,37 @@
 
             if (!container) return;
 
+            const isDirectOrPreview = !!(
+                (currentReviewerSession && (currentReviewerSession.isAdminPreview || currentReviewerSession.hasDirectAccess === true || currentReviewerSession.hasDirectAccess === 'نعم' || currentReviewerSession.hasDirectAccess === 'true'))
+            );
+
             if (total === 0) {
-                container.innerHTML = `
-                    <div style="padding:22px 14px; text-align:center; color:#64748b; font-size:0.86rem; width:100%;">
-                        <div style="font-size:1.05rem; font-weight:800; color:#b45309; margin-bottom:6px;">
-                            <i class="fas fa-hourglass-half" style="font-size:1.5rem; color:#d97706; display:block; margin-bottom:8px;"></i>
-                            في انتظار التوجيه من خلال الأدمن السوبر
+                if (isDirectOrPreview) {
+                    const directCat = (currentReviewerSession && (currentReviewerSession.directAccessCategory || currentReviewerSession.category)) || 'بنين';
+                    container.innerHTML = `
+                        <div style="padding:16px 14px; text-align:center; background:#ecfdf5; border:1.5px solid #a7f3d0; border-radius:10px; width:100%;">
+                            <div style="font-size:0.95rem; font-weight:800; color:#059669; margin-bottom:4px;">
+                                <i class="fas fa-eye" style="font-size:1.2rem; color:#10b981; margin-left:6px;"></i>
+                                وضع الاطلاع المباشر الشامل مفعل (${directCat})
+                            </div>
+                            <div style="font-size:0.78rem; color:#15803d; line-height:1.4;">
+                                مصرح لك بفحص وتدقيق كافة استمارات قطاع (${directCat}) دون اشتراط إسناد مهام محددة. استخدم القوائم بالأعلى للتصفية بحرية.
+                            </div>
                         </div>
-                        <div style="font-size:0.80rem; color:#64748b; line-height:1.4;">
-                            لم يتم إسناد أي مهام مراجعة لحسابك حالياً، أو أن التوزيع التلقائي لفئتك معطّل بانتظار توجيه المشرف العام.
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div style="padding:22px 14px; text-align:center; color:#64748b; font-size:0.86rem; width:100%;">
+                            <div style="font-size:1.05rem; font-weight:800; color:#b45309; margin-bottom:6px;">
+                                <i class="fas fa-hourglass-half" style="font-size:1.5rem; color:#d97706; display:block; margin-bottom:8px;"></i>
+                                في انتظار التوجيه من خلال الأدمن السوبر
+                            </div>
+                            <div style="font-size:0.80rem; color:#64748b; line-height:1.4;">
+                                لم يتم إسناد أي مهام مراجعة لحسابك حالياً، أو أن التوزيع التلقائي لفئتك معطّل بانتظار توجيه المشرف العام.
+                            </div>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
                 const banner = document.getElementById('activeTaskBanner');
                 if (banner) banner.style.display = 'none';
 
@@ -23000,8 +23043,8 @@
                     if (tblWrap) tblWrap.style.display = 'flex';
                     if (promptEl) promptEl.style.display = 'none';
                 } else {
-                    if (tblWrap) tblWrap.style.display = 'none';
-                    if (promptEl) promptEl.style.display = 'block';
+                    if (tblWrap) tblWrap.style.display = isDirectOrPreview ? 'flex' : 'none';
+                    if (promptEl) promptEl.style.display = isDirectOrPreview ? 'none' : 'block';
                 }
                 return;
             }
@@ -23411,8 +23454,20 @@
                 nameEl.textContent = currentReviewerSession.displayName || currentReviewerSession.username;
             }
             if (roleBadge && currentReviewerSession) {
-                const govs = currentReviewerSession.assignedGovs || 'الكل';
-                roleBadge.textContent = govs === 'الكل' ? 'مراجع معتمد' : `مراجع: ${govs}`;
+                const hasDirect = !!(currentReviewerSession.hasDirectAccess === true || currentReviewerSession.hasDirectAccess === 'نعم' || currentReviewerSession.hasDirectAccess === 'true');
+                const directCat = currentReviewerSession.directAccessCategory || currentReviewerSession.category || 'بنين';
+                if (hasDirect) {
+                    roleBadge.textContent = `مراجع اطلاع مباشر (${directCat})`;
+                    roleBadge.style.background = '#ecfdf5';
+                    roleBadge.style.color = '#059669';
+                    roleBadge.style.border = '1px solid #a7f3d0';
+                } else {
+                    const govs = currentReviewerSession.assignedGovs || 'الكل';
+                    roleBadge.textContent = govs === 'الكل' ? 'مراجع معتمد' : `مراجع: ${govs}`;
+                    roleBadge.style.background = '';
+                    roleBadge.style.color = '';
+                    roleBadge.style.border = '';
+                }
             }
 
             populateReviewerFilterDropdowns();
@@ -23677,7 +23732,13 @@
                 // 3. الفلترة الصارمة للاستمارات: منع تسريب أي استمارات لمحافظات أو ألعاب مسندة لزملاء آخرين أو غير مسندة
                 let rawSubmissions = (resSubs && Array.isArray(resSubs.submissions)) ? resSubs.submissions : [];
 
-                if (currentReviewerSession && currentReviewerSession.role !== 'SUPER_ADMIN' && !isPreviewMode) {
+                // التحقق مما إذا كان المراجع يتمتع بصلاحية الاطلاع المباشر الشامل
+                const hasDirectAccess = isPreviewMode || !!(
+                    (currentReviewerSession && (currentReviewerSession.hasDirectAccess === true || currentReviewerSession.hasDirectAccess === 'نعم' || currentReviewerSession.hasDirectAccess === 'true')) ||
+                    (resSubs && (resSubs.hasDirectAccess === true || resSubs.hasDirectAccess === 'نعم'))
+                );
+
+                if (currentReviewerSession && currentReviewerSession.role !== 'SUPER_ADMIN' && !isPreviewMode && !hasDirectAccess) {
                     if (cachedReviewerMyTasks.length > 0) {
                         rawSubmissions = rawSubmissions.filter(s => {
                             return cachedReviewerMyTasks.some(t => {
@@ -23692,7 +23753,7 @@
                         // لا توجد مهام مسندة للمراجع نهائياً
                         rawSubmissions = [];
                     }
-                } else if (isPreviewMode) {
+                } else if (isPreviewMode || hasDirectAccess) {
                     // في وضع الاطلاع المباشر: إذا توفرت مهام مسندة نطبقها، وإن لم تتوفر استمارات نجلب استمارات الفئة مباشرة
                     if (cachedReviewerMyTasks.length > 0) {
                         const taskFiltered = rawSubmissions.filter(s => {
@@ -23711,7 +23772,8 @@
 
                     if (rawSubmissions.length === 0) {
                         try {
-                            const fbParams = { action: 'getStudentSubmissions', category: cat, isAdminPreview: true };
+                            const effectiveDirectCat = (resSubs && resSubs.directAccessCategory) || (currentReviewerSession && currentReviewerSession.directAccessCategory) || cat;
+                            const fbParams = { action: 'getStudentSubmissions', category: effectiveDirectCat, isAdminPreview: true };
                             if (cachedReviewerMyTasks.length > 0 && cachedReviewerMyTasks[0].governorate) {
                                 fbParams.governorate = cachedReviewerMyTasks[0].governorate;
                             }
@@ -32699,10 +32761,18 @@
 
         function renderFilteredDirectInspectionReviewers() {
             const all = getAllInspectionAccounts();
-            const cat = window._adminInspectionCategory || 'all';
+            const currentAdminRole = (typeof adminSession !== 'undefined' && adminSession && adminSession.user && adminSession.user.role) ? adminSession.user.role : 'SUPER_ADMIN';
+            const isBoysOnly = (currentAdminRole === 'BOYS_ADMIN');
+            const isGirlsOnly = (currentAdminRole === 'GIRLS_ADMIN');
+
+            const cat = isBoysOnly ? 'بنين' : (isGirlsOnly ? 'بنات' : (window._adminInspectionCategory || 'all'));
             const q = window._adminInspectionQuery || '';
 
             const filtered = all.filter(item => {
+                // تصفية أمنية صارمة حسب صلاحية الأدمن
+                if (isBoysOnly && (item.category !== 'بنين' || item.isTournDirector)) return false;
+                if (isGirlsOnly && (item.category !== 'بنات' || item.isTournDirector)) return false;
+
                 // تصفية الفئة
                 if (cat === 'بنين') {
                     if (item.category !== 'بنين' || item.isTournDirector) return false;
@@ -32784,7 +32854,7 @@
                                 <button type="button" onclick="adminDirectPreviewReviewer('${escapeHtml(item.username)}', '${escapeHtml(item.displayName)}', ${isTd})" 
                                         style="background:${isTd ? '#d97706' : (isBoys ? '#2563eb' : '#db2777')}; color:#ffffff; border:none; border-radius:6px; padding:5px 12px; font-size:0.74rem; font-weight:800; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; flex-shrink:0; transition:opacity 0.2s;"
                                         onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'"
-                                        title="معاينة بوابة ${escapeHtml(item.displayName)} مباشرة بصلاحية المشرف العام">
+                                        title="معاينة بوابة ${escapeHtml(item.displayName)} مباشرة بصلاحية المشرف">
                                     <i class="fas fa-eye"></i> معاينة البوابة
                                 </button>
                             </div>
@@ -32796,13 +32866,17 @@
 
         function populateDirectInspectionReviewers() {
             const allAccounts = getAllInspectionAccounts();
+            const currentAdminRole = (typeof adminSession !== 'undefined' && adminSession && adminSession.user && adminSession.user.role) ? adminSession.user.role : 'SUPER_ADMIN';
+            const isBoysOnly = (currentAdminRole === 'BOYS_ADMIN');
+            const isGirlsOnly = (currentAdminRole === 'GIRLS_ADMIN');
+
             const selRev = document.getElementById('selDirectInspectReviewer');
             const stickyRevSel = document.getElementById('stickyReviewerPreviewSelect');
 
-            // تجميع الحسابات حسب المجموعات
-            const boysRev = allAccounts.filter(a => !a.isTournDirector && a.category === 'بنين');
-            const girlsRev = allAccounts.filter(a => !a.isTournDirector && a.category === 'بنات');
-            const tdAccounts = allAccounts.filter(a => a.isTournDirector);
+            // تجميع الحسابات حسب المجموعات مع مراعاة صلاحية المشرف
+            const boysRev = isGirlsOnly ? [] : allAccounts.filter(a => !a.isTournDirector && a.category === 'بنين');
+            const girlsRev = isBoysOnly ? [] : allAccounts.filter(a => !a.isTournDirector && a.category === 'بنات');
+            const tdAccounts = (isBoysOnly || isGirlsOnly) ? [] : allAccounts.filter(a => a.isTournDirector);
 
             function buildOptGroupsHtml(defaultText) {
                 let html = `<option value="">${defaultText}</option>`;
@@ -32933,6 +33007,16 @@
             const dispName = displayNameOpt || (td && (td.displayName || td.username)) || (rev && rev.displayName) || username;
             const assignedGovs = (rev && (rev.governorate || rev.assignedGovs)) || (td && td.governorate) || 'الكل';
             const cat = (td && td.category) || (rev && rev.category) || 'بنين';
+
+            // فحص أمني صارم: عزل قطاع البنين عن البنات لمسؤولي القطاعات
+            if (adminRole === 'BOYS_ADMIN' && cat === 'بنات') {
+                showToast('غير مصرح لمسؤول البنين بالاطلاع على لجان أو مراجعي قطاع البنات.', 'error');
+                return;
+            }
+            if (adminRole === 'GIRLS_ADMIN' && cat === 'بنين') {
+                showToast('غير مصرح لمسؤول البنات بالاطلاع على لجان أو مراجعي قطاع البنين.', 'error');
+                return;
+            }
 
             const previewReviewerSession = {
                 username: username,
@@ -35450,7 +35534,14 @@
                     { username: 'rev_cairo', displayName: 'مراجع القاهرة والجيزة', password: '••••••', assignedGovs: 'القاهرة,الجيزة', assignedGames: 'الكل', category: 'بنين', status: 'نشط' },
                     { username: 'rev_alex', displayName: 'مراجع الإسكندرية ومطروح', password: '••••••', assignedGovs: 'الإسكندرية,مطروح', assignedGames: 'الكل', category: 'بنات', status: 'نشط' }
                 ];
-                const reviewers = [...rawReviewers].sort((a, b) => {
+                const currentAdminRole = (typeof adminSession !== 'undefined' && adminSession && adminSession.user && adminSession.user.role) ? adminSession.user.role : 'SUPER_ADMIN';
+                let reviewers = [...rawReviewers];
+                if (currentAdminRole === 'BOYS_ADMIN') {
+                    reviewers = reviewers.filter(r => (r.category || 'بنين').trim() === 'بنين');
+                } else if (currentAdminRole === 'GIRLS_ADMIN') {
+                    reviewers = reviewers.filter(r => (r.category || '').trim() === 'بنات');
+                }
+                reviewers.sort((a, b) => {
                     const catA = (a.category || 'بنين').trim();
                     const catB = (b.category || 'بنين').trim();
                     if (catA !== catB) return catA === 'بنين' ? -1 : 1;
@@ -35481,6 +35572,24 @@
                         </span>
                     `;
 
+                    const hasDirect = !!(r.hasDirectAccess === true || r.hasDirectAccess === 'نعم' || r.hasDirectAccess === 'true');
+                    const directCat = r.directAccessCategory || r.category || 'بنين';
+                    const directAccessBadge = hasDirect ? `
+                        <button type="button" class="admin-action-btn" onclick="quickToggleReviewerDirectAccess('${escapeHtml(r.username)}', true, '${escapeHtml(directCat)}')" 
+                                style="background:#ecfdf5; color:#059669; border:1.5px solid #a7f3d0; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.72rem; cursor:pointer; display:inline-flex; align-items:center; gap:4px; transition:all 0.15s ease;" 
+                                title="صلاحية الاطلاع المباشر مفعلة على قطاع (${escapeHtml(directCat)}) - انقر للإلغاء أو التعديل">
+                            <i class="fas fa-eye"></i>
+                            <span>مفعل (${escapeHtml(directCat)})</span>
+                        </button>
+                    ` : `
+                        <button type="button" class="admin-action-btn" onclick="quickToggleReviewerDirectAccess('${escapeHtml(r.username)}', false, '${escapeHtml(r.category || 'بنين')}')" 
+                                style="background:#f8fafc; color:#94a3b8; border:1px dashed #cbd5e1; padding:3px 8px; border-radius:6px; font-weight:600; font-size:0.72rem; cursor:pointer; display:inline-flex; align-items:center; gap:4px; transition:all 0.15s ease;" 
+                                title="الاطلاع المباشر غير مفعل - انقر لتفعيل الاطلاع المباشر على قطاع (${escapeHtml(r.category || 'بنين')})">
+                            <i class="fas fa-eye-slash"></i>
+                            <span>غير مفعل</span>
+                        </button>
+                    `;
+
                     const enterBtn = `
                         <button type="button" class="admin-action-btn" onclick="openReviewerTasksOverviewModal('${escapeHtml(r.username)}')" 
                                 style="${assignedCount > 0 ? 'background:linear-gradient(135deg, #0284c7, #0369a1); color:#ffffff; border:none; box-shadow:0 2px 4px rgba(2,132,199,0.2);' : 'background:#f8fafc; color:#64748b; border:1px solid #cbd5e1;'} padding:4px 10px; font-size:0.76rem; font-weight:700; border-radius:6px; display:inline-flex; align-items:center; gap:5px; cursor:pointer;"
@@ -35498,6 +35607,7 @@
                         <td>${escapeHtml(r.displayName || r.username)}</td>
                         <td><code style="background:#f1f5f9; padding:2px 7px; border-radius:6px; font-size:0.8rem; border:1px solid #e2e8f0; color:#334155; font-family:monospace; direction:ltr; display:inline-block;">${escapeHtml(r.password || '••••••')}</code></td>
                         <td style="text-align:center;">${genderBadge}</td>
+                        <td style="text-align:center;">${directAccessBadge}</td>
                         <td style="text-align:center;">${enterBtn}</td>
                         <td style="text-align:center; font-weight:800; font-size:0.86rem; color:#0284c7;">${assignedCount}</td>
                         <td style="text-align:center;">
@@ -35937,7 +36047,55 @@
                 if (btnBoys) { btnBoys.classList.add('active'); btnBoys.style.borderColor = '#0284c7'; }
                 if (btnGirls) { btnGirls.classList.remove('active'); btnGirls.style.borderColor = '#cbd5e1'; }
             }
+
+            const directCatSelect = document.getElementById('accRevDirectAccessCatSelect');
+            const directCheck = document.getElementById('accRevDirectAccessCheck');
+            if (directCatSelect && directCheck && !directCheck.checked) {
+                directCatSelect.value = normCat;
+            }
         }
+
+        window.toggleAccountModalDirectAccessCat = function(checked) {
+            const container = document.getElementById('accRevDirectAccessCatContainer');
+            if (container) {
+                container.style.display = checked ? 'block' : 'none';
+            }
+        };
+
+        window.quickToggleReviewerDirectAccess = async function(username, currentHasDirect, currentCat) {
+            const newHasDirect = !currentHasDirect;
+            const actionText = newHasDirect ? `منح صلاحية الاطلاع المباشر على قطاع (${currentCat || 'بنين'})` : `إلغاء صلاحية الاطلاع المباشر`;
+            if (!confirm(`هل أنت متأكد من رغبتك في ${actionText} للمراجع (${username})؟`)) {
+                return;
+            }
+
+            try {
+                showToast(`جاري تحديث صلاحية الاطلاع المباشر للمراجع (${username})...`, 'info', 2000);
+                const res = await callBackendApi({
+                    action: 'setReviewerDirectAccess',
+                    username: username,
+                    hasDirectAccess: newHasDirect,
+                    category: currentCat || 'بنين',
+                    directAccessCategory: currentCat || 'بنين'
+                });
+
+                if (res && res.success) {
+                    showToast(res.message || 'تم تحديث صلاحية الاطلاع المباشر بنجاح.', 'success');
+                    if (superAdminAccountsData && Array.isArray(superAdminAccountsData.reviewers)) {
+                        const targetRev = superAdminAccountsData.reviewers.find(r => (r.username || '').toLowerCase() === (username || '').toLowerCase());
+                        if (targetRev) {
+                            targetRev.hasDirectAccess = newHasDirect;
+                            targetRev.directAccessCategory = currentCat || targetRev.category || 'بنين';
+                        }
+                    }
+                    renderAdminAccountsTables();
+                } else {
+                    showToast((res && res.message) ? res.message : 'فشل تحديث صلاحية الاطلاع المباشر.', 'error');
+                }
+            } catch (err) {
+                showToast('حدث خطأ أثناء الاتصال بالخادم لتحديث صلاحية المراجع.', 'error');
+            }
+        };
 
         function openCreateAccountModal(type) {
             document.getElementById('accEditType').value = type;
@@ -36075,6 +36233,16 @@
                 if (revStatusEl) revStatusEl.value = acc ? (acc.status || 'نشط') : 'نشط';
                 const revCat = acc ? (acc.category || 'بنين') : 'بنين';
                 setAccountModalReviewerCategory(revCat);
+
+                // تهيئة حقول الاطلاع المباشر الشامل للمراجع
+                const directCheck = document.getElementById('accRevDirectAccessCheck');
+                const directCatSelect = document.getElementById('accRevDirectAccessCatSelect');
+                const isDirect = !!(acc && (acc.hasDirectAccess === true || acc.hasDirectAccess === 'نعم' || acc.hasDirectAccess === 'true'));
+                if (directCheck) directCheck.checked = isDirect;
+                if (directCatSelect) {
+                    directCatSelect.value = (acc && acc.directAccessCategory) ? acc.directAccessCategory : revCat;
+                }
+                toggleAccountModalDirectAccessCat(isDirect);
             } else if (type === 'registrar') {
                 const govSel = document.getElementById('accRegGovSelect');
                 if (govSel && govSel.options.length <= 1) {
@@ -36136,6 +36304,12 @@
                 payload.status = revStatusEl ? revStatusEl.value : 'نشط';
                 const revCatEl = document.getElementById('accRevCategorySelect');
                 payload.category = revCatEl ? revCatEl.value : 'بنين';
+
+                // إدراج إعدادات الاطلاع المباشر الشامل للمراجع
+                const directCheck = document.getElementById('accRevDirectAccessCheck');
+                const directCatSelect = document.getElementById('accRevDirectAccessCatSelect');
+                payload.hasDirectAccess = directCheck ? directCheck.checked : false;
+                payload.directAccessCategory = (directCheck && directCheck.checked && directCatSelect) ? directCatSelect.value : payload.category;
 
                 if (revGovVal && revGovVal !== 'الكل') {
                     window._lastSelectedAccountGov = revGovVal;
