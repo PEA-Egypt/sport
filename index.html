@@ -15373,18 +15373,20 @@
 
             // فحص محلي فوري لمنع التكرار قبل قراءة الملف أو إرساله
             if (!overwriteChecked) {
+                const normCatLocal = (c) => (c && String(c).indexOf('بنات') !== -1) ? 'بنات' : 'بنين';
+                const normStageLocal = (s) => (s || '').replace(/المرحلة\s*/g, '').replace(/مرحلة\s*/g, '').trim();
                 const existingLocal = getHistory().find(item => {
-                    const sameCat = (!item.category || item.category === currentCategory);
+                    const sameCat = normCatLocal(item.category) === normCatLocal(currentCategory);
                     const sameGov = (item.userGov === userGov || item.governorate === userGov);
                     const sameGame = (item.gameName === selectedGameName);
-                    const sameStage = (item.stageName === selectedStageName);
+                    const sameStage = normStageLocal(item.stageName) === normStageLocal(selectedStageName);
                     const sameTeam = (!item.teamName && !selectedTeamName) || (item.teamName === selectedTeamName);
                     return sameCat && sameGov && sameGame && sameStage && sameTeam;
                 });
                 if (existingLocal) {
                     showCustomAlert(
                           'تنبيه: كشف مسجل مسبقاً',
-                          'يوجد كشف مسجل مسبقاً لهذه المسابقة والمرحلة باسم:<br><strong style="color:#f59e0b;">(' + escapeHtml(existingLocal.fileName || 'ملف سابق') + ')</strong><br><br>إذا كنت ترغب في استبدال الكشف القديم بهذا الكشف الجديد، يرجى تفعيل خيار <strong>"أريد استبدال الملف السابق"</strong> أسفل النموذج ثم الضغط على إرسال.',
+                          'يوجد كشف مسجل مسبقاً لهذه المسابقة والمرحلة لفئة (' + (existingLocal.category || currentCategory) + ') باسم:<br><strong style="color:#f59e0b;">(' + escapeHtml(existingLocal.fileName || 'ملف سابق') + ')</strong><br><br>إذا كنت ترغب في استبدال الكشف القديم بهذا الكشف الجديد، يرجى تفعيل خيار <strong>"أريد استبدال الملف السابق"</strong> أسفل النموذج ثم الضغط على إرسال.',
                           'warning'
                       );
                       return;
@@ -15558,13 +15560,15 @@
             try {
                 let list = getHistory();
                 if (record.overwrite) {
-                    // استبدال الملف السابق لنفس المسابقة والفريق والمحافظة إن وجد
+                    // استبدال الملف السابق لنفس المسابقة والمرحلة والفئة والفريق والمحافظة حصراً
+                    const normCatLocal = (c) => (c && String(c).indexOf('بنات') !== -1) ? 'بنات' : 'بنين';
+                    const normStageLocal = (s) => (s || '').replace(/المرحلة\s*/g, '').replace(/مرحلة\s*/g, '').trim();
                     list = list.filter((item) => {
                         const sameGame = item.gameName === record.gameName;
-                        const sameStage = item.stageName === record.stageName;
-                        const sameCat = item.category === record.category;
-                        const sameGov = item.userGov === record.userGov;
-                        const sameTeam = item.teamName === record.teamName;
+                        const sameStage = normStageLocal(item.stageName) === normStageLocal(record.stageName);
+                        const sameCat = normCatLocal(item.category) === normCatLocal(record.category);
+                        const sameGov = (item.userGov === record.userGov || item.governorate === record.userGov);
+                        const sameTeam = (!item.teamName && !record.teamName) || (item.teamName === record.teamName);
                         return !(sameGame && sameStage && sameCat && sameGov && sameTeam);
                     });
                 }
