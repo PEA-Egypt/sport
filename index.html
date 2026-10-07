@@ -1968,6 +1968,11 @@
             border: 1px solid var(--girls-glow);
         }
 
+        #reviewerRoleBadge,
+        .role-badge#reviewerRoleBadge {
+            color: #ffffff !important;
+        }
+
         .admin-top-actions {
             display: flex;
             align-items: center;
@@ -2188,12 +2193,19 @@
 
         .admin-sidebar-header {
             display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-bottom: 4px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .admin-sidebar-user-row {
+            display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 6px;
-            padding-bottom: 6px;
-            border-bottom: 1.5px solid #e2e8f0;
-            animation: sidebarBorderPulse 3s ease-in-out infinite;
+            width: 100%;
         }
 
         .admin-sidebar-user {
@@ -2223,6 +2235,55 @@
             line-height: 1.25;
             word-break: break-word;
             overflow: visible;
+        }
+
+        .admin-sidebar-pass-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            width: 100%;
+            padding: 5px 8px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            color: #0284c7;
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box;
+            box-shadow: 0 1px 3px rgba(2, 132, 199, 0.08);
+        }
+
+        .admin-sidebar-pass-btn i {
+            font-size: 0.82rem;
+            color: #0284c7;
+            transition: transform 0.25s ease;
+        }
+
+        .admin-sidebar-pass-btn:hover {
+            background: #e0f2fe;
+            border-color: #7dd3fc;
+            color: #0369a1;
+            transform: translateY(-1px);
+            box-shadow: 0 3px 8px rgba(2, 132, 199, 0.16);
+        }
+
+        .admin-sidebar-pass-btn:hover i {
+            transform: rotate(-15deg) scale(1.15);
+        }
+
+        .admin-sidebar-divider {
+            height: 4px;
+            background: linear-gradient(90deg, #64748b 0%, #334155 50%, #64748b 100%);
+            margin: 8px 2px;
+            border: none;
+            border-radius: 3px;
+            flex-shrink: 0;
+            width: calc(100% - 4px);
+            align-self: center;
+            box-shadow: 0 2px 4px rgba(15, 23, 42, 0.35);
         }
 
         /* أيقونة أفاتار المشرف */
@@ -2277,16 +2338,16 @@
             flex: 1 1 auto;
         }
 
-        /* ظهور متدرج للأزرار (stagger) عبر nth-child */
-        .admin-sidebar-nav .admin-tab:nth-child(1) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.15s; }
-        .admin-sidebar-nav .admin-tab:nth-child(2) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.22s; }
-        .admin-sidebar-nav .admin-tab:nth-child(3) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.29s; }
-        .admin-sidebar-nav .admin-tab:nth-child(4) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.36s; }
-        .admin-sidebar-nav .admin-tab:nth-child(5) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.43s; }
-        .admin-sidebar-nav .admin-tab:nth-child(6) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.50s; }
-        .admin-sidebar-nav .admin-tab:nth-child(7) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.57s; }
-        .admin-sidebar-nav .admin-tab:nth-child(8) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.64s; }
-        .admin-sidebar-nav .admin-tab:nth-child(9) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.71s; }
+        /* ظهور متدرج للأزرار (stagger) عبر nth-of-type */
+        .admin-sidebar-nav .admin-tab:nth-of-type(1) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.15s; }
+        .admin-sidebar-nav .admin-tab:nth-of-type(2) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.22s; }
+        .admin-sidebar-nav .admin-tab:nth-of-type(3) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.29s; }
+        .admin-sidebar-nav .admin-tab:nth-of-type(4) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.36s; }
+        .admin-sidebar-nav .admin-tab:nth-of-type(5) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.43s; }
+        .admin-sidebar-nav .admin-tab:nth-of-type(6) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.50s; }
+        .admin-sidebar-nav .admin-tab:nth-of-type(7) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.57s; }
+        .admin-sidebar-nav .admin-tab:nth-of-type(8) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.64s; }
+        .admin-sidebar-nav .admin-tab:nth-of-type(9) { animation: sidebarItemFadeUp 0.4s ease both; animation-delay: 0.71s; }
 
         .admin-sidebar-nav .admin-tab {
             display: flex !important;
@@ -2370,7 +2431,7 @@
             flex-direction: column;
             gap: 4px;
             padding-top: 6px;
-            border-top: 1.5px solid #e2e8f0;
+            border-top: 2.5px solid #94a3b8;
             margin-top: auto;
             box-sizing: border-box;
             animation: sidebarItemFadeUp 0.4s ease both;
@@ -8438,7 +8499,7 @@
                             <div style="text-align:right; direction:rtl; display:flex; flex-direction:column; align-items:flex-start;">
                                 <div style="display:flex; align-items:center; gap:8px; justify-content:flex-start; direction:rtl;">
                                     <span class="admin-user-title" style="color:#ffffff; font-weight:800; font-size:1.02rem; text-align:right;" id="reviewerDisplayName">المراجع المعتمد</span>
-                                    <span class="role-badge" id="reviewerRoleBadge" style="background:linear-gradient(135deg, #0284c7, #2563eb); color:#ffffff; border:1px solid #38bdf8; font-weight:800; padding:2px 8px; font-size:0.75rem;">مراجع معتمد</span>
+                                    <span class="role-badge" id="reviewerRoleBadge" style="background:linear-gradient(135deg, #0284c7, #2563eb); color:#ffffff !important; border:1px solid #38bdf8; font-weight:800; padding:2px 8px; font-size:0.75rem;">مراجع معتمد</span>
                                 </div>
                                 <div style="font-size:0.75rem; color:#93c5fd; margin-top:2px; text-align:right; direction:rtl; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
                                     <span><i class="fas fa-shield-halved" style="color:#38bdf8;"></i> لوحة التدقيق والمراجعة الرقمية المعتمدة</span>
@@ -11256,66 +11317,46 @@
                     
                     <!-- القائمة الرأسية الجانبية للمشرف (في اليمين قابلة للظهور والإخفاء) -->
                     <aside class="admin-sidebar" id="adminSidebar">
-                        <!-- رأس القائمة: معلومات المشرف وزر الإخفاء -->
+                        <!-- رأس القائمة: معلومات المشرف وزر كلمة السر وزر الإخفاء -->
                         <div class="admin-sidebar-header">
-                            <div class="admin-sidebar-user">
-                                <div class="admin-avatar"><i class="fas fa-user-shield"></i></div>
-                                <div class="admin-sidebar-user-details">
-                                    <span class="admin-sidebar-user-title" id="adminDisplayName">Admin 1</span>
-                                    <span class="role-badge super hidden" id="adminRoleBadge" style="display:none !important;"></span>
+                            <div class="admin-sidebar-user-row">
+                                <div class="admin-sidebar-user">
+                                    <div class="admin-avatar"><i class="fas fa-user-shield"></i></div>
+                                    <div class="admin-sidebar-user-details">
+                                        <span class="admin-sidebar-user-title" id="adminDisplayName">المسؤول الأعلى الأول (Admin 1)</span>
+                                        <span class="role-badge super hidden" id="adminRoleBadge" style="display:none !important;"></span>
+                                    </div>
                                 </div>
+                                <button type="button" class="admin-sidebar-close-btn" onclick="toggleAdminSidebar(false)" title="إخفاء القائمة الجانبية">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
                             </div>
-                            <button type="button" class="admin-sidebar-close-btn" onclick="toggleAdminSidebar(false)" title="إخفاء القائمة الجانبية">
-                                <i class="fas fa-chevron-right"></i>
+                            <!-- زر كلمة السر -->
+                            <button type="button" class="admin-sidebar-pass-btn" onclick="openPasswordChangeModal()" title="تغيير كلمة السر">
+                                <i class="fas fa-key"></i>
+                                <span>كلمة السر</span>
                             </button>
                         </div>
 
+                        <!-- خط فاصل بعد معلومات المسؤول وزر كلمة السر -->
+                        <div class="admin-sidebar-divider" id="sidebarDivider0"></div>
+
                         <!-- التبويبات الرأسية للمشرف والمراجعين بالترتيب المعتمد -->
                         <nav class="admin-sidebar-nav" id="adminSubNav">
+                            <!-- المجموعة 1: توزيع المهام والاطلاع المباشر -->
                             <button type="button" class="admin-tab active" id="subtabTaskDistribution" onclick="switchAdminSubtab('task_distribution')">
                                 <i class="fas fa-network-wired"></i>
                                 <span>توزيع المهام</span>
                             </button>
                             <button type="button" class="admin-tab" id="subtabDirectInspection" onclick="switchAdminSubtab('direct_inspection')">
-                                <i class="fas fa-binoculars" style="color:#0284c7;"></i>
+                                <i class="fas fa-eye" style="color:#0284c7;"></i>
                                 <span>الاطلاع المباشر</span>
                             </button>
-                            <button type="button" class="admin-tab" id="subtabAccountsManage" onclick="switchAdminSubtab('accounts_manage')" style="display:none;">
-                                <i class="fas fa-user-gear"></i>
-                                <span>الحسابات</span>
-                            </button>
-                            <button type="button" class="admin-tab" id="subtabWinnersPermission" onclick="switchAdminSubtab('winners_permission')" style="display:none;">
-                                <i class="fas fa-trophy"></i>
-                                <span>إذن وصلاحية تسجيل المراكز</span>
-                            </button>
-                            <button type="button" class="admin-tab" id="subtabResults" onclick="switchAdminSubtab('results')">
-                                <i class="fas fa-trophy"></i>
-                                <span>نتائج البطولات</span>
-                            </button>
-                            <button type="button" class="admin-tab hidden" id="subtabTemplatesOrder" onclick="switchAdminSubtab('templates_order')" style="display:none !important;">
-                                <i class="fas fa-file-circle-check"></i>
-                                <span>إدارة وترتيب النماذج</span>
-                            </button>
-                            <button type="button" class="admin-tab" id="subtabGamesOrder" onclick="switchAdminSubtab('games_order')" style="display:none;">
-                                <i class="fas fa-calendar-check" id="subtabGamesOrderIcon"></i>
-                                <span id="subtabGamesOrderText">جدولة وإدارة الألعاب</span>
-                            </button>
-                            <button type="button" class="admin-tab" id="subtabAudit" onclick="switchAdminSubtab('audit')">
-                                <i class="fas fa-list-check"></i>
-                                <span>سجل العمليات</span>
-                            </button>
-                            <button type="button" class="admin-tab" id="subtabHomepageManage" onclick="switchAdminSubtab('homepage_manage')" style="display:none;">
-                                <i class="fas fa-table-columns"></i>
-                                <span>إدارة الواجهة الرئيسية</span>
-                            </button>
-                            <button type="button" class="admin-tab" id="subtabReviewNotesManage" onclick="switchAdminSubtab('review_notes_manage')" style="display:none;">
-                                <i class="fas fa-comment-dots"></i>
-                                <span>أسباب وملاحظات التحديث</span>
-                            </button>
-                            <button type="button" class="admin-tab" id="subtabDeadlineExtensions" onclick="switchAdminSubtab('deadline_extensions')" style="display:none;">
-                                <i class="fas fa-clock-rotate-left"></i>
-                                <span id="subtabDeadlineExtensionsText">تمديد مهلة المحافظات</span>
-                            </button>
+
+                            <!-- خط فاصل -->
+                            <div class="admin-sidebar-divider" id="sidebarDivider1"></div>
+
+                            <!-- المجموعة 2: الإحصائيات -->
                             <button type="button" class="admin-tab" id="subtabBoys" onclick="switchAdminSubtab('boys')">
                                 <i class="fas fa-mars"></i>
                                 <span>إحصائيات البنين</span>
@@ -11324,14 +11365,61 @@
                                 <i class="fas fa-venus"></i>
                                 <span>إحصائيات البنات</span>
                             </button>
+
+                            <!-- خط فاصل -->
+                            <div class="admin-sidebar-divider" id="sidebarDivider2"></div>
+
+                            <!-- المجموعة 3: سجل العمليات والحسابات -->
+                            <button type="button" class="admin-tab" id="subtabAudit" onclick="switchAdminSubtab('audit')">
+                                <i class="fas fa-list-check"></i>
+                                <span>سجل العمليات</span>
+                            </button>
+                            <button type="button" class="admin-tab" id="subtabAccountsManage" onclick="switchAdminSubtab('accounts_manage')" style="display:none;">
+                                <i class="fas fa-users-gear"></i>
+                                <span>الحسابات</span>
+                            </button>
+
+                            <!-- خط فاصل -->
+                            <div class="admin-sidebar-divider" id="sidebarDivider3"></div>
+
+                            <!-- المجموعة 4: جدولة الألعاب وتمديد المهل وصلاحيات المراكز -->
+                            <button type="button" class="admin-tab" id="subtabGamesOrder" onclick="switchAdminSubtab('games_order')" style="display:none;">
+                                <i class="fas fa-gamepad" id="subtabGamesOrderIcon"></i>
+                                <span id="subtabGamesOrderText">جدولة وإدارة الألعاب</span>
+                            </button>
+                            <button type="button" class="admin-tab" id="subtabDeadlineExtensions" onclick="switchAdminSubtab('deadline_extensions')" style="display:none;">
+                                <i class="fas fa-clock-rotate-left"></i>
+                                <span id="subtabDeadlineExtensionsText">تمديد مهلة المحافظات</span>
+                            </button>
+                            <button type="button" class="admin-tab" id="subtabWinnersPermission" onclick="switchAdminSubtab('winners_permission')" style="display:none;">
+                                <i class="fas fa-circle-check"></i>
+                                <span>إذن وصلاحية تسجيل المراكز</span>
+                            </button>
+
+                            <!-- خط فاصل -->
+                            <div class="admin-sidebar-divider" id="sidebarDivider4"></div>
+
+                            <!-- المجموعة 5: إدارة النماذج، أسباب التحديث، الواجهة، نتائج البطولات -->
+                            <button type="button" class="admin-tab" id="subtabTemplatesOrder" onclick="switchAdminSubtab('templates_order')" style="display:none;">
+                                <i class="fas fa-file-circle-check"></i>
+                                <span>إدارة النماذج</span>
+                            </button>
+                            <button type="button" class="admin-tab" id="subtabReviewNotesManage" onclick="switchAdminSubtab('review_notes_manage')" style="display:none;">
+                                <i class="fas fa-comment-dots"></i>
+                                <span>أسباب وملاحظات التحديث</span>
+                            </button>
+                            <button type="button" class="admin-tab" id="subtabHomepageManage" onclick="switchAdminSubtab('homepage_manage')" style="display:none;">
+                                <i class="fas fa-table-columns"></i>
+                                <span>إدارة الواجهة الرئيسية</span>
+                            </button>
+                            <button type="button" class="admin-tab" id="subtabResults" onclick="switchAdminSubtab('results')">
+                                <i class="fas fa-trophy"></i>
+                                <span>نتائج البطولات</span>
+                            </button>
                         </nav>
 
                         <!-- إجراءات سريعة في أسفل القائمة الجانبية -->
                         <div class="admin-sidebar-actions">
-                            <button type="button" class="admin-sidebar-action-btn" onclick="openPasswordChangeModal()" title="تغيير كلمة المرور">
-                                <i class="fas fa-key"></i>
-                                <span>تغيير كلمة المرور</span>
-                            </button>
                             <button type="button" class="admin-sidebar-action-btn logout" onclick="handleAdminLogout()" title="تسجيل الخروج">
                                 <i class="fas fa-right-from-bracket"></i>
                                 <span>خروج</span>
@@ -12364,9 +12452,12 @@
                                         <span id="directInspectionRevPanelSubtitle" style="font-size:0.7rem; color:#64748b;">معاينة بوابات اللجان ومديري البطولات</span>
                                     </div>
                                 </div>
-                                <button type="button" class="admin-action-btn" onclick="loadAllAccountsFromBackend().then(() => initAdminDirectInspectionCard())" style="font-size:0.7rem; padding:3px 8px; height:26px;" title="تحديث قائمة المراجعين الحية">
-                                    <i class="fas fa-arrows-rotate"></i> تحديث
-                                </button>
+                                <div style="display:flex; align-items:center; gap:6px;">
+                                    <span class="badge" id="directInspectionRevCountBadge" style="background:#eff6ff; color:#1d4ed8; font-size:0.72rem; font-weight:800;">0 متاح</span>
+                                    <button type="button" class="admin-action-btn" onclick="loadAllAccountsFromBackend().then(() => initAdminDirectInspectionCard())" style="font-size:0.7rem; padding:3px 8px; height:26px;" title="تحديث قائمة المراجعين الحية">
+                                        <i class="fas fa-arrows-rotate"></i> تحديث
+                                    </button>
+                                </div>
                             </div>
 
                             <!-- فلتر التبويبات للجان (بنين / بنات / مديرو البطولات) وشريط البحث -->
@@ -12391,6 +12482,9 @@
                                     <i class="fas fa-eye"></i> دخول المعاينة
                                 </button>
                             </div>
+
+                            <!-- بطاقات اللجان والمراجعين التفاعلية السريعة -->
+                            <div id="directInspectionReviewersListContainer" style="display:flex; flex-direction:column; gap:6px; max-height:240px; overflow-y:auto; margin-top:2px; padding:2px;"></div>
                         </div>
 
                     </div>
@@ -12914,7 +13008,7 @@
                         <div style="font-size:0.78rem; color:#64748b; margin-top:2px;">
                             اسم المستخدم: <strong id="rtoReviewerUsername" style="font-family:monospace; color:#334155;">-</strong>
                             &nbsp;|&nbsp; 
-                            الصفة: <span id="rtoReviewerRole" style="font-weight:700; color:#0369a1;">مراجع معتمد بالنظام</span>
+                            الصفة: <span id="rtoReviewerRole" style="font-weight:700; color:#ffffff; background:#0284c7; padding:2px 8px; border-radius:6px; font-size:0.75rem;">مراجع معتمد بالنظام</span>
                         </div>
                     </div>
                 </div>
@@ -16214,7 +16308,9 @@
             if (raw.includes('الأول') || String(username).includes('1')) return 'Admin 1';
             if (raw.includes('الثاني') || String(username).includes('2')) return 'Admin 2';
             if (raw.includes('الثالث') || String(username).includes('3')) return 'Admin 3';
-            const stripped = raw.replace(/^(المسؤول الأعلى|المسؤول|مشرف البنين|مشرفة البنات|مسؤول|مشرف|مشرفة)\s*[:\-\(]?\s*/gi, '').replace(/[\(\)]/g, '').trim();
+            const stripped = raw.replace(/\s*[\-\(]?\s*إدارة كشوف\s*(البنين|بنين|البنات|بنات)\s*[\)]?/gi, '')
+                                .replace(/^(المسؤول الأعلى|المسؤول|مشرف البنين|مشرفة البنات|مسؤول|مشرف|مشرفة)\s*[:\-\(]?\s*/gi, '')
+                                .replace(/[\(\)]/g, '').trim();
             return stripped || (username ? ('Admin ' + String(username).replace(/\D/g, '')) : raw);
         }
 
@@ -16607,8 +16703,12 @@
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-right-to-bracket"></i> <span>تسجيل الدخول والتحقق</span>';
 
+                if (user && user.displayName) {
+                    user.displayName = user.displayName.replace(/\s*[\-\(]?\s*إدارة كشوف\s*(البنين|بنين|البنات|بنات)\s*[\)]?/gi, '').trim();
+                }
                 adminSession.user = user;
                 adminSession.token = token || '';
+                window.adminSession = adminSession;
                 setAdminPassword(username, password);
 
                 const rememberCheck = document.getElementById('rememberAdminCheck');
@@ -16911,6 +17011,36 @@
             }
         };
 
+        // تحديث ظهور الخطوط الفاصلة في القائمة الجانبية وفقاً لصلاحيات المشرف
+        function updateSidebarDividers() {
+            const nav = document.getElementById('adminSubNav');
+            if (!nav) return;
+            const items = Array.from(nav.children);
+            let prevVisible = false;
+            items.forEach(item => {
+                if (item.classList.contains('admin-sidebar-divider')) {
+                    if (prevVisible) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                    prevVisible = false;
+                } else if (item.classList.contains('admin-tab')) {
+                    const isVisible = item.style.display !== 'none' && !item.classList.contains('hidden');
+                    if (isVisible) prevVisible = true;
+                }
+            });
+            for (let i = items.length - 1; i >= 0; i--) {
+                const el = items[i];
+                if (el.classList.contains('admin-sidebar-divider') && el.style.display !== 'none') {
+                    el.style.display = 'none';
+                    break;
+                } else if (el.classList.contains('admin-tab') && el.style.display !== 'none' && !el.classList.contains('hidden')) {
+                    break;
+                }
+            }
+        }
+
         // إظهار لوحة التحكم وضبط الصلاحيات
         function showAdminDashboard() {
             document.body.classList.add('is-admin-logged');
@@ -16919,8 +17049,15 @@
             const dash = document.getElementById('adminDashboardView');
             dash.classList.remove('hidden');
 
+            window.adminSession = adminSession;
             const u = adminSession.user;
-            document.getElementById('adminDisplayName').textContent = u.displayName;
+            let dName = u.displayName || 'المسؤول الأعلى الأول (Admin 1)';
+            if (u.role === 'SUPER_ADMIN' || (u.username && u.username.toLowerCase() === 'admin1')) {
+                dName = 'المسؤول الأعلى الأول (Admin 1)';
+            }
+            dName = dName.replace(/\s*[\-\(]?\s*إدارة كشوف\s*(البنين|بنين|البنات|بنات)\s*[\)]?/gi, '').trim();
+            if (u.displayName) u.displayName = u.displayName.replace(/\s*[\-\(]?\s*إدارة كشوف\s*(البنين|بنين|البنات|بنات)\s*[\)]?/gi, '').trim();
+            document.getElementById('adminDisplayName').textContent = dName;
 
             const roleBadge = document.getElementById('adminRoleBadge');
             const subtabBoys = document.getElementById('subtabBoys');
@@ -16950,15 +17087,12 @@
                 roleBadge.innerHTML = '';
                 [subtabTaskDistribution, subtabDirectInspection, subtabAccountsManage, subtabWinnersPermission,
                  subtabGamesOrder, subtabAudit, subtabHomepageManage, subtabReviewNotesManage,
-                 subtabBoys, subtabGirls, statBoysCard, statGirlsCard, subtabDeadlineExtensions].forEach(el => { if (el) { el.classList.remove('hidden'); el.style.display = ''; } });
+                 subtabBoys, subtabGirls, statBoysCard, statGirlsCard, subtabDeadlineExtensions,
+                 subtabTemplatesOrder, subtabResults].forEach(el => { if (el) { el.classList.remove('hidden'); el.style.display = ''; } });
                 const subtabGamesOrderText = document.getElementById('subtabGamesOrderText');
                 const subtabGamesOrderIcon = document.getElementById('subtabGamesOrderIcon');
                 if (subtabGamesOrderText) subtabGamesOrderText.textContent = 'جدولة وإدارة الألعاب';
-                if (subtabGamesOrderIcon) subtabGamesOrderIcon.className = 'fas fa-calendar-check';
-                if (subtabTemplatesOrder) {
-                    subtabTemplatesOrder.classList.add('hidden');
-                    subtabTemplatesOrder.style.setProperty('display', 'none', 'important');
-                }
+                if (subtabGamesOrderIcon) subtabGamesOrderIcon.className = 'fas fa-gamepad';
                 const distCatContainerSuper = document.getElementById('distCategorySelectorContainer');
                 if (distCatContainerSuper) {
                     distCatContainerSuper.classList.remove('hidden');
@@ -16990,7 +17124,8 @@
                 }
                 // إخفاء المحجوب بشكل صارم
                 [subtabGirls, subtabAudit, subtabHomepageManage, subtabTemplatesOrder,
-                 subtabAccountsManage, subtabWinnersPermission, subtabReviewNotesManage, statGirlsCard].forEach(el => {
+                 subtabAccountsManage, subtabWinnersPermission, subtabReviewNotesManage, statGirlsCard,
+                 subtabDeadlineExtensions, subtabResults].forEach(el => {
                     if (el) { el.classList.add('hidden'); el.style.setProperty('display','none','important'); }
                 });
                 // إخفاء تبويب وتصنيف المهام تلقائياً لتوفير المساحة بالموبايل لمسئول البنين
@@ -17028,7 +17163,8 @@
                 }
                 // إخفاء المحجوب بشكل صارم
                 [subtabBoys, subtabAudit, subtabHomepageManage, subtabTemplatesOrder,
-                 subtabAccountsManage, subtabWinnersPermission, subtabReviewNotesManage, statBoysCard].forEach(el => {
+                 subtabAccountsManage, subtabWinnersPermission, subtabReviewNotesManage, statBoysCard,
+                 subtabDeadlineExtensions, subtabResults].forEach(el => {
                     if (el) { el.classList.add('hidden'); el.style.setProperty('display','none','important'); }
                 });
                 // إخفاء تبويب وتصنيف المهام تلقائياً لتوفير المساحة بالموبايل لمسئول البنات
@@ -17045,6 +17181,10 @@
                 if (distAutoBoysSection2) { distAutoBoysSection2.classList.add('hidden'); distAutoBoysSection2.style.setProperty('display','none','important'); }
                 if (distAutoGirlsSection2) { distAutoGirlsSection2.classList.remove('hidden'); distAutoGirlsSection2.style.display = 'inline-flex'; }
                 switchAdminSubtab('task_distribution');
+            }
+
+            if (typeof updateSidebarDividers === 'function') {
+                updateSidebarDividers();
             }
 
             if (typeof loadGameSchedulingPermissions === 'function') {
@@ -17269,17 +17409,17 @@
             const sectionMeta = {
                 boys: { icon: 'fas fa-mars', text: 'إحصائيات البنين' },
                 girls: { icon: 'fas fa-venus', text: 'إحصائيات البنات' },
-                deadline_extensions: { icon: 'fas fa-clock-rotate-left', text: 'تمديد مهلة المحافظات وتفويض الصلاحيات' },
+                deadline_extensions: { icon: 'fas fa-clock-rotate-left', text: 'تمديد مهلة المحافظات' },
                 audit: { icon: 'fas fa-list-check', text: 'سجل العمليات' },
                 homepage_manage: { icon: 'fas fa-table-columns', text: 'إدارة الواجهة الرئيسية' },
-                games_order: { icon: 'fas fa-medal', text: 'إدارة وترتيب الألعاب' },
-                templates_order: { icon: 'fas fa-file-circle-check', text: 'إدارة وترتيب النماذج' },
-                accounts_manage: { icon: 'fas fa-user-gear', text: 'الحسابات' },
-                winners_permission: { icon: 'fas fa-trophy', text: 'إذن وصلاحية تسجيل المراكز' },
+                games_order: { icon: 'fas fa-gamepad', text: 'جدولة وإدارة الألعاب' },
+                templates_order: { icon: 'fas fa-file-circle-check', text: 'إدارة النماذج' },
+                accounts_manage: { icon: 'fas fa-users-gear', text: 'الحسابات' },
+                winners_permission: { icon: 'fas fa-circle-check', text: 'إذن وصلاحية تسجيل المراكز' },
                 task_distribution: { icon: 'fas fa-network-wired', text: 'توزيع المهام' },
-                direct_inspection: { icon: 'fas fa-binoculars', text: 'الاطلاع المباشر على المحافظات والمراجعين' },
+                direct_inspection: { icon: 'fas fa-eye', text: 'الاطلاع المباشر' },
                 results: { icon: 'fas fa-trophy', text: 'نتائج البطولات' },
-                review_notes_manage: { icon: 'fas fa-comments', text: 'أسباب وملاحظات التحديث' }
+                review_notes_manage: { icon: 'fas fa-comment-dots', text: 'أسباب وملاحظات التحديث' }
             };
             const currentBadge = document.getElementById('adminCurrentSectionBadge');
             if (currentBadge && sectionMeta[subtab]) {
@@ -18563,10 +18703,18 @@
 
         function getGasWebAppUrl() {
             try {
-                return (localStorage.getItem(GAS_URL_STORAGE_KEY) || DEFAULT_GAS_WEBAPP_URL || '').trim();
-            } catch (e) {
-                return DEFAULT_GAS_WEBAPP_URL || '';
-            }
+                const stored = localStorage.getItem(GAS_URL_STORAGE_KEY);
+                if (stored && stored.trim()) return stored.trim();
+            } catch (e) {}
+
+            try {
+                if (typeof window !== 'undefined' && window.location && window.location.href) {
+                    const match = window.location.href.match(/https:\/\/script\.google\.com\/macros\/s\/[a-zA-Z0-9_\-]+\/exec/);
+                    if (match && match[0]) return match[0];
+                }
+            } catch (eLoc) {}
+
+            return (DEFAULT_GAS_WEBAPP_URL || '').trim();
         }
 
         window.saveGasWebAppUrl = function (url) {
@@ -20150,9 +20298,9 @@
                     roleBorder = '#fecaca';
                     roleIcon = 'user-shield';
                 } else if (r.includes('REVIEWER') || r.includes('مراجع')) {
-                    roleBadgeBg = '#f0f9ff';
-                    roleColor = '#0284c7';
-                    roleBorder = '#bae6fd';
+                    roleBadgeBg = '#0284c7';
+                    roleColor = '#ffffff';
+                    roleBorder = '#0284c7';
                     roleIcon = 'user-check';
                 } else if (r.includes('REGISTRAR') || r.includes('مسؤول') || r.includes('محافظة')) {
                     roleBadgeBg = '#f5f3ff';
@@ -23564,9 +23712,9 @@
                 } else {
                     const govs = currentReviewerSession.assignedGovs || 'الكل';
                     roleBadge.textContent = govs === 'الكل' ? 'مراجع معتمد' : `مراجع: ${govs}`;
-                    roleBadge.style.background = '';
-                    roleBadge.style.color = '';
-                    roleBadge.style.border = '';
+                    roleBadge.style.background = 'linear-gradient(135deg, #0284c7, #2563eb)';
+                    roleBadge.style.color = '#ffffff';
+                    roleBadge.style.border = '1px solid #38bdf8';
                 }
             }
 
@@ -32622,52 +32770,59 @@
         window._adminInspectionQuery = '';
 
         window.initAdminDirectInspectionCard = function () {
-            const activeAdmin = (window.adminSession && window.adminSession.user) || {};
-            const adminRole = activeAdmin.role || 'SUPER_ADMIN';
+            const adminRole = getEffectiveAdminRole() || 'SUPER_ADMIN';
 
             // 1. ضبط الفئة الافتراضية وشارات الدور بناءً على صلاحية المشرف
             const headerTitle = document.getElementById('directInspectionHeaderTitle');
             const headerDesc = document.getElementById('directInspectionHeaderDesc');
             const roleBadge = document.getElementById('directInspectionAdminRoleBadge');
             const govTitle = document.getElementById('directInspectionGovTitle');
+            const govSubtitle = document.getElementById('directInspectionGovSubtitle');
             const revPanelTitle = document.getElementById('directInspectionRevPanelTitle');
-            const pillAll = document.getElementById('pillDirectInspectAll');
-            const pillBoys = document.getElementById('pillDirectInspectBoys');
-            const pillGirls = document.getElementById('pillDirectInspectGirls');
-            const pillTd = document.getElementById('pillDirectInspectTd');
+            const revPanelSubtitle = document.getElementById('directInspectionRevPanelSubtitle');
+            const pillsContainer = document.getElementById('inspectionCategoryPills');
+            const searchInput = document.getElementById('inputFilterDirectReviewers');
 
             if (adminRole === 'BOYS_ADMIN') {
                 window._adminInspectionCategory = 'بنين';
                 if (headerTitle) headerTitle.textContent = 'منظومة الاطلاع والمعاينة المباشرة - قطاع البنين';
-                if (headerDesc) headerDesc.textContent = 'توجيه لجان مراجعة البنين والمعاينة الفورية مع إمكانية فحص واعتماد استمارات البنين مباشرة';
+                if (headerDesc) headerDesc.textContent = 'توجيه لجان مراجعة البنين والمعاينة الفورية مع إمكانية فحص واعتماد استمارات وكشوف البنين مباشرة';
                 if (roleBadge) {
                     roleBadge.style.background = 'rgba(37,99,235,0.2)';
                     roleBadge.style.borderColor = '#2563eb';
                     roleBadge.style.color = '#60a5fa';
                     roleBadge.innerHTML = '<i class="fas fa-mars"></i> تقييم بصلاحية مشرف البنين (Admin 2)';
                 }
-                if (govTitle) govTitle.textContent = 'بوابات مسؤولي المحافظات (استمارات البنين)';
-                if (revPanelTitle) revPanelTitle.textContent = 'لجان مراجعة البنين ومديرو البطولات';
-                if (pillAll) { pillAll.style.display = 'none'; pillAll.classList.remove('active'); }
-                if (pillGirls) { pillGirls.style.display = 'none'; pillGirls.classList.remove('active'); }
-                if (pillBoys) { pillBoys.style.display = ''; pillBoys.classList.add('active'); }
-                if (pillTd) { pillTd.style.display = ''; pillTd.classList.remove('active'); }
+                if (govTitle) govTitle.textContent = 'بوابات مسؤولي المحافظات (استمارات وكشوف البنين فقط)';
+                if (govSubtitle) govSubtitle.textContent = 'معاينة كشوف واستمارات قطاع البنين حصرياً لكل محافظة وتقييم الطلاب بدلاً من المراجع';
+                if (revPanelTitle) revPanelTitle.textContent = 'لجان مراجعة البنين';
+                if (revPanelSubtitle) revPanelSubtitle.textContent = 'معاينة بوابات مراجعي قطاع البنين المعتمدين وتدقيق أعمالهم';
+                // إخفاء أزرار اختيار اللجان ومديري البطولات بالكامل لغير السوبر أدمن
+                if (pillsContainer) {
+                    pillsContainer.style.setProperty('display', 'none', 'important');
+                    pillsContainer.classList.add('hidden');
+                }
+                if (searchInput) searchInput.placeholder = '🔍 بحث باسم مراجع البنين أو المحافظة...';
             } else if (adminRole === 'GIRLS_ADMIN') {
                 window._adminInspectionCategory = 'بنات';
                 if (headerTitle) headerTitle.textContent = 'منظومة الاطلاع والمعاينة المباشرة - قطاع البنات';
-                if (headerDesc) headerDesc.textContent = 'توجيه لجان مراجعة البنات والمعاينة الفورية مع إمكانية فحص واعتماد استمارات البنات مباشرة';
+                if (headerDesc) headerDesc.textContent = 'توجيه لجان مراجعة البنات والمعاينة الفورية مع إمكانية فحص واعتماد استمارات وكشوف البنات مباشرة';
                 if (roleBadge) {
                     roleBadge.style.background = 'rgba(219,39,119,0.2)';
                     roleBadge.style.borderColor = '#db2777';
                     roleBadge.style.color = '#f472b6';
                     roleBadge.innerHTML = '<i class="fas fa-venus"></i> تقييم بصلاحية مشرفة البنات (Admin 3)';
                 }
-                if (govTitle) govTitle.textContent = 'بوابات مسؤولي المحافظات (استمارات البنات)';
-                if (revPanelTitle) revPanelTitle.textContent = 'لجان مراجعة البنات ومديرات البطولات';
-                if (pillAll) { pillAll.style.display = 'none'; pillAll.classList.remove('active'); }
-                if (pillBoys) { pillBoys.style.display = 'none'; pillBoys.classList.remove('active'); }
-                if (pillGirls) { pillGirls.style.display = ''; pillGirls.classList.add('active'); }
-                if (pillTd) { pillTd.style.display = ''; pillTd.classList.remove('active'); }
+                if (govTitle) govTitle.textContent = 'بوابات مسؤولي المحافظات (استمارات وكشوف البنات فقط)';
+                if (govSubtitle) govSubtitle.textContent = 'معاينة كشوف واستمارات قطاع البنات حصرياً لكل محافظة وتقييم الطالبات بدلاً من المراجع';
+                if (revPanelTitle) revPanelTitle.textContent = 'لجان مراجعة البنات';
+                if (revPanelSubtitle) revPanelSubtitle.textContent = 'معاينة بوابات مراجعات قطاع البنات المعتمدات وتدقيق أعمالهن';
+                // إخفاء أزرار اختيار اللجان ومديري البطولات بالكامل لغير السوبر أدمن
+                if (pillsContainer) {
+                    pillsContainer.style.setProperty('display', 'none', 'important');
+                    pillsContainer.classList.add('hidden');
+                }
+                if (searchInput) searchInput.placeholder = '🔍 بحث باسم مراجعة البنات أو المحافظة...';
             } else {
                 window._adminInspectionCategory = 'all';
                 if (headerTitle) headerTitle.textContent = 'منظومة الاطلاع والمعاينة المباشرة للبوابات واللجان';
@@ -32679,11 +32834,24 @@
                     roleBadge.innerHTML = '<i class="fas fa-crown"></i> تقييم بصلاحية المشرف العام (Admin 1)';
                 }
                 if (govTitle) govTitle.textContent = 'بوابات مسؤولي المحافظات (27 محافظة)';
+                if (govSubtitle) govSubtitle.textContent = 'معاينة كشوف واستمارات المحافظة وتقييم الطلاب بدلاً من المراجع';
                 if (revPanelTitle) revPanelTitle.textContent = 'لجان المراجعة وتوجيه اللجان (بنين وبنات)';
+                if (revPanelSubtitle) revPanelSubtitle.textContent = 'معاينة بوابات اللجان ومديري البطولات';
+                // إظهار أزرار اختيار اللجان للسوبر أدمن فقط
+                if (pillsContainer) {
+                    pillsContainer.classList.remove('hidden');
+                    pillsContainer.style.removeProperty('display');
+                    pillsContainer.style.display = 'flex';
+                }
+                const pillAll = document.getElementById('pillDirectInspectAll');
+                const pillBoys = document.getElementById('pillDirectInspectBoys');
+                const pillGirls = document.getElementById('pillDirectInspectGirls');
+                const pillTd = document.getElementById('pillDirectInspectTd');
                 if (pillAll) { pillAll.style.display = ''; pillAll.classList.add('active'); }
                 if (pillBoys) { pillBoys.style.display = ''; pillBoys.classList.remove('active'); }
                 if (pillGirls) { pillGirls.style.display = ''; pillGirls.classList.remove('active'); }
                 if (pillTd) { pillTd.style.display = ''; pillTd.classList.remove('active'); }
+                if (searchInput) searchInput.placeholder = '🔍 بحث باسم المراجع أو اللجنة أو مدير البطولة...';
             }
 
             // 2. ملء قائمة اختيار المحافظات في البطاقة والشريط العائم
@@ -32712,23 +32880,31 @@
                 if (curValSticky) stickyGovSel.value = curValSticky;
             }
 
-            // 3. فحص وتوليد شارات المحافظات في حال وجود الحاوية القديمة
+            // 3. فحص وتوليد شارات المحافظات
             renderDirectInspectionGovBadges();
 
-            // 4. ملء قائمة المراجعين ومديري البطولات وتوجيهات اللجان
+            // 4. ملء قائمة المراجعين فورياً من الذاكرة المحلية والبيانات المتاحة
             populateDirectInspectionReviewers();
 
-            // 5. تحميل الحسابات ومسؤولي البطولات في الخلفية لضمان البيانات الحية
-            if (!superAdminAccountsData || !Array.isArray(superAdminAccountsData.reviewers) || superAdminAccountsData.reviewers.length === 0) {
-                if (typeof loadAllAccountsFromBackend === 'function') {
-                    loadAllAccountsFromBackend().then(() => populateDirectInspectionReviewers()).catch(() => {});
-                }
+            // 5. تحميل الحسابات وتوزيع الأعباء في الخلفية مع إعادة الملء التلقائي
+            const loadTasks = [
+                (typeof loadDistributionOverviewFromBackend === 'function' ? loadDistributionOverviewFromBackend() : Promise.resolve())
+            ];
+            if (typeof callBackendApi === 'function') {
+                loadTasks.push(
+                    callBackendApi({ action: 'getAllAccountsForSuperAdmin' }).then(res => {
+                        if (res && res.success) {
+                            if (res.reviewers && Array.isArray(res.reviewers)) {
+                                cachedAdminReviewersList = res.reviewers;
+                            }
+                            superAdminAccountsData = res;
+                        }
+                    }).catch(() => {})
+                );
             }
-            if (!Array.isArray(cachedTournamentDirectors) || cachedTournamentDirectors.length === 0) {
-                if (typeof loadTournamentDirectorsFromBackend === 'function') {
-                    loadTournamentDirectorsFromBackend().then(() => populateDirectInspectionReviewers()).catch(() => {});
-                }
-            }
+            Promise.all(loadTasks).finally(() => {
+                populateDirectInspectionReviewers();
+            });
         };
 
         function renderDirectInspectionGovBadges(filterText) {
@@ -32766,52 +32942,75 @@
         function getAllInspectionAccounts() {
             const list = [];
             const seenUsernames = new Set();
-            const activeAdmin = (window.adminSession && window.adminSession.user) || {};
-            const adminRole = activeAdmin.role || 'SUPER_ADMIN';
+            const adminRole = getEffectiveAdminRole() || 'SUPER_ADMIN';
+
+            // دالة مساعدة لتطبيع الفئة
+            const getCat = (cat) => {
+                const c = String(cat || '').trim();
+                if (c.indexOf('بنات') !== -1 || c.indexOf('طالبات') !== -1 || c.toLowerCase() === 'girls') return 'بنات';
+                return 'بنين';
+            };
+
+            const addAccount = (item) => {
+                if (!item) return;
+                const u = String(item.username || '').trim();
+                if (!u || seenUsernames.has(u.toLowerCase())) return;
+                seenUsernames.add(u.toLowerCase());
+
+                const cat = getCat(item.category);
+                const isTd = !!(item.isTournDirector || item.isDirector);
+                list.push({
+                    username: u,
+                    displayName: item.displayName || item.reviewerName || u,
+                    category: cat,
+                    isTournDirector: isTd,
+                    gameName: item.gameName || '',
+                    stageScope: item.stageScope || 'كافة المراحل',
+                    assignedGovs: item.governorate || item.assignedGovs || 'كل المحافظات',
+                    directive: item.directive || (cat === 'بنين' ? 'مراجعة وتدقيق استمارات قطاع البنين' : 'مراجعة وتدقيق استمارات قطاع البنات')
+                });
+            };
 
             // 1. المراجعون المعتمدون من superAdminAccountsData
             if (typeof superAdminAccountsData !== 'undefined' && Array.isArray(superAdminAccountsData.reviewers)) {
-                superAdminAccountsData.reviewers.forEach(r => {
-                    const u = (r.username || '').trim();
-                    if (!u) return;
-                    seenUsernames.add(u.toLowerCase());
-                    const cat = normalizeCategory(r.category);
-                    const isTd = !!(r.isTournDirector || r.isDirector);
-                    list.push({
-                        username: u,
-                        displayName: r.displayName || u,
-                        category: cat,
-                        isTournDirector: isTd,
-                        gameName: r.gameName || '',
-                        stageScope: r.stageScope || 'كافة المراحل',
-                        assignedGovs: r.governorate || r.assignedGovs || 'كل المحافظات',
-                        directive: r.directive || (cat === 'بنين' ? 'مراجعة وتدقيق استمارات قطاع البنين' : 'مراجعة وتدقيق استمارات قطاع البنات')
+                superAdminAccountsData.reviewers.forEach(addAccount);
+            }
+
+            // 2. المراجعون من cachedAdminReviewersList
+            if (Array.isArray(cachedAdminReviewersList) && cachedAdminReviewersList.length > 0) {
+                cachedAdminReviewersList.forEach(addAccount);
+            }
+
+            // 3. المراجعون من cachedDistributionReviewers
+            if (Array.isArray(cachedDistributionReviewers) && cachedDistributionReviewers.length > 0) {
+                cachedDistributionReviewers.forEach(r => {
+                    addAccount({
+                        username: r.username,
+                        displayName: r.reviewerName || r.displayName || r.username,
+                        category: r.category,
+                        assignedGovs: r.assignedGovs || r.governorate,
+                        isTournDirector: false
                     });
                 });
             }
 
-            // 2. إذا لم تكن superAdminAccountsData محملة بالكامل، استعن بجدول توزيع المهام
+            // 4. استخراج المراجعين المسندة إليهم مهام من cachedDistributionWorkloads
             if (Array.isArray(cachedDistributionWorkloads) && cachedDistributionWorkloads.length > 0) {
                 cachedDistributionWorkloads.forEach(w => {
                     const u = (w.assignedReviewerUsername || w.assignedReviewer || '').trim();
                     if (u && !seenUsernames.has(u.toLowerCase())) {
-                        seenUsernames.add(u.toLowerCase());
-                        const cat = normalizeCategory(w.category);
-                        list.push({
+                        addAccount({
                             username: u,
                             displayName: w.assignedReviewer || u,
-                            category: cat,
-                            isTournDirector: false,
-                            gameName: '',
-                            stageScope: 'كافة المراحل',
+                            category: w.category,
                             assignedGovs: w.governorate || 'كل المحافظات',
-                            directive: cat === 'بنين' ? 'مراجعة وتدقيق استمارات قطاع البنين' : 'مراجعة وتدقيق استمارات قطاع البنات'
+                            isTournDirector: false
                         });
                     }
                 });
             }
 
-            // 3. مسؤولو ومديرو البطولات من cachedTournamentDirectors
+            // 5. مسؤولو ومديرو البطولات من cachedTournamentDirectors
             if (Array.isArray(cachedTournamentDirectors) && cachedTournamentDirectors.length > 0) {
                 cachedTournamentDirectors.forEach(td => {
                     const u = (td.username || '').trim();
@@ -32823,12 +33022,10 @@
                         existing.stageScope = td.stageScope || existing.stageScope;
                         existing.directive = `إدارة وتأكيد نتائج بطولة (${existing.gameName || 'عام'}) - ${existing.stageScope || 'كافة المراحل'}`;
                     } else {
-                        seenUsernames.add(u.toLowerCase());
-                        const cat = normalizeCategory(td.category);
-                        list.push({
+                        addAccount({
                             username: u,
                             displayName: td.displayName || u,
-                            category: cat,
+                            category: td.category,
                             isTournDirector: true,
                             gameName: td.gameName || 'كافة الألعاب',
                             stageScope: td.stageScope || 'كافة المراحل',
@@ -32839,23 +33036,48 @@
                 });
             }
 
-            // 4. خيارات افتراضية نموذجية في حالة عدم توفر حسابات بعد
-            if (list.length === 0) {
-                list.push(
-                    { username: 'reviewer1', displayName: 'لجنة مراجعة بنين (قطاع 1)', category: 'بنين', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'القاهرة، الجيزة، الإسكندرية', directive: 'مراجعة وتدقيق استمارات قطاع البنين بالكامل' },
-                    { username: 'reviewer2', displayName: 'لجنة مراجعة بنات (قطاع 1)', category: 'بنات', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'القاهرة، الجيزة، الإسكندرية', directive: 'مراجعة وتدقيق استمارات قطاع البنات بالكامل' },
-                    { username: 'reviewer3', displayName: 'لجنة مراجعة بنين (قطاع الوجه البحري)', category: 'بنين', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'الدقهلية، البحيرة، الغربية', directive: 'التدقيق الشامل لبطولات بنين للوجه البحري' },
-                    { username: 'reviewer4', displayName: 'لجنة مراجعة بنات (قطاع الصعيد والقناة)', category: 'بنات', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'أسيوط، سوهاج، الإسماعيلية', directive: 'التدقيق الشامل لبطولات بنات الصعيد والقناة' },
-                    { username: 'director_gym', displayName: 'د. خالد عبد العزيز (مدير بطولة الجمباز)', category: 'بنين', isTournDirector: true, gameName: 'الجمباز', stageScope: 'كافة المراحل', assignedGovs: 'كافة المحافظات المشاركة', directive: 'إدارة واعتماد كشوف ومراكز بطولة الجمباز بنين' },
-                    { username: 'director_swim', displayName: 'أ. هالة إبراهيم (مديرة بطولة السباحة)', category: 'بنات', isTournDirector: true, gameName: 'السباحة', stageScope: 'كافة المراحل', assignedGovs: 'كافة المحافظات المشاركة', directive: 'إدارة واعتماد كشوف ومراكز بطولة السباحة بنات' }
-                );
+            // 6. التحقق من كاش المتصفح (sessionStorage)
+            try {
+                const savedDistRev = sessionStorage.getItem('repChamps_dist_reviewers_cache');
+                if (savedDistRev) {
+                    const parsed = JSON.parse(savedDistRev);
+                    if (Array.isArray(parsed)) parsed.forEach(addAccount);
+                }
+            } catch (e) {}
+
+            // 7. حسابات افتراضية معتمدة لضمان عدم خلو القائمة في أي وقت
+            const defaultBoysReviewers = [
+                { username: 'admin_rev', displayName: 'المراجع العام للبنين', category: 'بنين', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'الكل', directive: 'مراجعة وتدقيق استمارات قطاع البنين بالكامل' },
+                { username: 'rev_cairo', displayName: 'مراجع بنين القاهرة والجيزة', category: 'بنين', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'القاهرة, الجيزة', directive: 'تدقيق استمارات قطاع البنين بالقاهرة والجيزة' },
+                { username: 'reviewer1', displayName: 'لجنة مراجعة بنين (قطاع 1)', category: 'بنين', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'القاهرة، الجيزة، الإسكندرية', directive: 'مراجعة وتدقيق استمارات قطاع البنين بالكامل' },
+                { username: 'reviewer3', displayName: 'لجنة مراجعة بنين (قطاع الوجه البحري)', category: 'بنين', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'الدقهلية، البحيرة، الغربية', directive: 'التدقيق الشامل لبطولات بنين للوجه البحري' }
+            ];
+            const defaultGirlsReviewers = [
+                { username: 'rev_girls', displayName: 'مراجعة البنات العامة', category: 'بنات', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'الكل', directive: 'مراجعة وتدقيق استمارات قطاع البنات بالكامل' },
+                { username: 'rev_alex', displayName: 'مراجع الإسكندرية ومطروح', category: 'بنات', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'الإسكندرية, مطروح', directive: 'تدقيق استمارات قطاع البنات بالإسكندرية ومطروح' },
+                { username: 'reviewer2', displayName: 'لجنة مراجعة بنات (قطاع 1)', category: 'بنات', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'القاهرة، الجيزة، الإسكندرية', directive: 'مراجعة وتدقيق استمارات قطاع البنات بالكامل' },
+                { username: 'reviewer4', displayName: 'لجنة مراجعة بنات (قطاع الصعيد والقناة)', category: 'بنات', isTournDirector: false, gameName: '', stageScope: 'كافة المراحل', assignedGovs: 'أسيوط، سوهاج، الإسماعيلية', directive: 'التدقيق الشامل لبطولات بنات الصعيد والقناة' }
+            ];
+            const defaultDirectors = [
+                { username: 'director_gym', displayName: 'د. خالد عبد العزيز (مدير بطولة الجمباز)', category: 'بنين', isTournDirector: true, gameName: 'الجمباز', stageScope: 'كافة المراحل', assignedGovs: 'كافة المحافظات المشاركة', directive: 'إدارة واعتماد كشوف ومراكز بطولة الجمباز بنين' },
+                { username: 'director_swim', displayName: 'أ. هالة إبراهيم (مديرة بطولة السباحة)', category: 'بنات', isTournDirector: true, gameName: 'السباحة', stageScope: 'كافة المراحل', assignedGovs: 'كافة المحافظات المشاركة', directive: 'إدارة واعتماد كشوف ومراكز بطولة السباحة بنات' }
+            ];
+
+            const hasBoys = list.some(a => a.category === 'بنين' && !a.isTournDirector);
+            if (!hasBoys) defaultBoysReviewers.forEach(addAccount);
+
+            const hasGirls = list.some(a => a.category === 'بنات' && !a.isTournDirector);
+            if (!hasGirls) defaultGirlsReviewers.forEach(addAccount);
+
+            if (adminRole === 'SUPER_ADMIN' && !list.some(a => a.isTournDirector)) {
+                defaultDirectors.forEach(addAccount);
             }
 
-            // تصفية صارمة للحسابات بحسب دور المشرف الحالي
+            // 8. عزل صارم للحسابات حسب صلاحية المشرف
             if (adminRole === 'BOYS_ADMIN') {
-                return list.filter(item => item.category === 'بنين');
+                return list.filter(item => item.category === 'بنين' && !item.isTournDirector);
             } else if (adminRole === 'GIRLS_ADMIN') {
-                return list.filter(item => item.category === 'بنات');
+                return list.filter(item => item.category === 'بنات' && !item.isTournDirector);
             }
 
             return list;
@@ -32884,7 +33106,7 @@
 
         function renderFilteredDirectInspectionReviewers() {
             const all = getAllInspectionAccounts();
-            const currentAdminRole = (typeof adminSession !== 'undefined' && adminSession && adminSession.user && adminSession.user.role) ? adminSession.user.role : 'SUPER_ADMIN';
+            const currentAdminRole = getEffectiveAdminRole();
             const isBoysOnly = (currentAdminRole === 'BOYS_ADMIN');
             const isGirlsOnly = (currentAdminRole === 'GIRLS_ADMIN');
 
@@ -32989,55 +33211,76 @@
 
         function populateDirectInspectionReviewers() {
             const allAccounts = getAllInspectionAccounts();
-            const currentAdminRole = (typeof adminSession !== 'undefined' && adminSession && adminSession.user && adminSession.user.role) ? adminSession.user.role : 'SUPER_ADMIN';
+            const currentAdminRole = getEffectiveAdminRole();
             const isBoysOnly = (currentAdminRole === 'BOYS_ADMIN');
             const isGirlsOnly = (currentAdminRole === 'GIRLS_ADMIN');
 
             const selRev = document.getElementById('selDirectInspectReviewer');
             const stickyRevSel = document.getElementById('stickyReviewerPreviewSelect');
 
-            // تجميع الحسابات حسب المجموعات مع مراعاة صلاحية المشرف
-            const boysRev = isGirlsOnly ? [] : allAccounts.filter(a => !a.isTournDirector && a.category === 'بنين');
-            const girlsRev = isBoysOnly ? [] : allAccounts.filter(a => !a.isTournDirector && a.category === 'بنات');
-            const tdAccounts = (isBoysOnly || isGirlsOnly) ? [] : allAccounts.filter(a => a.isTournDirector);
+            function buildSelectHtml(placeholderText) {
+                let html = `<option value="">${placeholderText}</option>`;
+                if (isBoysOnly) {
+                    allAccounts.forEach(r => {
+                        const govsText = r.assignedGovs && r.assignedGovs !== 'الكل' ? ` (${r.assignedGovs})` : '';
+                        html += `<option value="${escapeHtml(r.username)}" data-td="0">👦 ${escapeHtml(r.displayName)}${escapeHtml(govsText)}</option>`;
+                    });
+                } else if (isGirlsOnly) {
+                    allAccounts.forEach(r => {
+                        const govsText = r.assignedGovs && r.assignedGovs !== 'الكل' ? ` (${r.assignedGovs})` : '';
+                        html += `<option value="${escapeHtml(r.username)}" data-td="0">👧 ${escapeHtml(r.displayName)}${escapeHtml(govsText)}</option>`;
+                    });
+                } else {
+                    const boysRev = allAccounts.filter(a => !a.isTournDirector && a.category === 'بنين');
+                    const girlsRev = allAccounts.filter(a => !a.isTournDirector && a.category === 'بنات');
+                    const tdAccounts = allAccounts.filter(a => a.isTournDirector);
 
-            function buildOptGroupsHtml(defaultText) {
-                let html = `<option value="">${defaultText}</option>`;
-                if (boysRev.length > 0) {
-                    html += '<optgroup label="👦 لجان مراجعة البنين">';
-                    boysRev.forEach(r => {
-                        html += `<option value="${escapeHtml(r.username)}" data-td="0">${escapeHtml(r.displayName)}</option>`;
-                    });
-                    html += '</optgroup>';
-                }
-                if (girlsRev.length > 0) {
-                    html += '<optgroup label="👧 لجان مراجعة البنات">';
-                    girlsRev.forEach(r => {
-                        html += `<option value="${escapeHtml(r.username)}" data-td="0">${escapeHtml(r.displayName)}</option>`;
-                    });
-                    html += '</optgroup>';
-                }
-                if (tdAccounts.length > 0) {
-                    html += '<optgroup label="👑 مديرو ومسؤولو البطولات">';
-                    tdAccounts.forEach(r => {
-                        html += `<option value="${escapeHtml(r.username)}" data-td="1">${escapeHtml(r.displayName)}</option>`;
-                    });
-                    html += '</optgroup>';
+                    if (boysRev.length > 0) {
+                        html += '<optgroup label="👦 لجان مراجعة البنين">';
+                        boysRev.forEach(r => {
+                            const govsText = r.assignedGovs && r.assignedGovs !== 'الكل' ? ` (${r.assignedGovs})` : '';
+                            html += `<option value="${escapeHtml(r.username)}" data-td="0">👦 ${escapeHtml(r.displayName)}${escapeHtml(govsText)}</option>`;
+                        });
+                        html += '</optgroup>';
+                    }
+                    if (girlsRev.length > 0) {
+                        html += '<optgroup label="👧 لجان مراجعة البنات">';
+                        girlsRev.forEach(r => {
+                            const govsText = r.assignedGovs && r.assignedGovs !== 'الكل' ? ` (${r.assignedGovs})` : '';
+                            html += `<option value="${escapeHtml(r.username)}" data-td="0">👧 ${escapeHtml(r.displayName)}${escapeHtml(govsText)}</option>`;
+                        });
+                        html += '</optgroup>';
+                    }
+                    if (tdAccounts.length > 0) {
+                        html += '<optgroup label="👑 مديرو ومسؤولو البطولات">';
+                        tdAccounts.forEach(r => {
+                            html += `<option value="${escapeHtml(r.username)}" data-td="1">${escapeHtml(r.displayName)}</option>`;
+                        });
+                        html += '</optgroup>';
+                    }
                 }
                 return html;
             }
 
+            const mainPlaceholder = isBoysOnly 
+                ? '-- اختر مراجع البنين للمعاينة المباشرة --' 
+                : (isGirlsOnly ? '-- اختر مراجعة البنات للمعاينة المباشرة --' : '-- اختر المراجع أو اللجنة للمعاينة --');
+
+            const stickyPlaceholder = isBoysOnly
+                ? '-- تبديل مراجع البنين --'
+                : (isGirlsOnly ? '-- تبديل مراجعة البنات --' : '-- تبديل المراجع / مدير البطولة --');
+
             // تحديث السيلكت الأساسي في البطاقة
             if (selRev) {
                 const curVal = selRev.value;
-                selRev.innerHTML = buildOptGroupsHtml('-- اختر المراجع أو اللجنة للمعاينة --');
+                selRev.innerHTML = buildSelectHtml(mainPlaceholder);
                 if (curVal) selRev.value = curVal;
             }
 
             // تحديث سيلكت الشريط العائم
             if (stickyRevSel) {
                 const curValSticky = stickyRevSel.value;
-                stickyRevSel.innerHTML = buildOptGroupsHtml('-- تبديل المراجع / مدير البطولة --');
+                stickyRevSel.innerHTML = buildSelectHtml(stickyPlaceholder);
                 if (curValSticky) stickyRevSel.value = curValSticky;
             }
 
@@ -33073,11 +33316,10 @@
                 window._adminOriginalSession = JSON.parse(JSON.stringify(window.adminSession));
             }
 
-            const activeAdmin = (window._adminOriginalSession && window._adminOriginalSession.user) || (window.adminSession && window.adminSession.user) || {};
-            const adminRole = activeAdmin.role || 'SUPER_ADMIN';
+            const adminRole = getEffectiveAdminRole();
             const catScope = (adminRole === 'BOYS_ADMIN') ? 'بنين' : ((adminRole === 'GIRLS_ADMIN') ? 'بنات' : 'all');
 
-            // إنشاء جلسة مسؤول المحافظة للمعاينة
+            // إنشاء جلسة مسؤول المحافظة للمعاينة مع قفل الفئة التلقائي
             const previewRegistrarSession = {
                 username: 'preview_' + govName,
                 displayName: 'مسؤول محافظة ' + govName + (catScope !== 'all' ? ` (اطلاع قطاع ${catScope})` : ' (اطلاع مباشر للمشرف)'),
@@ -33098,7 +33340,7 @@
             if (typeof showRegistrarDashboard === 'function') {
                 showRegistrarDashboard();
             }
-            showToast(`أنت الآن في وضع الاطلاع المباشر على بوابة محافظة (${govName})${catScope !== 'all' ? ` - قطاع ${catScope}` : ''}`, 'info');
+            showToast(`أنت الآن في وضع الاطلاع المباشر على بوابة محافظة (${govName})${catScope !== 'all' ? ` - قطاع ${catScope} فقط` : ''}`, 'info');
         };
 
         window.adminDirectPreviewReviewer = function (username, displayNameOpt, asTournDirectorOpt) {
@@ -33109,13 +33351,18 @@
                 window._adminOriginalSession = JSON.parse(JSON.stringify(window.adminSession));
             }
 
-            const activeAdmin = (window._adminOriginalSession && window._adminOriginalSession.user) || (window.adminSession && window.adminSession.user) || {};
-            const adminRole = activeAdmin.role || 'SUPER_ADMIN';
+            const adminRole = getEffectiveAdminRole();
 
             // فحص بيانات المراجع أو مدير البطولة
             let rev = null;
             if (typeof superAdminAccountsData !== 'undefined' && Array.isArray(superAdminAccountsData.reviewers)) {
                 rev = superAdminAccountsData.reviewers.find(r => (r.username || '').toLowerCase() === username.toLowerCase());
+            }
+            if (!rev && Array.isArray(cachedAdminReviewersList)) {
+                rev = cachedAdminReviewersList.find(r => (r.username || '').toLowerCase() === username.toLowerCase());
+            }
+            if (!rev && Array.isArray(cachedDistributionReviewers)) {
+                rev = cachedDistributionReviewers.find(r => (r.username || '').toLowerCase() === username.toLowerCase());
             }
 
             let td = null;
@@ -33129,7 +33376,7 @@
 
             const dispName = displayNameOpt || (td && (td.displayName || td.username)) || (rev && rev.displayName) || username;
             const assignedGovs = (rev && (rev.governorate || rev.assignedGovs)) || (td && td.governorate) || 'الكل';
-            const cat = (td && td.category) || (rev && rev.category) || 'بنين';
+            const cat = (td && td.category) || (rev && rev.category) || (dispName.indexOf('بنات') !== -1 ? 'بنات' : 'بنين');
 
             // فحص أمني صارم: عزل قطاع البنين عن البنات لمسؤولي القطاعات
             if (adminRole === 'BOYS_ADMIN' && cat === 'بنات') {
@@ -33138,6 +33385,10 @@
             }
             if (adminRole === 'GIRLS_ADMIN' && cat === 'بنين') {
                 showToast('غير مصرح لمسؤول البنات بالاطلاع على لجان أو مراجعي قطاع البنين.', 'error');
+                return;
+            }
+            if ((adminRole === 'BOYS_ADMIN' || adminRole === 'GIRLS_ADMIN') && isTd) {
+                showToast('غير مصرح بالاطلاع على مهام مديري البطولات إلا للمشرف العام.', 'error');
                 return;
             }
 
@@ -33183,7 +33434,7 @@
             // إظهار زر الانتقال لصفحة مسؤول البطولة إذا كان المراجع مكلفاً كمسؤول بطولة
             const btnTd = document.getElementById('btnOpenTournDirectorPage');
             if (btnTd) {
-                if (isTd || (currentReviewerDirectorAssignments && currentReviewerDirectorAssignments.length > 0)) {
+                if ((adminRole === 'SUPER_ADMIN') && (isTd || (currentReviewerDirectorAssignments && currentReviewerDirectorAssignments.length > 0))) {
                     btnTd.style.display = 'inline-flex';
                     btnTd.title = `الانتقال إلى صفحة مسؤول البطولة (${currentReviewerDirectorAssignments.length} تكليف)`;
                 } else {
