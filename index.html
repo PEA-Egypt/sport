@@ -7733,7 +7733,11 @@
                 padding: 2px 4px !important;
             }
             .sticky-banner-controls label {
-                display: none !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                font-size: 0.76rem !important;
+                color: #ffffff !important;
+                white-space: nowrap !important;
             }
             .sticky-banner-controls select {
                 width: 100% !important;
@@ -7845,17 +7849,23 @@
                 </div>
             </div>
 
-            <div class="sticky-banner-controls" style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                <div style="display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.08); padding:2px 7px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);">
-                    <label style="font-size:0.72rem; color:#cbd5e1; font-weight:700; white-space:nowrap;"><i class="fas fa-location-dot" style="color:#38bdf8;"></i> المحافظة:</label>
-                    <select id="stickyGovPreviewSelect" onchange="if(this.value) adminDirectPreviewGovernorate(this.value)" style="background:#1e293b; color:#ffffff; border:1px solid #475569; border-radius:4px; padding:2px 6px; font-size:0.75rem; font-weight:700; cursor:pointer; width:100%; max-width:130px;">
+            <div class="sticky-banner-controls" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.12); padding:3px 8px; border-radius:7px; border:1px solid rgba(255,255,255,0.22); flex-shrink:0;">
+                    <label style="font-size:0.82rem; color:#ffffff !important; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; flex-shrink:0; text-shadow:0 1px 2px rgba(0,0,0,0.5); margin:0;">
+                        <i class="fas fa-location-dot" style="color:#38bdf8; font-size:0.85rem;"></i>
+                        <span style="color:#ffffff !important; font-weight:800; font-size:0.82rem;">المحافظة:</span>
+                    </label>
+                    <select id="stickyGovPreviewSelect" onchange="if(this.value) adminDirectPreviewGovernorate(this.value)" style="background:#1e293b; color:#ffffff; border:1px solid #64748b; border-radius:5px; padding:3px 8px; font-size:0.78rem; font-weight:700; cursor:pointer; min-width:130px; max-width:160px; height:28px;">
                         <option value="">-- المحافظة --</option>
                     </select>
                 </div>
 
-                <div style="display:inline-flex; align-items:center; gap:4px; background:rgba(255,255,255,0.08); padding:2px 7px; border-radius:6px; border:1px solid rgba(255,255,255,0.15);">
-                    <label style="font-size:0.72rem; color:#cbd5e1; font-weight:700; white-space:nowrap;"><i class="fas fa-user-check" style="color:#a7f3d0;"></i> المراجع:</label>
-                    <select id="stickyReviewerPreviewSelect" onchange="if(this.value) adminDirectPreviewReviewer(this.value)" style="background:#1e293b; color:#ffffff; border:1px solid #475569; border-radius:4px; padding:2px 6px; font-size:0.75rem; font-weight:700; cursor:pointer; width:100%; max-width:140px;">
+                <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.12); padding:3px 8px; border-radius:7px; border:1px solid rgba(255,255,255,0.22); flex-shrink:0;">
+                    <label style="font-size:0.82rem; color:#ffffff !important; font-weight:800; white-space:nowrap; display:inline-flex; align-items:center; gap:5px; flex-shrink:0; text-shadow:0 1px 2px rgba(0,0,0,0.5); margin:0;">
+                        <i class="fas fa-user-check" style="color:#34d399; font-size:0.85rem;"></i>
+                        <span style="color:#ffffff !important; font-weight:800; font-size:0.82rem;">المراجع:</span>
+                    </label>
+                    <select id="stickyReviewerPreviewSelect" onchange="if(this.value) adminDirectPreviewReviewer(this.value)" style="background:#1e293b; color:#ffffff; border:1px solid #64748b; border-radius:5px; padding:3px 8px; font-size:0.78rem; font-weight:700; cursor:pointer; min-width:140px; max-width:180px; height:28px;">
                         <option value="">-- المراجع --</option>
                     </select>
                 </div>
@@ -8682,18 +8692,6 @@
                     </div>
                 </div>
 
-                <!-- تعليمات الفحص الخاصة برياضات الدفاع عن النفس (الكاراتيه / التايكوندو) -->
-                <div id="karateTaekwondoInspectionNotice" class="hidden" style="background:#fffbeb; border:1.5px solid #f59e0b; border-radius:10px; padding:10px 14px; margin-bottom:2px;">
-                    <div style="font-weight:800; color:#b45309; font-size:0.86rem; margin-bottom:4px; display:flex; align-items:center; gap:6px;">
-                        <i class="fas fa-shield-halved"></i> تعليمات الفحص والتدقيق الخاصة برياضات الدفاع عن النفس (الكاراتيه / التايكوندو):
-                    </div>
-                    <ul style="margin:0; padding-right:20px; font-size:0.78rem; color:#78350f; line-height:1.6;">
-                        <li>التحقق الدقيق من كشف الحزام المعتمد ومطابقته لبيانات الاستمارة.</li>
-                        <li>مطابقة الرقم القومي مع شهادة الميلاد الأصلية للطالب.</li>
-                        <li>وجود كشف طبي معتمد ومختوم بختم النسر الرسمي.</li>
-                        <li>اعتماد خاتم المدرسة على صورة الطالب وخاتم الإدارة التعليمية والتفتيش وتوقيعات المختصين الرسمية.</li>
-                    </ul>
-                </div>
 
                 <!-- بطاقة توجيه عند عدم اختيار محافظة محددة -->
                 <div id="reviewerNoGovSelectedPrompt" style="background:#ffffff; border:2px dashed #cbd5e1; border-radius:12px; padding:28px 18px; text-align:center; color:#64748b; margin-bottom:8px;">
@@ -24275,14 +24273,6 @@
             const selectedGame = document.getElementById('revFilterGame') ? document.getElementById('revFilterGame').value : '';
             const gov = document.getElementById('revFilterGov') ? document.getElementById('revFilterGov').value : '';
             const stage = document.getElementById('revFilterStage') ? document.getElementById('revFilterStage').value : '';
-            const notice = document.getElementById('karateTaekwondoInspectionNotice');
-            if (notice) {
-                if (selectedGame === 'الكاراتيه' || selectedGame === 'التايكوندو') {
-                    notice.classList.remove('hidden');
-                } else {
-                    notice.classList.add('hidden');
-                }
-            }
 
             // فحص كشف المشاركة المجمع الفردي للمراجع (فحص لحظي من الذاكرة 0ms ثم تحقق من السيرفر)
             const statusText = document.getElementById('collectiveSheetStatusTextReview');
