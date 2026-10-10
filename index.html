@@ -20331,6 +20331,49 @@
 
             tbody.innerHTML = logs.map((l, idx) => {
                 const isSuccess = (l.status === 'نجاح' || l.status === 'SUCCESS');
+
+                let rawPhone = String(l.phone || '').trim();
+                if ((!rawPhone || rawPhone === '-' || rawPhone === 'غير مسجل') && typeof superAdminAccountsData !== 'undefined' && Array.isArray(superAdminAccountsData.registrars)) {
+                    const matchReg = superAdminAccountsData.registrars.find(r => (r.username && r.username.toLowerCase() === String(l.username || '').toLowerCase()) || (l.governorate && isGovMatchClient(r.governorate, l.governorate)));
+                    if (matchReg && matchReg.phone) rawPhone = String(matchReg.phone).trim();
+                }
+
+                const hasPhone = (rawPhone && rawPhone !== '-' && rawPhone !== 'غير مسجل' && rawPhone !== 'null' && rawPhone !== 'undefined');
+                let phoneCellHtml = '<span style="font-size:0.75rem; color:#94a3b8;">-</span>';
+
+                if (hasPhone) {
+                    const cleanDigits = rawPhone.replace(/\D/g, '');
+                    const cleanWaPhone = typeof formatWhatsAppPhoneClient === 'function' ? formatWhatsAppPhoneClient(rawPhone) : cleanDigits;
+
+                    let dialPhone = cleanDigits;
+                    if (cleanDigits.startsWith('0020')) dialPhone = '+' + cleanDigits.substring(2);
+                    else if (cleanDigits.startsWith('020')) dialPhone = '+' + cleanDigits.substring(1);
+                    else if (cleanDigits.startsWith('20')) dialPhone = '+' + cleanDigits;
+                    else if (cleanDigits.startsWith('01')) dialPhone = '+2' + cleanDigits;
+                    else if (cleanDigits.startsWith('1') && (cleanDigits.length === 9 || cleanDigits.length === 10)) dialPhone = '+20' + cleanDigits;
+                    else dialPhone = cleanDigits;
+
+                    const displayPhone = (rawPhone.startsWith('1') && rawPhone.length === 10) ? ('0' + rawPhone) : rawPhone;
+                    const waMsg = `السلام عليكم ورحمة الله وبركاته، أستاذ/ ${l.displayName || l.username || ''} مسؤول محافظة (${l.governorate || ''})، بخصوص منظومة بطولات الجمهورية المدرسية:`;
+                    const waUrl = cleanWaPhone ? `https://api.whatsapp.com/send?phone=${cleanWaPhone}&text=${encodeURIComponent(waMsg)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(waMsg)}`;
+
+                    phoneCellHtml = `
+                        <div style="display:inline-flex; align-items:center; gap:5px; direction:ltr; justify-content:center; flex-wrap:nowrap;">
+                            <span style="font-family:monospace; font-size:0.75rem; font-weight:700; color:#0f172a; unicode-bidi:embed;">
+                                ${escapeHtml(displayPhone)}
+                            </span>
+                            <div style="display:inline-flex; align-items:center; gap:3px;">
+                                <a href="tel:${dialPhone}" class="acc-phone-badge-btn call" style="padding:2px 6px; font-size:0.68rem;" title="اتصال هاتفي مباشر (${escapeHtml(displayPhone)})">
+                                    <i class="fas fa-phone" style="font-size:0.65rem;"></i>
+                                </a>
+                                <a href="${waUrl}" target="_blank" rel="noopener noreferrer" class="acc-phone-badge-btn whatsapp" style="padding:2px 6px; font-size:0.68rem;" title="إرسال رسالة واتساب (${escapeHtml(cleanWaPhone)})">
+                                    <i class="fab fa-whatsapp" style="font-size:0.75rem;"></i>
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }
+
                 return `
                     <tr>
                         <td style="text-align:center; font-weight:700; color:#64748b; font-size:0.75rem;">${idx + 1}</td>
@@ -20342,7 +20385,7 @@
                                 <i class="fas fa-landmark"></i> ${escapeHtml(l.governorate || '-')}
                             </span>
                         </td>
-                        <td style="font-size:0.75rem; color:#475569; direction:ltr; text-align:right;">${escapeHtml(l.phone || '-')}</td>
+                        <td style="text-align:center; white-space:nowrap;">${phoneCellHtml}</td>
                         <td style="font-size:0.74rem; color:#64748b;">${escapeHtml(l.device || l.ipOrDevice || '-')}</td>
                         <td>
                             <span class="status-pill ${isSuccess ? 'active' : 'warn'}" style="font-size:0.72rem; font-weight:700; ${isSuccess ? 'background:#ecfdf5; color:#059669; border:1px solid #a7f3d0;' : 'background:#fef2f2; color:#dc2626; border:1px solid #fecaca;'}">
@@ -30344,6 +30387,133 @@
         }
         window.isWorkloadAssigned = isWorkloadAssigned;
 
+        function synthesizeDistributionWorkloadsFromLocalData() {
+            let students = cachedReviewerStudents || [];
+            if (!students || students.length === 0) {
+                try {
+                    const stRaw = sessionStorage.getItem('repChamps_reviewer_students_all') || localStorage.getItem('repChamps_reviewer_students_all');
+                    if (stRaw) students = JSON.parse(stRaw);
+                } catch(e) {}
+            }
+            let collSheets = cachedReviewerCollectiveSheets || [];
+            if (!collSheets || collSheets.length === 0) {
+                try {
+                    const cRaw = sessionStorage.getItem('repChamps_reviewer_collective_all') || localStorage.getItem('repChamps_reviewer_collective_all');
+                    if (cRaw) collSheets = JSON.parse(cRaw);
+                } catch(e) {}
+            }
+
+            if ((!students || students.length === 0) && (!collSheets || collSheets.length === 0)) {
+                return false;
+            }
+
+            const groups = {};
+            const collMap = {};
+            (collSheets || []).forEach(cs => {
+                const k = (cs.category || 'بنين') + '|' + (cs.gameName || '') + '|' + (cs.stageName || '') + '|' + (cs.governorate || '');
+                collMap[k] = cs;
+            });
+
+            (students || []).forEach(st => {
+                if (!st.governorate || !st.gameName) return;
+                const cat = st.category || 'بنين';
+                const k = cat + '|' + st.gameName + '|' + (st.stageName || '') + '|' + st.governorate;
+                if (!groups[k]) {
+                    const cs = collMap[k];
+                    groups[k] = {
+                        category: cat,
+                        gameName: st.gameName,
+                        stageName: st.stageName || '-',
+                        governorate: st.governorate,
+                        totalStudents: 0,
+                        approvedCount: 0,
+                        needsUpdateCount: 0,
+                        pendingCount: 0,
+                        hasCollectiveSheet: !!cs,
+                        collectiveSheetUrl: cs ? (cs.fileUrl || cs.url) : null,
+                        collectiveSheetFileName: cs ? (cs.fileName || cs.name) : null,
+                        assignedReviewer: st.reviewerName || 'بانتظار الإسناد',
+                        assignedReviewerUsername: st.reviewerUsername || '',
+                        assignedAt: st.assignedAt || '',
+                        taskId: st.taskId || '',
+                        taskNotes: '',
+                        assignmentStatus: (st.reviewerUsername || (st.reviewerName && st.reviewerName !== 'بانتظار الإسناد' && st.reviewerName !== '-')) ? 'مسندة' : 'غير مسندة'
+                    };
+                }
+                groups[k].totalStudents++;
+                if (st.status === 'تمت المراجعة وتم السماح له بالاشتراك') groups[k].approvedCount++;
+                else if (st.status === 'ضرورة التحديث') groups[k].needsUpdateCount++;
+                else groups[k].pendingCount++;
+            });
+
+            (collSheets || []).forEach(cs => {
+                if (!cs.governorate || !cs.gameName) return;
+                const cat = cs.category || 'بنين';
+                const k = cat + '|' + cs.gameName + '|' + (cs.stageName || '') + '|' + cs.governorate;
+                if (!groups[k]) {
+                    groups[k] = {
+                        category: cat,
+                        gameName: cs.gameName,
+                        stageName: cs.stageName || '-',
+                        governorate: cs.governorate,
+                        totalStudents: 0,
+                        approvedCount: 0,
+                        needsUpdateCount: 0,
+                        pendingCount: 0,
+                        hasCollectiveSheet: true,
+                        collectiveSheetUrl: cs.fileUrl || cs.url || null,
+                        collectiveSheetFileName: cs.fileName || cs.name || null,
+                        assignedReviewer: cs.reviewerName || 'بانتظار الإسناد',
+                        assignedReviewerUsername: cs.reviewerUsername || '',
+                        assignedAt: cs.assignedAt || '',
+                        taskId: cs.taskId || '',
+                        taskNotes: '',
+                        assignmentStatus: (cs.reviewerUsername || (cs.reviewerName && cs.reviewerName !== 'بانتظار الإسناد' && cs.reviewerName !== '-')) ? 'مسندة' : 'غير مسندة'
+                    };
+                }
+            });
+
+            const synthesizedList = Object.values(groups);
+            if (synthesizedList.length > 0) {
+                cachedDistributionWorkloads = synthesizedList;
+
+                if (!cachedDistributionReviewers || cachedDistributionReviewers.length === 0) {
+                    const reviewersList = (typeof superAdminAccountsData !== 'undefined' && superAdminAccountsData.reviewers) ? superAdminAccountsData.reviewers : cachedAdminReviewersList;
+                    if (Array.isArray(reviewersList) && reviewersList.length > 0) {
+                        cachedDistributionReviewers = reviewersList.map(r => {
+                            const u = String(r.username || '').toLowerCase();
+                            const rTasks = synthesizedList.filter(w => String(w.assignedReviewerUsername || '').toLowerCase() === u);
+                            let tot = 0, app = 0, upd = 0, pnd = 0;
+                            rTasks.forEach(t => {
+                                tot += (t.totalStudents || 0);
+                                app += (t.approvedCount || 0);
+                                upd += (t.needsUpdateCount || 0);
+                                pnd += (t.pendingCount || 0);
+                            });
+                            const completed = app + upd;
+                            const rate = tot > 0 ? ((completed / tot) * 100).toFixed(1) : '0.0';
+                            return {
+                                username: u,
+                                reviewerName: r.displayName || r.username,
+                                category: r.category || 'بنين',
+                                tasksCount: rTasks.length,
+                                tasks: rTasks,
+                                totalAssigned: tot,
+                                completedCount: completed,
+                                pendingCount: pnd,
+                                approvedCount: app,
+                                needsUpdateCount: upd,
+                                completionRate: rate,
+                                lastActivity: ''
+                            };
+                        });
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
         async function loadDistributionOverviewFromBackend(forceBypassCache) {
             setSpinning('iconDistributionRefresh', true);
 
@@ -30351,14 +30521,16 @@
                 try {
                     sessionStorage.removeItem('repChamps_dist_workloads_cache');
                     sessionStorage.removeItem('repChamps_dist_reviewers_cache');
+                    localStorage.removeItem('repChamps_dist_workloads_cache');
+                    localStorage.removeItem('repChamps_dist_reviewers_cache');
                 } catch (e) {}
                 cachedDistributionWorkloads = null;
                 cachedDistributionReviewers = null;
             } else {
                 // عرض فوري سريع من الذاكرة المحلية إن وجد (SWR Cache)
                 try {
-                    const cachedW = sessionStorage.getItem('repChamps_dist_workloads_cache');
-                    const cachedR = sessionStorage.getItem('repChamps_dist_reviewers_cache');
+                    const cachedW = sessionStorage.getItem('repChamps_dist_workloads_cache') || localStorage.getItem('repChamps_dist_workloads_cache');
+                    const cachedR = sessionStorage.getItem('repChamps_dist_reviewers_cache') || localStorage.getItem('repChamps_dist_reviewers_cache');
                     if (cachedW && (!cachedDistributionWorkloads || cachedDistributionWorkloads.length === 0)) {
                         cachedDistributionWorkloads = JSON.parse(cachedW).map(w => {
                             w.assignmentStatus = isWorkloadAssigned(w) ? 'مسندة' : 'غير مسندة';
@@ -30410,17 +30582,59 @@
                         setDistributionFilterType('assigned');
                     }
                     try {
-                        sessionStorage.setItem('repChamps_dist_workloads_cache', JSON.stringify(cachedDistributionWorkloads));
-                        sessionStorage.setItem('repChamps_dist_reviewers_cache', JSON.stringify(cachedDistributionReviewers));
+                        const wStr = JSON.stringify(cachedDistributionWorkloads);
+                        const rStr = JSON.stringify(cachedDistributionReviewers);
+                        sessionStorage.setItem('repChamps_dist_workloads_cache', wStr);
+                        sessionStorage.setItem('repChamps_dist_reviewers_cache', rStr);
+                        localStorage.setItem('repChamps_dist_workloads_cache', wStr);
+                        localStorage.setItem('repChamps_dist_reviewers_cache', rStr);
                     } catch (e) { console.warn('Could not save distribution cache', e); }
                 } else {
-                    cachedDistributionWorkloads = [];
-                    cachedDistributionReviewers = [];
+                    console.warn('Backend getDistributionOverview did not succeed:', res ? res.message : 'Unknown');
+                    // حماية بيانات الذاكرة من التصفير عند ورود خطأ من السيرفر (Stale-While-Revalidate Resilient)
+                    let hasWorkloads = (Array.isArray(cachedDistributionWorkloads) && cachedDistributionWorkloads.length > 0);
+                    if (!hasWorkloads) {
+                        try {
+                            const savedW = sessionStorage.getItem('repChamps_dist_workloads_cache') || localStorage.getItem('repChamps_dist_workloads_cache');
+                            const savedR = sessionStorage.getItem('repChamps_dist_reviewers_cache') || localStorage.getItem('repChamps_dist_reviewers_cache');
+                            if (savedW) {
+                                cachedDistributionWorkloads = JSON.parse(savedW).map(w => {
+                                    w.assignmentStatus = isWorkloadAssigned(w) ? 'مسندة' : 'غير مسندة';
+                                    return w;
+                                });
+                                hasWorkloads = true;
+                            }
+                            if (savedR) cachedDistributionReviewers = JSON.parse(savedR);
+                        } catch(e) {}
+                    }
+                    if (!hasWorkloads) {
+                        synthesizeDistributionWorkloadsFromLocalData();
+                    }
+                    if (!cachedDistributionWorkloads) cachedDistributionWorkloads = [];
+                    if (!cachedDistributionReviewers) cachedDistributionReviewers = [];
                 }
             } catch (err) {
                 console.warn('Could not load distribution overview from backend:', err);
-                cachedDistributionWorkloads = [];
-                cachedDistributionReviewers = [];
+                let hasWorkloads = (Array.isArray(cachedDistributionWorkloads) && cachedDistributionWorkloads.length > 0);
+                if (!hasWorkloads) {
+                    try {
+                        const savedW = sessionStorage.getItem('repChamps_dist_workloads_cache') || localStorage.getItem('repChamps_dist_workloads_cache');
+                        const savedR = sessionStorage.getItem('repChamps_dist_reviewers_cache') || localStorage.getItem('repChamps_dist_reviewers_cache');
+                        if (savedW) {
+                            cachedDistributionWorkloads = JSON.parse(savedW).map(w => {
+                                w.assignmentStatus = isWorkloadAssigned(w) ? 'مسندة' : 'غير مسندة';
+                                return w;
+                            });
+                            hasWorkloads = true;
+                        }
+                        if (savedR) cachedDistributionReviewers = JSON.parse(savedR);
+                    } catch(e) {}
+                }
+                if (!hasWorkloads) {
+                    synthesizeDistributionWorkloadsFromLocalData();
+                }
+                if (!cachedDistributionWorkloads) cachedDistributionWorkloads = [];
+                if (!cachedDistributionReviewers) cachedDistributionReviewers = [];
             } finally {
                 setSpinning('iconDistributionRefresh', false);
                 updateDistributionStatsCards();
