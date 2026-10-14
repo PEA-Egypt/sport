@@ -23097,6 +23097,7 @@
 
                     const jsonpActions = [
                         'loginReviewer', 'loginRegistrar', 'getStudentSubmissions', 'getDistributionOverview',
+                        'completeOrReleaseAssignment',
                         'getReviewerDashboardStats', 'getCollectiveGameSheet', 'getCollectiveSheets',
                         'getTournamentResults', 'getChampionshipResults', 'getTournamentResultsOrderConfig',
                         'getGameResultsPermissions', 'getResultsEntryStatus',
@@ -30558,8 +30559,8 @@
             try {
                 // جلب حسابات المراجعين وبيانات التوزيع في آن واحد (Parallel Fetching لسرعة قصوى)
                 const needsAccounts = (!cachedAdminReviewersList || cachedAdminReviewersList.length === 0);
-                const overviewPromise = callBackendApi({ action: 'getDistributionOverview' });
-                const accPromise = needsAccounts ? callBackendApi({ action: 'getAllAccountsForSuperAdmin' }) : Promise.resolve(null);
+                const overviewPromise = callBackendApi({ action: 'getDistributionOverview', bypassCache: !!forceBypassCache });
+                const accPromise = needsAccounts ? callBackendApi({ action: 'getAllAccountsForSuperAdmin', bypassCache: !!forceBypassCache }) : Promise.resolve(null);
 
                 const [res, accRes] = await Promise.all([overviewPromise, accPromise]);
 
@@ -32051,32 +32052,53 @@
         // ==========================================
         let currentReleaseModalUsername = null;
 
-        async function completeAssignmentDirect(taskId, username) {
+        async function completeAssignmentDirect(taskId, username, extraData) {
             // إذا لم يتم تحديد مهمة معينة، نفتح نافذة استعراض وتفصيل المهام غير المنتهية للمراجع
-            if (!taskId) {
+            if (!taskId && !extraData) {
                 openReleaseReviewerTasksModal(username);
                 return;
             }
 
-            const confirmMsg = `هل أنت متأكد من إنهاء واعتماد هذا التكليف المحدد؟ سيتم إنهاء هذه المهمة فقط مع بقاء باقي مهام المراجع نشطة ومستمرة.`;
+            const confirmMsg = `هل أنت متأكد من إنهاء واعتماد هذا التكليف المحدد؟ سيتم إنهاء هذه المهمة وإتاحة المراجع لمهام جديدة.`;
             if (!confirm(confirmMsg)) return;
 
             try {
                 const completedBy = (adminSession && adminSession.user && adminSession.user.displayName) ? adminSession.user.displayName : 'المشرف العام';
+                const payload = {
+                    taskId: (taskId && taskId !== 'undefined' && taskId !== 'null') ? taskId : '',
+                    username: username || '',
+                    completedBy: completedBy
+                };
+                if (extraData && typeof extraData === 'object') {
+                    if (extraData.category) payload.category = extraData.category;
+                    if (extraData.gameName) payload.gameName = extraData.gameName;
+                    if (extraData.stageName) payload.stageName = extraData.stageName;
+                    if (extraData.governorate) payload.governorate = extraData.governorate;
+                }
+
                 const res = await callBackendApi({
                     action: 'completeOrReleaseAssignment',
-                    payload: {
-                        taskId: taskId,
-                        username: username,
-                        completedBy: completedBy
-                    }
+                    payload: payload
                 });
 
                 if (res && res.success) {
-                    showToast(res.message || 'تم إنهاء هذا التكليف بنجاح وبقاء باقي المهام نشطة.', 'success');
+                    showToast(res.message || 'تم إنهاء هذا التكليف بنجاح.', 'success');
+
+                    // تنظيف كاش التوزيع المحلي فوراً
+                    invalidateFastCache('getDistributionOverview');
+                    try {
+                        sessionStorage.removeItem('repChamps_dist_workloads_cache');
+                        sessionStorage.removeItem('repChamps_dist_reviewers_cache');
+                        localStorage.removeItem('repChamps_dist_workloads_cache');
+                        localStorage.removeItem('repChamps_dist_reviewers_cache');
+                    } catch (eClean) {}
+
+                    // تحديث محلي فوري للأعباء (Optimistic UI Update)
                     if (Array.isArray(cachedDistributionWorkloads)) {
                         cachedDistributionWorkloads.forEach(w => {
-                            if (w.taskId === taskId) {
+                            const isMatchTask = taskId && w.taskId && w.taskId === taskId;
+                            const isMatchDetails = extraData && w.governorate === extraData.governorate && w.gameName === extraData.gameName && (!extraData.stageName || w.stageName === extraData.stageName);
+                            if (isMatchTask || isMatchDetails) {
                                 w.assignmentStatus = 'غير مسندة';
                                 w.assignedReviewer = 'بانتظار الإسناد';
                                 w.assignedReviewerUsername = '';
@@ -32087,8 +32109,33 @@
                         updateDistributionStatsCards();
                         filterDistributionWorkloadsTable();
                     }
-                    await loadDistributionOverviewFromBackend();
+
+                    // تحديث قائمة المراجعين محلياً
+                    if (Array.isArray(cachedDistributionReviewers)) {
+                        const uNorm = (username || '').toLowerCase();
+                        const rMatch = cachedDistributionReviewers.find(r => (r.username || '').toLowerCase() === uNorm);
+                        if (rMatch && Array.isArray(rMatch.tasks)) {
+                            rMatch.tasks = rMatch.tasks.filter(t => {
+                                if (taskId && t.taskId === taskId) return false;
+                                if (extraData && t.governorate === extraData.governorate && t.gameName === extraData.gameName) return false;
+                                return true;
+                            });
+                            rMatch.tasksCount = rMatch.tasks.length;
+                        }
+                        renderDistributionReviewersTable();
+                    }
+
                     // تحديث قائمة المهام داخل نافذة التفصيل إن كانت مفتوحة
+                    if (currentReleaseModalUsername && currentReleaseModalUsername.toLowerCase() === (username || '').toLowerCase()) {
+                        openReleaseReviewerTasksModal(username);
+                    }
+                    if (typeof currentRtoUsername !== 'undefined' && currentRtoUsername && currentRtoUsername.toLowerCase() === (username || '').toLowerCase()) {
+                        renderReviewerTasksOverviewModal(currentRtoUsername);
+                    }
+
+                    // إعادة جلب نظرة التوزيع من السيرفر مع تجاوز الكاش
+                    await loadDistributionOverviewFromBackend(true);
+
                     if (currentReleaseModalUsername && currentReleaseModalUsername.toLowerCase() === (username || '').toLowerCase()) {
                         openReleaseReviewerTasksModal(username);
                     }
@@ -32096,7 +32143,7 @@
                     showToast(res ? res.message : 'فشل إنهاء التكليف.', 'error');
                 }
             } catch (err) {
-                showToast('تعذر الاتصال بالسيرفر لإنهاء التكليف.', 'error');
+                showToast('تعذر الاتصال بالسيرفر لإنهاء التكليف: ' + (err.message || err), 'error');
             }
         }
 
@@ -32126,7 +32173,7 @@
             if (Array.isArray(cachedDistributionReviewers)) {
                 const rMatch = cachedDistributionReviewers.find(r => r.username.toLowerCase() === uNorm);
                 if (rMatch && Array.isArray(rMatch.tasks)) {
-                    activeTasks = rMatch.tasks;
+                    activeTasks = rMatch.tasks.filter(t => t.status !== 'مكتملة' && t.status !== 'ملغاة');
                 }
             }
 
@@ -32134,9 +32181,9 @@
                 cachedDistributionWorkloads.forEach(w => {
                     const wUser = (w.assignedReviewerUsername || '').toLowerCase();
                     const wName = (w.assignedReviewer || '');
-                    if ((wUser === uNorm || wName === displayName) && isWorkloadAssigned(w) && w.taskId) {
+                    if ((wUser === uNorm || wName === displayName) && isWorkloadAssigned(w)) {
                         activeTasks.push({
-                            taskId: w.taskId,
+                            taskId: w.taskId || '',
                             category: w.category || 'بنين',
                             gameName: w.gameName,
                             stageName: w.stageName,
@@ -32171,6 +32218,8 @@
                             <span style="font-size:0.68rem; color:#64748b;">(${t.approvedCount || 0} معتمد)</span>
                         `;
 
+                        const taskDetailsObj = `{governorate:'${escapeHtml(t.governorate || '')}', gameName:'${escapeHtml(t.gameName || '')}', stageName:'${escapeHtml(t.stageName || '')}', category:'${escapeHtml(t.category || 'بنين')}'}`;
+
                         return `
                             <tr>
                                 <td style="text-align:center; font-weight:700;">${idx + 1}</td>
@@ -32184,7 +32233,7 @@
                                 <td style="text-align:center; font-size:0.75rem; color:#64748b; white-space:nowrap;">${escapeHtml(t.assignedAt || '-')}</td>
                                 <td style="text-align:center;">${statsHtml}</td>
                                 <td style="text-align:center;">
-                                    <button type="button" class="admin-action-btn" onclick="completeAssignmentDirect('${escapeHtml(t.taskId)}', '${escapeHtml(username)}')" style="color:#059669; border-color:#a7f3d0; background:#ecfdf5; font-weight:700; font-size:0.74rem; padding:4px 10px;" title="إنهاء واعتماد هذا التكليف المحدد فقط">
+                                    <button type="button" class="admin-action-btn" onclick="completeAssignmentDirect('${escapeHtml(t.taskId || '')}', '${escapeHtml(username)}', ${taskDetailsObj})" style="color:#059669; border-color:#a7f3d0; background:#ecfdf5; font-weight:700; font-size:0.74rem; padding:4px 10px;" title="إنهاء واعتماد هذا التكليف المحدد فقط">
                                         <i class="fas fa-check"></i> إنهاء هذا التكليف فقط
                                     </button>
                                 </td>
@@ -32222,10 +32271,30 @@
 
                 if (res && res.success) {
                     showToast(res.message || 'تم إنهاء كافة مهام المراجع بنجاح.', 'success');
+
+                    // تنظيف كاش التوزيع المحلي فوراً
+                    invalidateFastCache('getDistributionOverview');
+                    try {
+                        sessionStorage.removeItem('repChamps_dist_workloads_cache');
+                        sessionStorage.removeItem('repChamps_dist_reviewers_cache');
+                        localStorage.removeItem('repChamps_dist_workloads_cache');
+                        localStorage.removeItem('repChamps_dist_reviewers_cache');
+                    } catch (eClean) {}
+
+                    // تحديث كاش الأعباء المحلي فوراً
                     if (Array.isArray(cachedDistributionWorkloads)) {
                         const uNorm = (username || '').toLowerCase();
+                        let displayName = username;
+                        if (Array.isArray(cachedDistributionReviewers)) {
+                            const rObj = cachedDistributionReviewers.find(r => (r.username || '').toLowerCase() === uNorm);
+                            if (rObj && rObj.reviewerName) displayName = rObj.reviewerName;
+                        }
+                        const dNorm = displayName.toLowerCase();
+
                         cachedDistributionWorkloads.forEach(w => {
-                            if ((w.assignedReviewerUsername || '').toLowerCase() === uNorm) {
+                            const wUser = (w.assignedReviewerUsername || '').toLowerCase();
+                            const wRev = (w.assignedReviewer || '').toLowerCase();
+                            if (wUser === uNorm || wRev === uNorm || (dNorm && wRev === dNorm)) {
                                 w.assignmentStatus = 'غير مسندة';
                                 w.assignedReviewer = 'بانتظار الإسناد';
                                 w.assignedReviewerUsername = '';
@@ -32236,13 +32305,30 @@
                         updateDistributionStatsCards();
                         filterDistributionWorkloadsTable();
                     }
+
+                    // تحديث قائمة المراجعين محلياً
+                    if (Array.isArray(cachedDistributionReviewers)) {
+                        const uNorm = (username || '').toLowerCase();
+                        const rMatch = cachedDistributionReviewers.find(r => (r.username || '').toLowerCase() === uNorm);
+                        if (rMatch) {
+                            rMatch.tasks = [];
+                            rMatch.tasksCount = 0;
+                        }
+                        renderDistributionReviewersTable();
+                    }
+
                     closeReleaseReviewerTasksModal();
-                    loadDistributionOverviewFromBackend();
+
+                    if (typeof currentRtoUsername !== 'undefined' && currentRtoUsername && currentRtoUsername.toLowerCase() === (username || '').toLowerCase()) {
+                        renderReviewerTasksOverviewModal(currentRtoUsername);
+                    }
+
+                    await loadDistributionOverviewFromBackend(true);
                 } else {
                     showToast(res ? res.message : 'فشل إنهاء المهام.', 'error');
                 }
             } catch (err) {
-                showToast('تعذر الاتصال بالسيرفر لإنهاء المهام.', 'error');
+                showToast('تعذر الاتصال بالسيرفر لإنهاء المهام: ' + (err.message || err), 'error');
             }
         }
 
@@ -37745,7 +37831,7 @@
                                                             <i class="fas fa-arrows-rotate"></i>
                                                         </button>
                                                         ${t.taskId && !isFullyDone ? `
-                                                            <button type="button" class="admin-action-btn" onclick="completeAssignmentDirect('${escapeHtml(t.taskId)}', '${escapeHtml(username)}')" title="إنهاء واعتماد هذا التكليف" style="color:#059669; border-color:#a7f3d0; padding:3px 6px; font-size:0.72rem;">
+                                                            <button type="button" class="admin-action-btn" onclick="completeAssignmentDirect('${escapeHtml(t.taskId)}', '${escapeHtml(username)}', {governorate:'${escapeHtml(t.governorate || '')}', gameName:'${escapeHtml(t.gameName || '')}', stageName:'${escapeHtml(t.stageName || '')}', category:'${escapeHtml(t.category || 'بنين')}'})" title="إنهاء واعتماد هذا التكليف" style="color:#059669; border-color:#a7f3d0; padding:3px 6px; font-size:0.72rem;">
                                                                 <i class="fas fa-check"></i> إنهاء
                                                             </button>
                                                         ` : ''}
