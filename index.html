@@ -711,14 +711,101 @@
             background: rgba(0, 0, 0, 0.25) !important;
         }
 
-        /* صفوف النماذج المعتمدة للتحميل */
+        /* صفحة النماذج واللوائح - تمتد بكامل الشاشة على الكمبيوتر والموبايل */
+        #downloadsView {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        #downloadsView.hidden {
+            display: none !important;
+        }
+
+        #downloadsView .card,
+        .downloads-full-card {
+            display: flex !important;
+            flex-direction: column !important;
+            height: calc(100vh - 105px) !important;
+            max-height: calc(100vh - 105px) !important;
+            min-height: 400px;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+        }
+
+        @supports (height: 100dvh) {
+            #downloadsView .card,
+            .downloads-full-card {
+                height: calc(100dvh - 105px) !important;
+                max-height: calc(100dvh - 105px) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #downloadsView .card,
+            .downloads-full-card {
+                height: calc(100vh - 90px) !important;
+                max-height: calc(100vh - 90px) !important;
+                min-height: 350px;
+            }
+            @supports (height: 100dvh) {
+                #downloadsView .card,
+                .downloads-full-card {
+                    height: calc(100dvh - 90px) !important;
+                    max-height: calc(100dvh - 90px) !important;
+                }
+            }
+        }
+
+        /* صفوف النماذج المعتمدة للتحميل - تتمدد بالكامل ويظهر الاسكرول بار فقط عند زيادة الملفات عن الشاشة */
         .modal-templates-list {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            margin: 10px 0;
-            max-height: 280px;
-            overflow-y: auto;
+            margin: 6px 0 0 0;
+            padding: 4px 6px 8px 6px;
+            flex: 1 1 auto;
+            min-height: 0;
+            max-height: none !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: #94a3b8 rgba(0, 0, 0, 0.05);
+        }
+
+        .modal-templates-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-templates-list::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+
+        .modal-templates-list::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+
+        .modal-templates-list::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        [data-theme="light"] .modal-templates-list::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        [data-theme="light"] .modal-templates-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+        }
+
+        [data-theme="light"] .modal-templates-list::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .modal-templates-list .custom-file-download-card {
+            margin-bottom: 0 !important;
+            flex-shrink: 0 !important;
         }
 
         .downloads-header-title {
@@ -8288,7 +8375,7 @@
 
         <!-- Downloads View (صفحة تحميل النماذج واللوائح الرسمية للمستخدمين) -->
         <div id="downloadsView" class="hidden">
-            <div class="card">
+            <div class="card downloads-full-card">
                 <div class="card-title" style="flex-wrap:nowrap; gap:6px;">
                     <div style="display:flex; align-items:center; gap:6px; min-width:0;">
                         <i class="fas fa-cloud-arrow-down" style="color:#38bdf8; flex-shrink:0;"></i>
@@ -11698,12 +11785,14 @@
                         <!-- عنصر مخفي لحفظ قيمة المرحلة المحددة برمجياً للحفاظ على سلامة الوظائف -->
                         <input type="hidden" id="adminStageSelect" value="">
 
-                        <!-- 3. حقل البحث السريع في الكشوفات على اليسار -->
-                        <div style="display:flex; align-items:center; gap:4px; flex:1; min-width:160px; max-width:240px;">
+                        <!-- 3. حقل البحث الذكي في كشوفات المشاركين (عمود الاسم) -->
+                        <div style="display:flex; align-items:center; gap:6px; flex:1; min-width:200px; max-width:320px;">
                             <div style="position:relative; width:100%;">
-                                <i class="fas fa-magnifying-glass" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:0.72rem; pointer-events:none;"></i>
-                                <input type="text" id="adminSearchInput" placeholder="بحث سريع في كشوفات المرحلة..." oninput="filterAdminFilesTable()" style="padding:3px 26px 3px 6px; font-size:0.76rem; border-radius:6px; border:1px solid #cbd5e1; width:100%; height:28px; box-sizing:border-box;">
+                                <i class="fas fa-magnifying-glass" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); color:#0284c7; font-size:0.75rem; pointer-events:none;"></i>
+                                <input type="text" id="adminSearchInput" placeholder="بحث ذكي في عمود الاسم..." oninput="filterAdminFilesTable()" autocomplete="off" spellcheck="false" title="بحث ذكي في عمود اسم المسجل / المشارك بالبطولة (يتعرف على الأسماء المركبة، الألف، الهمزات، والتاء المربوطة)" style="padding:3px 26px 3px 24px; font-size:0.76rem; border-radius:6px; border:1.5px solid #cbd5e1; width:100%; height:28px; box-sizing:border-box; transition:border-color 0.2s, box-shadow 0.2s;">
+                                <i class="fas fa-times-circle" id="adminSearchClearBtn" onclick="clearAdminSearchInput()" style="position:absolute; left:7px; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:0.8rem; cursor:pointer; display:none; transition:color 0.15s;" title="إلغاء البحث واستعادة كافة الكشوفات" onmouseenter="this.style.color='#ef4444'" onmouseleave="this.style.color='#94a3b8'"></i>
                             </div>
+                            <span id="adminSearchMatchBadge" style="display:none; font-size:0.72rem; font-weight:800; color:#0369a1; background:#e0f2fe; border:1px solid #bae6fd; padding:2px 7px; border-radius:12px; white-space:nowrap; flex-shrink:0;"></span>
                         </div>
                     </div>
 
@@ -18116,7 +18205,7 @@
                 tbody.innerHTML = processedFiles.map(({ item, isMustDelete }) => {
                     const teamPart = item.teamName ? `_${item.teamName}` : '';
                     const officialFileName = item.fileName || `بطولات_الجمهورية_${category}_${item.userGov}_${item.gameName || selectedGame}_${item.stageName || selectedStage}${teamPart}_${item.userName}.xlsx`;
-                    const fileDriveUrl = item.fileDriveUrl || (item.fileId ? `https://drive.google.com/file/d/${item.fileId}/view` : '#');
+                    const fileDriveUrl = item.fileDriveUrl || (item.fileId ? `https://drive.google.com/file/d/${item.fileId}/view?usp=sharing` : '#');
                     const fileIdOrOp = item.fileId || item.id;
 
                     const renameBtnHtml = isSuperAdmin ? `
@@ -18141,20 +18230,21 @@
                     const formattedDate = formatDisplayDateTime(item.dateFormatted || (item.date + ' ' + (item.time || '')));
 
                     return `
-                        <tr id="row_${fileIdOrOp}" class="${isMustDelete ? 'must-delete' : ''} ${isSelected ? 'selected' : ''}">
+                        <tr id="row_${fileIdOrOp}" class="${isMustDelete ? 'must-delete' : ''} ${isSelected ? 'selected' : ''}" data-user-name="${escapeHtml(item.userName || '')}">
                             <td style="text-align:center;">
                                 <input type="checkbox" class="file-chk file-chk-start" data-file-id="${fileIdOrOp}" value="${fileIdOrOp}" ${isSelected ? 'checked' : ''} onchange="handleFileSelectRow(this)">
                             </td>
                             <td><strong>${item.userGov}</strong></td>
-                            <td style="max-width:115px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${item.userName}">${item.userName}</td>
+                            <td class="col-user-name" data-user-name="${escapeHtml(item.userName || '')}" style="max-width:115px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${item.userName}">${item.userName}</td>
                             <td dir="ltr" style="text-align:center; font-weight:600; white-space:nowrap;">${item.userPhone}</td>
                             <td dir="ltr" style="font-size:0.75rem; white-space:nowrap; text-align:center;">${formattedDate}</td>
                             <td>
                                 <div style="display:flex; align-items:center; gap:6px; flex-wrap:nowrap;">
-                                    <span class="file-name-cell" title="${officialFileName}" onclick="downloadSingleFile('${fileIdOrOp}', '${officialFileName}')" style="max-width:210px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                                    <a href="${fileDriveUrl !== '#' ? fileDriveUrl : '#'}" onclick="openAdminFileView('${fileIdOrOp}', '${fileDriveUrl}', '${escapeHtml(officialFileName)}', event); return false;" class="file-name-cell" title="فتح الملف للاطلاع والمعاينة: ${escapeHtml(officialFileName)}" target="_blank" rel="noopener noreferrer" style="max-width:210px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration:none; color:inherit; cursor:pointer; display:inline-flex; align-items:center; gap:5px;">
                                         <i class="fas fa-file-excel" style="color:#10b981; flex-shrink:0;"></i>
                                         <span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${officialFileName}</span>
-                                    </span>
+                                        <i class="fas fa-arrow-up-right-from-square" style="font-size:0.68rem; color:#0284c7; flex-shrink:0;" title="معاينة واطلاع"></i>
+                                    </a>
                                     ${mustDeleteBadge}
                                 </div>
                             </td>
@@ -18175,6 +18265,9 @@
                 }).join('');
 
                 updateAdminStatistics();
+                if (typeof window.filterAdminFilesTable === 'function') {
+                    window.filterAdminFilesTable();
+                }
             }
 
             // 1. فحص الكاش الفوري (الخلية): استجابة 0ms فائقة السرعة للابتوب والموبايل
@@ -19223,17 +19316,173 @@
             });
         };
 
-        window.setPublicTemplatesFolderLink = function () {};
+        // =========================================================================
+        // البحث الذكي والتصفية في جدول كشوفات المشاركين (على عمود الاسم حصراً)
+        // =========================================================================
 
-        // تصفية والبحث في جدول الملفات
-        window.filterAdminFilesTable = function () {
-            const query = (document.getElementById('adminSearchInput').value || '').trim().toLowerCase();
-            const rows = document.querySelectorAll('#adminFilesTableBody tr');
+        // مسح حقل البحث الذكي واستعادة كافة الصفوف
+        window.clearAdminSearchInput = function () {
+            const input = document.getElementById('adminSearchInput');
+            if (input) {
+                input.value = '';
+                input.focus();
+            }
+            if (typeof window.filterAdminFilesTable === 'function') {
+                window.filterAdminFilesTable();
+            }
+        };
 
-            rows.forEach(tr => {
-                const text = tr.textContent.toLowerCase();
-                tr.style.display = text.includes(query) ? '' : 'none';
+        // توحيد الحروف والنصوص العربية للبحث الذكي وتجاوز الفروق الإملائية
+        function normalizeArabicSmart(text) {
+            if (!text) return '';
+            let s = String(text).trim();
+            // 1. إزالة كافة حركات التشكيل والتنوين والتطويل (الكشيدة)
+            s = s.replace(/[\u064B-\u065F\u0670\u0640]/g, '');
+            // 2. توحيد كافة أشكال الألف (أ، إ، آ، ٱ -> ا)
+            s = s.replace(/[أإآٱ]/g, 'ا');
+            // 3. توحيد الياء والألف المقصورة (ى، ي -> ي)
+            s = s.replace(/[ىي]/g, 'ي');
+            // 4. توحيد التاء المربوطة والهاء (ة، ه -> ه)
+            s = s.replace(/[ةه]/g, 'ه');
+            // 5. توحيد أشكال الهمزات المختلفة (ؤ، ئ -> ء)
+            s = s.replace(/[ؤئ]/g, 'ء');
+            // 6. تحويل الحروف الإنجليزية إلى أحرف صغيرة
+            s = s.toLowerCase();
+            // 7. تحويل علامات الترقيم والفواصل إلى مسافات
+            s = s.replace(/[^\u0621-\u064Aa-z0-9\s]/g, ' ');
+            // 8. تقليص المسافات الزائدة
+            s = s.replace(/\s+/g, ' ').trim();
+            return s;
+        }
+
+        // معالجة وضغط الأسماء المركبة في اللغة العربية (مثل عبد الرحمن -> عبدالرحمن)
+        function collapseArabicCompoundNames(text) {
+            if (!text) return '';
+            let s = text;
+            s = s.replace(/\bعبد\s+(\S+)/g, 'عبد$1');
+            s = s.replace(/\bابو\s+(\S+)/g, 'ابو$1');
+            s = s.replace(/\bابن\s+(\S+)/g, 'ابن$1');
+            return s;
+        }
+
+        // فحص التطابق الذكي لاسم المشارك / المسجل مع عبارة البحث المدخلة
+        function isSmartNameMatch(targetName, query) {
+            if (!query || !query.trim()) return true;
+            if (!targetName) return false;
+
+            const queryNorm = collapseArabicCompoundNames(normalizeArabicSmart(query));
+            if (!queryNorm) return true;
+
+            const targetNorm = collapseArabicCompoundNames(normalizeArabicSmart(targetName));
+
+            // 1. تطابق جزئي مباشر مع الاسم الموحد
+            if (targetNorm.includes(queryNorm)) return true;
+
+            // 2. فحص كلمات الاستعلام المنفردة (Order-independent matching)
+            const queryTokens = queryNorm.split(/\s+/).filter(t => t.length > 0);
+            const targetTokens = targetNorm.split(/\s+/).filter(t => t.length > 0);
+
+            return queryTokens.every(qToken => {
+                // تطابق مباشر في السلسلة الكاملة
+                if (targetNorm.includes(qToken)) return true;
+
+                // تجريد "ال" التعريف من كلمة البحث إذا وجدت
+                const qNoAl = (qToken.startsWith('ال') && qToken.length > 3) ? qToken.slice(2) : null;
+                if (qNoAl && targetNorm.includes(qNoAl)) return true;
+
+                // مطابقة الكلمة مع مقاطع اسم المشارك
+                return targetTokens.some(tToken => {
+                    if (tToken.includes(qToken) || qToken.includes(tToken)) return true;
+                    if (qNoAl && (tToken.includes(qNoAl) || qNoAl.includes(tToken))) return true;
+                    const tNoAl = (tToken.startsWith('ال') && tToken.length > 3) ? tToken.slice(2) : null;
+                    if (tNoAl) {
+                        if (tNoAl.includes(qToken) || qToken.includes(tNoAl)) return true;
+                        if (qNoAl && (tNoAl.includes(qNoAl) || qNoAl.includes(tNoAl))) return true;
+                    }
+                    return false;
+                });
             });
+        }
+
+        // تصفية جدول الكشوفات على عمود اسم المشارك / المسجل مع الحفاظ التام على أزرار الحذف وكافة الوظائف
+        window.filterAdminFilesTable = function () {
+            const input = document.getElementById('adminSearchInput');
+            const rawQuery = input ? input.value : '';
+            const queryTrimmed = rawQuery.trim();
+            const clearBtn = document.getElementById('adminSearchClearBtn');
+            const badge = document.getElementById('adminSearchMatchBadge');
+            const tbody = document.getElementById('adminFilesTableBody');
+            if (!tbody) return;
+
+            // التحكم في ظهور زر مسح البحث الفوري
+            if (clearBtn) {
+                clearBtn.style.display = queryTrimmed.length > 0 ? 'inline-block' : 'none';
+            }
+
+            const allRows = Array.from(tbody.querySelectorAll('tr'));
+            // استبعاد صفوف التنبيه والرسائل الخاصة واستخراج صفوف البيانات الفعلية
+            const dataRows = allRows.filter(tr => tr.id && tr.id.startsWith('row_'));
+
+            let matchedCount = 0;
+            const totalDataRows = dataRows.length;
+
+            dataRows.forEach(tr => {
+                // استخراج اسم المشارك / المسجل من عمود الاسم المخصص حصراً (.col-user-name)
+                const nameCell = tr.querySelector('.col-user-name');
+                const rawName = (nameCell ? (nameCell.getAttribute('data-user-name') || nameCell.textContent) : tr.getAttribute('data-user-name')) || '';
+
+                const isMatch = isSmartNameMatch(rawName, queryTrimmed);
+
+                // التصفية عبر display للحفاظ الكامل على عناصر DOM وربط الأحداث وزر الحذف
+                tr.style.display = isMatch ? '' : 'none';
+                if (isMatch) matchedCount++;
+            });
+
+            // تحديث شارة العداد التفاعلية
+            if (badge) {
+                if (queryTrimmed.length > 0 && totalDataRows > 0) {
+                    badge.style.display = 'inline-flex';
+                    badge.innerHTML = `<i class="fas fa-filter" style="margin-left:3px; font-size:0.68rem;"></i> ${matchedCount} من ${totalDataRows}`;
+                    if (matchedCount === 0) {
+                        badge.style.background = '#fef2f2';
+                        badge.style.color = '#dc2626';
+                        badge.style.borderColor = '#fecaca';
+                    } else {
+                        badge.style.background = '#eff6ff';
+                        badge.style.color = '#0284c7';
+                        badge.style.borderColor = '#bae6fd';
+                    }
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+
+            // إظهار صف "لا توجد نتائج" بشكل أنيق إذا لم يتطابق أي اسم
+            let noMatchRow = document.getElementById('adminNoMatchSearchRow');
+            if (totalDataRows > 0 && matchedCount === 0 && queryTrimmed.length > 0) {
+                if (!noMatchRow) {
+                    noMatchRow = document.createElement('tr');
+                    noMatchRow.id = 'adminNoMatchSearchRow';
+                    tbody.appendChild(noMatchRow);
+                }
+                noMatchRow.innerHTML = `
+                    <td colspan="8" style="text-align:center; padding:28px 16px; color:#64748b; background:rgba(248,250,252,0.85); border-radius:8px;">
+                        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
+                            <i class="fas fa-user-slash" style="font-size:2.2rem; color:#94a3b8;"></i>
+                            <div style="font-weight:700; font-size:0.95rem; color:#334155;">لا يوجد كشف لمشارك يطابق الاسم: "<span style="color:#ef4444;">${escapeHtml(queryTrimmed)}</span>"</div>
+                            <div style="font-size:0.8rem; color:#64748b;">البحث الذكي يبحث فقط في عمود "اسم المسجل / المشارك" مع تجاهل الفروق اللغوية والهمزات.</div>
+                            <button type="button" onclick="clearAdminSearchInput()" class="btn-secondary" style="font-size:0.8rem; padding:4px 14px; margin-top:6px; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                                <i class="fas fa-rotate-left"></i> إلغاء التصفية وعرض كافة المشاركين
+                            </button>
+                        </div>
+                    </td>
+                `;
+                noMatchRow.style.display = '';
+            } else {
+                if (noMatchRow) {
+                    noMatchRow.style.display = 'none';
+                }
+            }
         };
 
         // تحديد الملفات والتنزيل
@@ -19332,12 +19581,10 @@
             const item = list.find(f => (f.fileId === fileId || f.id === fileId));
             const fileName = item ? item.fileName : 'الكشف';
 
-            showCustomConfirm(
-                'تأكيد حذف الكشف',
-                'هل أنت متأكد من رغبتك في حذف كشف:<br><strong style="color:#fca5a5;">' + escapeHtml(fileName) + '</strong><br>سيتم نقله لسلة مهملات Google Drive وحذف سجله نهائياً.',
-                function () {
+            const onConfirmAction = function () {
+                const gasUrl = getGasWebAppUrl();
+                if (gasUrl && navigator.onLine) {
                     showToast('جاري حذف الكشف من السيرفر...', 'info', 3000);
-                    const gasUrl = getGasWebAppUrl();
                     const u = (adminSession.user && adminSession.user.username) ? adminSession.user.username : 'admin1';
                     const p = (adminSession.user && adminSession.user.password) || getAdminPassword(u) || getAdminPassword('admin1') || '';
                     const tok = adminSession.token || (adminSession.user && adminSession.user.token) || sessionStorage.getItem('repChamps_adminToken') || '';
@@ -19356,6 +19603,7 @@
                         try { script.remove(); } catch(e){}
                         if (res && res.success) {
                             showToast('تم حذف الكشف بنجاح من قاعدة بيانات السيرفر!', 'success');
+                            try { if (typeof deleteHistoryItem === 'function') deleteHistoryItem(fileId); } catch(e){}
                             window._currentAdminFilesList = (window._currentAdminFilesList || []).filter(f => (f.fileId !== fileId && f.id !== fileId));
                             const rowEl = document.getElementById('row_' + fileId);
                             if (rowEl) {
@@ -19367,6 +19615,9 @@
                                     const totalBadge = document.getElementById('adminCurrentStageFilesBadge');
                                     if (totalBadge) totalBadge.textContent = `${window._currentAdminFilesList.length} كشف`;
                                     updateAdminStatistics();
+                                    if (typeof window.filterAdminFilesTable === 'function') {
+                                        window.filterAdminFilesTable();
+                                    }
                                 }, 300);
                             }
                             if (adminSession.selectedFileIds.has(fileId)) {
@@ -19393,11 +19644,47 @@
                         showToast('تعذر الاتصال بالسيرفر لحذف الملف.', 'error');
                     };
                     document.body.appendChild(script);
-                },
-                null,
-                true,
-                'نعم، احذف الكشف'
-            );
+                } else {
+                    // حذف محلي فوري عند انقطاع الاتصال
+                    try { if (typeof deleteHistoryItem === 'function') deleteHistoryItem(fileId); } catch(e){}
+                    window._currentAdminFilesList = (window._currentAdminFilesList || []).filter(f => (f.fileId !== fileId && f.id !== fileId));
+                    const rowEl = document.getElementById('row_' + fileId);
+                    if (rowEl) {
+                        rowEl.style.transition = 'all 0.3s ease';
+                        rowEl.style.opacity = '0';
+                        rowEl.style.transform = 'scale(0.9)';
+                        setTimeout(() => {
+                            rowEl.remove();
+                            const totalBadge = document.getElementById('adminCurrentStageFilesBadge');
+                            if (totalBadge) totalBadge.textContent = `${window._currentAdminFilesList.length} كشف`;
+                            updateAdminStatistics();
+                            if (typeof window.filterAdminFilesTable === 'function') {
+                                window.filterAdminFilesTable();
+                            }
+                        }, 300);
+                    }
+                    if (adminSession.selectedFileIds.has(fileId)) {
+                        adminSession.selectedFileIds.delete(fileId);
+                        updateSelectedFilesCounter();
+                    }
+                    showToast('تم حذف الكشف من السجل بنجاح.', 'success');
+                }
+            };
+
+            if (typeof showCustomConfirm === 'function') {
+                showCustomConfirm(
+                    'تأكيد حذف الكشف',
+                    'هل أنت متأكد من رغبتك في حذف كشف:<br><strong style="color:#fca5a5;">' + escapeHtml(fileName) + '</strong><br>سيتم نقله لسلة مهملات Google Drive وحذف سجله نهائياً.',
+                    onConfirmAction,
+                    null,
+                    true,
+                    'نعم، احذف الكشف'
+                );
+            } else {
+                if (confirm('هل أنت متأكد من رغبتك في حذف كشف: ' + fileName)) {
+                    onConfirmAction();
+                }
+            }
         };
 
         // تعديل اسم الكشف المرفوع بواسطة المشرف الأعلى (Admin 1)
@@ -19528,7 +19815,9 @@
         // دالة تنزيل حزمة ZIP بصيغة باينري حقيقية وغير تالفة
         function downloadBase64Zip(base64Data, fileName) {
             try {
-                const byteCharacters = atob(base64Data);
+                if (!base64Data) throw new Error('بيانات الحزمة فارغة');
+                const cleanB64 = String(base64Data).replace(/^data:.*?;base64,/, '').trim();
+                const byteCharacters = atob(cleanB64);
                 const byteNumbers = new Array(byteCharacters.length);
                 for (let i = 0; i < byteCharacters.length; i++) {
                     byteNumbers[i] = byteCharacters.charCodeAt(i);
@@ -19546,9 +19835,36 @@
                 }, 2000);
             } catch (e) {
                 console.error('Error creating zip blob:', e);
-                showToast('حدث خطأ أثناء فك تشفير حزمة ZIP.', 'error');
+                showToast('حدث خطأ أثناء فك تشفير حزمة ZIP: ' + (e.message || e), 'error');
             }
         }
+
+        // فتح ملف الكشف للاطلاع والمعاينة المباشرة (دون بدء تنزيل)
+        window.openAdminFileView = function (fileId, fileDriveUrl, fileName, event) {
+            if (event) {
+                try { event.preventDefault(); event.stopPropagation(); } catch (e) {}
+            }
+            logAdminAudit('معاينة واطلاع على كشف', fileName || 'كشف', 'اطلاع');
+
+            let targetUrl = fileDriveUrl;
+            if (!targetUrl || targetUrl === '#' || targetUrl === '-') {
+                const cloudFile = (window._currentAdminFilesList || []).find(r => r.id === fileId || r.fileId === fileId);
+                if (cloudFile && cloudFile.fileDriveUrl && cloudFile.fileDriveUrl !== '#') {
+                    targetUrl = cloudFile.fileDriveUrl;
+                } else if (fileId && String(fileId).length > 10) {
+                    targetUrl = `https://drive.google.com/file/d/${encodeURIComponent(fileId)}/view?usp=sharing`;
+                }
+            }
+
+            if (targetUrl && targetUrl !== '#' && targetUrl !== '-') {
+                if (!targetUrl.includes('?') && targetUrl.includes('drive.google.com/file/d/')) {
+                    targetUrl += '?usp=sharing';
+                }
+                window.open(targetUrl, '_blank', 'noopener,noreferrer');
+            } else {
+                showToast('تعذر العثور على رابط معاينة هذا الملف على السيرفر.', 'warning');
+            }
+        };
 
         // تنزيل ملف فردي مباشرة إلى الجهاز
         window.downloadSingleFile = function (id, fileName) {
@@ -19573,79 +19889,254 @@
             showToast('جاري بدء تنزيل الملف...', 'info', 2000);
         };
 
-        // تنزيل الملفات المحددة كـ ZIP حقيقي من السيرفر
-        window.downloadSelectedAsZip = async function () {
-            const selectedIds = Array.from(adminSession.selectedFileIds);
-            if (!selectedIds || selectedIds.length === 0) {
-                showToast('يرجى تحديد كشف واحد على الأقل للتحميل.', 'warning');
+        // تنزيل الكشوفات مباشرة وبشكل متتابع وفوري من Google Drive عند تعذر أو تأخر ضغط السيرفر
+        window.executeSequentialDirectDownload = function (items, msg) {
+            if (!items || items.length === 0) return;
+            showToast(msg || `جاري تنزيل الكشوفات (${items.length} ملف) مباشرة لجهازك بالتتابع...`, 'info', 4500);
+            items.forEach((itm, idx) => {
+                setTimeout(() => {
+                    downloadSingleFile(itm.fileId || itm.id, itm.fileName);
+                }, idx * 400);
+            });
+        };
+
+        // الدالة الموحدة الموثوقة لتحميل وتجميع كشوفات متعددة في حزمة ZIP مع آلية تنزيل مباشر حتمية
+        window.downloadFilesAsZipPackage = async function (itemsToDownload, zipFileName, btnElement, origButtonHtml) {
+            if (!itemsToDownload || itemsToDownload.length === 0) {
+                showToast('لا توجد ملفات صالحة للتحميل في الحزمة.', 'warning');
                 return;
             }
 
-            const currentFiles = window._currentAdminFilesList || [];
-            const selectedItems = [];
-            selectedIds.forEach(id => {
-                const item = currentFiles.find(f => (f.fileId === id || f.id === id));
-                if (item) {
-                    selectedItems.push({
-                        fileId: item.fileId || item.id,
-                        fileName: item.fileName || 'كشف.xlsx'
-                    });
-                } else {
-                    selectedItems.push({ fileId: id, fileName: 'كشف.xlsx' });
-                }
-            });
-
-            const category = (adminSession.activeSubtab === 'girls') ? 'بنات' : 'بنين';
-            const game = document.getElementById('adminGameSelect')?.value || 'كشوفات';
-            const stage = document.getElementById('adminStageSelect')?.value || '';
-            const zipName = `حزمة_${game}_${stage ? stage + '_' : ''}${category}_(${selectedItems.length}_ملف).zip`;
-
-            const btn = document.getElementById('btnDownloadZip');
-            const origHtml = btn ? btn.innerHTML : '';
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>جاري التجهيز والضغط...</span>';
+            // إذا كان كشفاً واحداً فقط، يتم تنزيله مباشرة فوراً دون الحاجة لضغط أو انتظار
+            if (itemsToDownload.length === 1) {
+                downloadSingleFile(itemsToDownload[0].fileId || itemsToDownload[0].id, itemsToDownload[0].fileName);
+                showToast(`جاري تنزيل الكشف: ${itemsToDownload[0].fileName}`, 'success', 3500);
+                return;
             }
-            showToast(`جاري تجهيز وضغط الحزمة (${selectedItems.length} ملف) بسيرفر النظام...`, 'info', 6000);
+
+            if (btnElement) {
+                btnElement.disabled = true;
+                btnElement.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>جاري التجهيز...</span>';
+            }
+
+            showToast(`جاري تجهيز وتنزيل الحزمة (${itemsToDownload.length} ملف)...`, 'info', 3000);
 
             try {
                 const u = (adminSession.user && adminSession.user.username) ? adminSession.user.username : 'admin1';
                 const p = (adminSession.user && adminSession.user.password) || getAdminPassword(u) || getAdminPassword('admin1') || '';
                 const tok = adminSession.token || (adminSession.user && adminSession.user.token) || sessionStorage.getItem('repChamps_adminToken') || '';
 
-                const res = await callBackendApi({
-                    action: 'adminDownloadBulkZip',
-                    fileIds: selectedItems,
-                    zipName: zipName,
-                    username: u,
-                    password: p,
-                    token: tok
-                });
+                const fetchedFilesList = [];
+                const batchSize = 3; // حزم خفيفة لتفادي حدود حجم script tag بالمتصفح
 
-                if (res && res.success && res.base64Content) {
-                    downloadBase64Zip(res.base64Content, res.fileName || zipName);
-                    showToast(`تم تنزيل الحزمة المضغوطة بنجاح (${res.count || selectedItems.length} ملف).`, 'success');
-                    logAdminAudit(`تنزيل حزمة ZIP (${selectedItems.length} ملف)`, zipName, 'نجاح');
+                for (let b = 0; b < itemsToDownload.length; b += batchSize) {
+                    const chunk = itemsToDownload.slice(b, b + batchSize);
+                    const startIdx = b + 1;
+                    const endIdx = Math.min(b + chunk.length, itemsToDownload.length);
+
+                    if (btnElement) {
+                        btnElement.innerHTML = `<i class="fas fa-spinner fa-spin"></i> <span>جلب الملفات (${startIdx} إلى ${endIdx} من ${itemsToDownload.length})...</span>`;
+                    }
+
+                    // إرسال معرفات الملفات كنصوص سريعة وخفيفة لتقليل حجم الطلب
+                    const chunkFileIds = chunk.map(f => ({
+                        fileId: f.fileId,
+                        fileName: f.fileName || 'كشف.xlsx'
+                    }));
+
+                    try {
+                        const cRes = await callBackendApi({
+                            action: 'adminGetFilesBase64',
+                            fileIds: chunkFileIds,
+                            username: u,
+                            password: p,
+                            token: tok
+                        });
+
+                        if (cRes && cRes.success && Array.isArray(cRes.files) && cRes.files.length > 0) {
+                            const mapByFid = {};
+                            cRes.files.forEach(cf => {
+                                if (cf.fileId && cf.base64) {
+                                    mapByFid[cf.fileId] = cf.base64;
+                                }
+                            });
+
+                            chunk.forEach(itm => {
+                                const b64 = mapByFid[itm.fileId];
+                                if (b64) {
+                                    fetchedFilesList.push({
+                                        fileName: itm.fileName,
+                                        base64: b64,
+                                        fileId: itm.fileId
+                                    });
+                                }
+                            });
+                        }
+                    } catch (chunkErr) {
+                        console.warn('Batch fetch error for chunk', startIdx, endIdx, chunkErr);
+                    }
+
+                    // خطة إنقاذ فردية فورية لأي ملف لم يتم جلبه ضمن الدفعة
+                    for (const itm of chunk) {
+                        const alreadyGot = fetchedFilesList.some(x => x.fileId === itm.fileId);
+                        if (!alreadyGot) {
+                            try {
+                                const singleRes = await callBackendApi({
+                                    action: 'getFileBase64',
+                                    fileId: itm.fileId,
+                                    username: u,
+                                    password: p
+                                });
+                                if (singleRes && singleRes.success && singleRes.base64) {
+                                    fetchedFilesList.push({
+                                        fileName: itm.fileName,
+                                        base64: singleRes.base64,
+                                        fileId: itm.fileId
+                                    });
+                                }
+                            } catch (singleErr) {
+                                console.warn('Single file fetch error for', itm.fileId, singleErr);
+                            }
+                        }
+                    }
+
+                    await new Promise(r => setTimeout(r, 40));
+                }
+
+                // التحقق من الملفات التي تم جلبها بنجاح
+                if (fetchedFilesList.length === 0) {
+                    // إذا تعذر جلب محتويات الملفات كـ Base64، يتم التنزيل المباشر لكافة الكشوفات فوراً من روابط السيرفر
+                    window.executeSequentialDirectDownload(itemsToDownload, `جاري تنزيل الكشوفات (${itemsToDownload.length} ملف) مباشرة لجهازك الآن بالتتابع...`);
+                    logAdminAudit(`تنزيل مباشر للكشوفات (${itemsToDownload.length} ملف)`, zipFileName, 'نجاح');
+                    return;
+                }
+
+                // ضغط الملفات محلياً وفورياً باستخدام مكتبة JSZip المحملة بالمتصفح
+                if (typeof JSZip !== 'undefined') {
+                    if (btnElement) {
+                        btnElement.innerHTML = `<i class="fas fa-spinner fa-spin"></i> <span>جاري ضغط وتنزيل الحزمة (${fetchedFilesList.length} ملف)...</span>`;
+                    }
+
+                    const zip = new JSZip();
+                    const usedNames = new Set();
+
+                    fetchedFilesList.forEach(f => {
+                        let fName = String(f.fileName || 'كشف.xlsx').trim();
+                        // ضمان الامتداد المناسب
+                        if (!fName.toLowerCase().endsWith('.xlsx') && !fName.toLowerCase().endsWith('.xls') && !fName.toLowerCase().endsWith('.pdf') && !fName.toLowerCase().endsWith('.docx')) {
+                            fName += '.xlsx';
+                        }
+                        // منع تكرار نفس اسم الملف داخل حزمة الـ ZIP حتى لا يطغى أحدهما على الآخر
+                        let uniqueName = fName;
+                        let counter = 1;
+                        while (usedNames.has(uniqueName)) {
+                            const lastDot = fName.lastIndexOf('.');
+                            if (lastDot !== -1) {
+                                uniqueName = `${fName.substring(0, lastDot)} (${counter})${fName.substring(lastDot)}`;
+                            } else {
+                                uniqueName = `${fName} (${counter})`;
+                            }
+                            counter++;
+                        }
+                        usedNames.add(uniqueName);
+
+                        zip.file(uniqueName, f.base64, { base64: true });
+                    });
+
+                    const zipBlob = await zip.generateAsync({
+                        type: 'blob',
+                        compression: 'DEFLATE',
+                        compressionOptions: { level: 6 }
+                    });
+
+                    // تنزيل ملف الـ ZIP مباشرة بضغطة واحدة أصلية لا يحظرها المتصفح نهائياً
+                    const blobUrl = URL.createObjectURL(zipBlob);
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = zipFileName.toLowerCase().endsWith('.zip') ? zipFileName : (zipFileName + '.zip');
+                    document.body.appendChild(link);
+                    link.click();
+                    setTimeout(() => {
+                        if (link.parentNode) link.parentNode.removeChild(link);
+                        URL.revokeObjectURL(blobUrl);
+                    }, 3000);
+
+                    if (fetchedFilesList.length < itemsToDownload.length) {
+                        const missingFiles = itemsToDownload.filter(it => !fetchedFilesList.some(ff => ff.fileId === it.fileId));
+                        if (missingFiles.length > 0) {
+                            showToast(`تم تنزيل حزمة ZIP (${fetchedFilesList.length} ملف)، وجاري تنزيل باقي الكشوفات (${missingFiles.length}) مباشرة...`, 'info', 5000);
+                            missingFiles.forEach((mf, i) => {
+                                setTimeout(() => downloadSingleFile(mf.fileId, mf.fileName), (i + 1) * 450);
+                            });
+                        }
+                    } else {
+                        showToast(`تم تنزيل الحزمة المضغوطة بنجاح (${fetchedFilesList.length} ملف).`, 'success', 5000);
+                    }
+                    logAdminAudit(`تنزيل حزمة ZIP (${fetchedFilesList.length} ملف)`, zipFileName, 'نجاح');
+                    return;
                 } else {
-                    throw new Error((res && res.message) ? res.message : 'تعذر إنشاء الحزمة المضغوطة من السيرفر');
+                    // في حال عدم توفر JSZip في المتصفح، تنزيل مباشر لكافة الكشوفات
+                    window.executeSequentialDirectDownload(itemsToDownload, `جاري تنزيل الكشوفات (${itemsToDownload.length} ملف) مباشرة لجهازك بالتتابع...`);
+                    logAdminAudit(`تنزيل مباشر للكشوفات (${itemsToDownload.length} ملف)`, zipFileName, 'نجاح');
+                    return;
                 }
             } catch (err) {
-                console.warn('Backend zip creation failed, falling back to direct downloads:', err);
-                showToast('جاري تنزيل الملفات المحددة مباشرة إلى جهازك...', 'info', 4000);
-                selectedItems.forEach((it, idx) => {
-                    setTimeout(() => {
-                        downloadSingleFile(it.fileId, it.fileName);
-                    }, idx * 600);
-                });
+                console.warn('downloadFilesAsZipPackage error, falling back to direct download:', err);
+                window.executeSequentialDirectDownload(itemsToDownload, `جاري تنزيل الكشوفات (${itemsToDownload.length} ملف) مباشرة لجهازك الآن بالتتابع...`);
             } finally {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = origHtml;
+                if (btnElement) {
+                    btnElement.disabled = false;
+                    btnElement.innerHTML = origButtonHtml;
                 }
             }
         };
 
-        // تنزيل كل ملفات المرحلة الحالية دفعة واحدة كـ ZIP حقيقي من السيرفر
+        // تنزيل الملفات المحددة كـ ZIP حقيقي فائق السرعة
+        window.downloadSelectedAsZip = async function () {
+            const selectedIds = Array.from(adminSession.selectedFileIds || []);
+            if (!selectedIds || selectedIds.length === 0) {
+                showToast('يرجى تحديد كشف واحد على الأقل للتحميل.', 'warning');
+                return;
+            }
+
+            const currentFiles = window._currentAdminFilesList || [];
+            const category = (adminSession.activeSubtab === 'girls') ? 'بنات' : 'بنين';
+            const game = document.getElementById('adminGameSelect')?.value || 'كشوفات';
+            const stage = document.getElementById('adminStageSelect')?.value || '';
+
+            const selectedItems = [];
+            selectedIds.forEach(id => {
+                const item = currentFiles.find(f => (f.fileId === id || f.id === id));
+                if (item) {
+                    const teamPart = item.teamName ? `_${item.teamName}` : '';
+                    const govName = item.userGov || item.governorate || '';
+                    const officialFileName = item.fileName || `بطولات_الجمهورية_${category}_${govName}_${item.gameName || game}_${item.stageName || stage}${teamPart}_${item.userName || ''}.xlsx`;
+                    selectedItems.push({
+                        fileId: item.fileId || item.id,
+                        fileName: officialFileName,
+                        governorate: govName
+                    });
+                } else {
+                    selectedItems.push({ fileId: id, fileName: 'كشف.xlsx' });
+                }
+            });
+
+            // إذا تم تحديد كشف واحد فقط، يتم تنزيله مباشرة وفوراً دون الحاجة لضغط أو انتظار
+            if (selectedItems.length === 1) {
+                const single = selectedItems[0];
+                downloadSingleFile(single.fileId, single.fileName);
+                showToast(`جاري تنزيل الكشف المحدد: ${single.fileName}`, 'success', 3500);
+                return;
+            }
+
+            const zipName = `حزمة_${game}_${stage ? stage + '_' : ''}${category}_(${selectedItems.length}_ملف).zip`;
+            const btn = document.getElementById('btnDownloadZip');
+            const origHtml = btn ? btn.innerHTML : '<i class="fas fa-file-zipper"></i> <span>تحميل المحدد</span>';
+
+            await window.downloadFilesAsZipPackage(selectedItems, zipName, btn, origHtml);
+        };
+
+        // تنزيل كل ملفات المرحلة الحالية دفعة واحدة كـ ZIP حقيقي فائق السرعة
         window.downloadAllCurrentStageAsZip = async function () {
             const game = document.getElementById('adminGameSelect')?.value;
             const stage = document.getElementById('adminStageSelect')?.value;
@@ -19662,10 +20153,23 @@
                 return;
             }
 
-            const stageItems = currentFiles.map(f => ({
-                fileId: f.fileId || f.id,
-                fileName: f.fileName || 'كشف.xlsx'
-            })).filter(x => !!x.fileId);
+            // استبعاد الملفات المعلمة "يجب حذفه" تلقائياً عند تنزيل المرحلة لضمان تحميل الملفات المعتمدة فقط
+            const validStageFiles = currentFiles.filter(f => {
+                const isDel = !!(f.isMustDelete || (f.fileStatus && f.fileStatus.indexOf('يجب حذفه') !== -1) || (f.fileName && f.fileName.indexOf('يجب حذفه') === 0));
+                return !isDel;
+            });
+            const filesToUse = (validStageFiles.length > 0) ? validStageFiles : currentFiles;
+
+            const stageItems = filesToUse.map(f => {
+                const teamPart = f.teamName ? `_${f.teamName}` : '';
+                const govName = f.userGov || f.governorate || '';
+                const officialFileName = f.fileName || `بطولات_الجمهورية_${category}_${govName}_${f.gameName || game}_${f.stageName || stage}${teamPart}_${f.userName || ''}.xlsx`;
+                return {
+                    fileId: f.fileId || f.id,
+                    fileName: officialFileName,
+                    governorate: govName
+                };
+            }).filter(x => !!x.fileId);
 
             if (stageItems.length === 0) {
                 showToast('لا توجد ملفات صالحة للتحميل في هذه المرحلة.', 'warning');
@@ -19674,60 +20178,11 @@
 
             const zipName = `شامل_${category}_${game}_${stage}_(${stageItems.length}_ملف).zip`;
             const btn = document.getElementById('btnDownloadAllZip');
-            const origHtml = btn ? btn.innerHTML : '';
-            if (btn) {
-                btn.disabled = true;
-                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>جاري تجميع المرحلة...</span>';
-            }
-            showToast(`جاري تجهيز وضغط كافة كشوفات المرحلة (${stageItems.length} ملف) بسيرفر النظام...`, 'info', 6000);
+            const origHtml = btn ? btn.innerHTML : '<i class="fas fa-cloud-arrow-down"></i> <span>تحميل المرحلة</span>';
 
-            try {
-                const u = (adminSession.user && adminSession.user.username) ? adminSession.user.username : 'admin1';
-                const p = (adminSession.user && adminSession.user.password) || getAdminPassword(u) || getAdminPassword('admin1') || '';
-                const tok = adminSession.token || (adminSession.user && adminSession.user.token) || sessionStorage.getItem('repChamps_adminToken') || '';
-
-                const res = await callBackendApi({
-                    action: 'adminDownloadBulkZip',
-                    fileIds: stageItems,
-                    zipName: zipName,
-                    username: u,
-                    password: p,
-                    token: tok
-                });
-
-                if (res && res.success && res.base64Content) {
-                    downloadBase64Zip(res.base64Content, res.fileName || zipName);
-                    showToast(`تم تنزيل حزمة المرحلة بالكامل بنجاح (${res.count || stageItems.length} ملف).`, 'success');
-                    logAdminAudit(`تنزيل شامل لجميع ملفات المرحلة (${stageItems.length} ملف)`, zipName, 'نجاح');
-                } else {
-                    throw new Error((res && res.message) ? res.message : 'تعذر إنشاء الحزمة المضغوطة من السيرفر');
-                }
-            } catch (err) {
-                console.warn('Backend stage zip failed, falling back to direct downloads:', err);
-                showToast('جاري تنزيل ملفات المرحلة مباشرة إلى جهازك...', 'info', 4000);
-                stageItems.forEach((it, idx) => {
-                    setTimeout(() => {
-                        downloadSingleFile(it.fileId, it.fileName);
-                    }, idx * 600);
-                });
-            } finally {
-                if (btn) {
-                    btn.disabled = false;
-                    btn.innerHTML = origHtml;
-                }
-            }
+            await window.downloadFilesAsZipPackage(stageItems, zipName, btn, origHtml);
         };
 
-        // حذف كشف من السجل الإداري
-        window.deleteAdminFileRecord = function (id) {
-            if (confirm('هل أنت متأكد من رغبتك في إزالة هذا الكشف من السجل؟')) {
-                deleteHistoryItem(id);
-                logAdminAudit('حذف كشف من السجل', `كود: ${id}`, 'تم الحذف');
-                loadAdminFiles();
-                updateAdminStatistics();
-                refreshStagePillsCounts();
-            }
-        };
 
 
         // =========================================================================
@@ -22989,8 +23444,8 @@
             return new Promise((resolve, reject) => {
                 const cbName = 'onGasApi_' + data.action + '_' + Date.now() + '_' + Math.floor(Math.random() * 10000);
                 const script = document.createElement('script');
-                const isHeavyAction = (data.action === 'getFileBase64' || data.action === 'getFilesBase64' || data.action === 'adminGetFilesBase64' || data.action === 'getGovernoratesExcelFiles' || data.action === 'getCollectiveGameSheet' || data.action === 'getStudentSubmissions' || data.action === 'getCollectiveSheets' || data.action === 'getAllAccountsForSuperAdmin');
-                const timeoutDuration = isHeavyAction ? 35000 : 20000;
+                const isHeavyAction = (data.action === 'getFileBase64' || data.action === 'getFilesBase64' || data.action === 'adminGetFilesBase64' || data.action === 'getGovernoratesExcelFiles' || data.action === 'getCollectiveGameSheet' || data.action === 'getStudentSubmissions' || data.action === 'getCollectiveSheets' || data.action === 'getAllAccountsForSuperAdmin' || data.action === 'adminDownloadBulkZip' || data.action === 'downloadBulkZip');
+                const timeoutDuration = isHeavyAction ? 45000 : 25000;
                 const timeoutTimer = setTimeout(() => {
                     if (window[cbName]) {
                         delete window[cbName];
@@ -23059,7 +23514,7 @@
                     'recordUserHeartbeat', 'getOnlineAuditData', 'logUserLogin', 'removeUserOnlineSession',
                     'getFileBase64', 'getFilesBase64', 'adminGetFilesBase64', 'getGovernoratesExcelFiles', 'getCollectiveGameSheet',
                     'getStudentSubmissions', 'getCollectiveSheets', 'getTournamentDirectorStageData', 'getAllAccountsForSuperAdmin',
-                    'getGovernorateExtensions'
+                    'getGovernorateExtensions', 'adminDownloadBulkZip', 'downloadBulkZip'
                 ];
                 const shouldUseDirectFast = data && data.action && directFastActions.includes(data.action);
 
